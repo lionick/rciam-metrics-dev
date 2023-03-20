@@ -1,10 +1,19 @@
 from typing import List, Optional, Union
 import os
+import sys
 from xmlrpc.client import boolean
 from app.models.user_model import Users, UsersRead
 
-from fastapi import Depends, FastAPI, HTTPException, Query
+from fastapi import Depends, FastAPI, HTTPException, Query, Security
 from fastapi.middleware.cors import CORSMiddleware
+
+# Set up our OIDC
+from app.auth.auth import *
+from app.auth.grant_types import *
+from app.auth.idtoken_types import *
+from app.utils import configParser
+
+# Database
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 from sqlalchemy import func
 from sqlalchemy.orm import selectinload
@@ -18,21 +27,37 @@ from app.models.country_model import *
 from app.models.idp_model import *
 from app.models.country_hashed_user_model import *
 
-import os
-import sys
 sys.path.insert(0, os.path.realpath('__file__'))
+
+# GET OIDC authentication configuration
+OIDC_config = configParser.getConfig('oidc_client')
+auth = Auth(
+    openid_connect_url=OIDC_config['openid_connect_url'],
+    issuer=OIDC_config['issuer'],
+    client_id=OIDC_config['client_id'],
+    redirect_uri=OIDC_config['redirect_uri'],
+    idtoken_model=OIDC_config['idtoken_model'],
+    scopes=["openid", "email", "profile", "eduperson_entitlement"],
+    grant_types=[GrantType.AUTHORIZATION_CODE]
+)
+
 # Development Environment: dev
 environment = os.getenv('API_ENVIRONMENT')
 # Instantiate app according to the environment configuration
-app = FastAPI() if environment == "dev" else FastAPI(root_path="/api/v1",
-                                                     root_path_in_servers=False, servers=[{"url": "/api/v1"}])
+app = FastAPI(title="RCIAM Metrics",
+              version="dev",
+              dependencies=[Depends(auth)]) if environment == "dev" else FastAPI(root_path="/api/v1",
+                                                                                 root_path_in_servers=False,
+                                                                                 dependencies=[Depends(auth)],
+                                                                                 servers=[{"url": "/api/v1"}])
 
 MembersReadWithCommunityInfo.update_forward_refs(
     Community_InfoRead=Community_InfoRead)
 CommunityReadwithInfo.update_forward_refs(
     Community_InfoRead=Community_InfoRead)
 Statistics_Country_HashedwithInfo.update_forward_refs(
-    IdentityprovidersmapRead=IdentityprovidersmapRead, ServiceprovidersmapRead=ServiceprovidersmapRead, Country_CodesRead=Country_CodesRead)
+    IdentityprovidersmapRead=IdentityprovidersmapRead, ServiceprovidersmapRead=ServiceprovidersmapRead,
+    Country_CodesRead=Country_CodesRead)
 
 origins = ["*"]
 app.add_middleware(
@@ -54,19 +79,41 @@ app.add_middleware(
 #     communities = session.exec(select(Community).offset(offset)).all()
 #     return communities
 
+#   Used to redirect users to authentication proxy
+
+@app.get("/login")
+def login(
+        *,
+        id_token: KeycloakIDToken = Security(auth.required)):
+    print(id_token)
+
+@app.get("/docs/oauth2-redirect")
+def login(
+        *,
+        id_token: KeycloakIDToken = Security(auth.required)):
+    print(id_token)
+
+@app.get("/oauth2-redirect")
+def login(
+        *,
+        id_token: KeycloakIDToken = Security(auth.required)):
+    print(id_token)
+
 
 @app.get("/communities_groupby/{group_by}")
 def read_communities(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    group_by: str,
-    tenant_id: int,
-    interval: Union[str, None] = None,
-    count_interval: int = None,
-    startDate: str = None,
-    endDate: str = None,
+        *,
+        id_token: KeycloakIDToken = Security(auth.required),
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        group_by: str,
+        tenant_id: int,
+        interval: Union[str, None] = None,
+        count_interval: int = None,
+        startDate: str = None,
+        endDate: str = None,
 ):
+    print(id_token)
     interval_subquery = ""
     if group_by:
         if interval and count_interval:
@@ -100,10 +147,12 @@ def read_communities(
 
 @app.get("/communities/")
 def read_community(
-    *,
-    session: Session = Depends(get_session),
-    community_id: Union[None, int] = None,
+        *,
+        id_token: KeycloakIDToken = Security(auth.required),
+        session: Session = Depends(get_session),
+        community_id: Union[None, int] = None,
         tenant_id: int):
+    print(id_token)
     sql_subquery = ''
     if community_id:
         sql_subquery = 'id={0} and'.format(community_id)
@@ -120,21 +169,25 @@ def read_community(
 
 @app.get("/communities_info/", response_model=List[Community_InfoRead])
 def read_communities_info(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0
+        *,
+        id_token: KeycloakIDToken = Security(auth.required),
+        session: Session = Depends(get_session),
+        offset: int = 0
 ):
+    print(id_token)
     communities = session.exec(select(Community_Info).offset(offset)).all()
     return communities
 
 
 @app.get("/members/", response_model=List[MembersReadWithCommunityInfo])
 def read_members(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    # community_id: Union[None, int] = None
+        *,
+        id_token: KeycloakIDToken = Security(auth.required),
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        # community_id: Union[None, int] = None
 ):
+    print(id_token)
     # if not community_id:
     #     members = session.exec(select(Members).offset(offset)).all()
     # else:
@@ -144,12 +197,14 @@ def read_members(
 
 @app.get("/members_bystatus/")
 def read_members_bystatus(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    community_id: Union[None, int] = None,
-    tenant_id: int,
+        *,
+        id_token: KeycloakIDToken = Security(auth.required),
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        community_id: Union[None, int] = None,
+        tenant_id: int,
 ):
+    print(id_token)
     if not community_id:
         members = session.exec(select(Members).offset(offset)).all()
     else:
@@ -165,12 +220,14 @@ def read_members_bystatus(
 
 @app.get("/tenant/{project_name}/{environment_name}")
 def read_tenant_byname(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    project_name: str,
-    environment_name: str
+        *,
+        id_token: KeycloakIDToken = Security(auth.required),
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        project_name: str,
+        environment_name: str
 ):
+    print(id_token)
     tenant = None
     if project_name and environment_name:
         tenant = session.exec("""
@@ -185,11 +242,13 @@ def read_tenant_byname(
 
 @app.get("/environment_byname/{environment_name}")
 def read_environment_byname(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    environment_name: str
+        *,
+        id_token: KeycloakIDToken = Security(auth.required),
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        environment_name: str
 ):
+    print(id_token)
     environment = None
     if environment_name:
         environment = session.exec("""
@@ -201,22 +260,25 @@ def read_environment_byname(
 
 @app.get("/services/", response_model=List[Serviceprovidersmap])
 def read_services(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0
+        *,
+        id_token: KeycloakIDToken = Security(auth.required),
+        session: Session = Depends(get_session),
+        offset: int = 0
 ):
-
+    print(id_token)
     services = session.exec(select(Serviceprovidersmap).offset(offset)).all()
     return services
 
 
 @app.get("/idps")
 def read_idps(
-    *,
-    session: Session = Depends(get_session),
-    tenant_id: int,
-    idpId: int = None
+        *,
+        id_token: KeycloakIDToken = Security(auth.required),
+        session: Session = Depends(get_session),
+        tenant_id: int,
+        idpId: int = None
 ):
+    print(id_token)
     idpId_subquery = ""
     if idpId:
         idpId_subquery = """
@@ -231,22 +293,23 @@ def read_idps(
 
 @app.get("/countries/", response_model=List[Country_CodesRead])
 def read_countries(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0
+        *,
+        id_token: KeycloakIDToken = Security(auth.required),
+        session: Session = Depends(get_session),
+        offset: int = 0
 ):
-
     countries = session.exec(select(Country_Codes).offset(offset)).all()
     return countries
 
 
 @app.get("/country_stats/", response_model=List[Statistics_Country_HashedwithInfo])
 def read_country_stats(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0
+        *,
+        id_token: KeycloakIDToken = Security(auth.required),
+        session: Session = Depends(get_session),
+        offset: int = 0
 ):
-
+    print(id_token)
     stats = session.exec(
         select(Statistics_Country_Hashed).offset(offset)).all()
     return stats
@@ -254,11 +317,13 @@ def read_country_stats(
 
 @app.get("/country_stats_by_vo/{community_id}")
 def read_country_stats_by_vo(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    community_id: Union[None, int] = None
+        *,
+        id_token: KeycloakIDToken = Security(auth.required),
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        community_id: Union[None, int] = None
 ):
+    print(id_token)
     stats = []
     stats_country = session.exec("""
     WITH users_countries AS (
@@ -319,24 +384,27 @@ def read_country_stats_by_vo(
 #
 @app.get("/users/", response_model=List[UsersRead])
 def read_users(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0
+        *,
+        id_token: KeycloakIDToken = Security(auth.required),
+        session: Session = Depends(get_session),
+        offset: int = 0
 ):
-
+    print(id_token)
     users = session.exec(select(Users).offset(offset)).all()
     return users
 
 
 @app.get("/registered_users_country")
 def read_users_country(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    startDate: str = None,
-    endDate: str = None,
-    tenant_id: int
+        *,
+        id_token: KeycloakIDToken = Security(auth.required),
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        startDate: str = None,
+        endDate: str = None,
+        tenant_id: int
 ):
+    print(id_token)
     interval_subquery = ""
     if startDate and endDate:
         interval_subquery = """
@@ -373,14 +441,16 @@ def read_users_country(
 
 @app.get("/registered_users_country_group_by/{group_by}")
 def read_users_country_groupby(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    group_by: str,
-    startDate: str = None,
-    endDate: str = None,
-    tenant_id: int
+        *,
+        id_token: KeycloakIDToken = Security(auth.required),
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        group_by: str,
+        startDate: str = None,
+        endDate: str = None,
+        tenant_id: int
 ):
+    print(id_token)
     if group_by:
         interval_subquery = ""
         if startDate and endDate:
@@ -422,17 +492,18 @@ def read_users_country_groupby(
 
 @app.get("/registered_users_groupby/{group_by}")
 def read_users_groupby(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    group_by: str,
-    interval: Union[str, None] = None,
-    count_interval: int = None,
-    startDate: str = None,
-    endDate: str = None,
-    tenant_id: int
+        *,
+        id_token: KeycloakIDToken = Security(auth.required),
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        group_by: str,
+        interval: Union[str, None] = None,
+        count_interval: int = None,
+        startDate: str = None,
+        endDate: str = None,
+        tenant_id: int
 ):
-
+    print(id_token)
     interval_subquery = ""
     if group_by:
         if interval and count_interval:
@@ -456,14 +527,15 @@ def read_users_groupby(
 
 @app.get("/registered_users_countby")
 def read_users_countby(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    interval: Union[str, None] = None,
-    count_interval: int = None,
-    tenant_id: int
+        *,
+        id_token: KeycloakIDToken = Security(auth.required),
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        interval: Union[str, None] = None,
+        count_interval: int = None,
+        tenant_id: int
 ):
-
+    print(id_token)
     interval_subquery = ""
     if interval and count_interval:
         interval_subquery = """AND created >
@@ -476,21 +548,24 @@ def read_users_countby(
     {0}""".format(interval_subquery, tenant_id)).all()
     return users
 
+
 # Dashboard Page
 
 
 @app.get("/logins_countby")
 def read_logins_countby(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    interval: Union[str, None] = None,
-    count_interval: int = None,
-    tenant_id: int,
-    unique_logins: Union[boolean, None] = False,
-    idpId:  Union[int, None] = None,
-    spId:  Union[int, None] = None,
+        *,
+        id_token: KeycloakIDToken = Security(auth.required),
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        interval: Union[str, None] = None,
+        count_interval: int = None,
+        tenant_id: int,
+        unique_logins: Union[boolean, None] = False,
+        idpId: Union[int, None] = None,
+        spId: Union[int, None] = None,
 ):
+    print(id_token)
     interval_subquery = ""
     idp_subquery = ""
     if interval and count_interval:
@@ -515,15 +590,17 @@ def read_logins_countby(
 
 @app.get("/logins_groupby/{group_by}")
 def read_logins_groupby(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    group_by: str,
-    idp: str = None,
-    sp: str = None,
-    tenant_id: int,
-    unique_logins: Union[boolean, None] = False
+        *,
+        id_token: KeycloakIDToken = Security(auth.required),
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        group_by: str,
+        idp: str = None,
+        sp: str = None,
+        tenant_id: int,
+        unique_logins: Union[boolean, None] = False
 ):
+    print(id_token)
     interval_subquery = ""
     if idp != None:
         interval_subquery = """ 
@@ -564,15 +641,17 @@ def read_logins_groupby(
 
 @app.get("/logins_per_idp/")
 def read_logins_per_idp(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    sp: str = None,
-    startDate: str = None,
-    endDate: str = None,
-    tenant_id: int,
-    unique_logins: Union[boolean, None] = False
+        *,
+        id_token: KeycloakIDToken = Security(auth.required),
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        sp: str = None,
+        startDate: str = None,
+        endDate: str = None,
+        tenant_id: int,
+        unique_logins: Union[boolean, None] = False
 ):
+    print(id_token)
     interval_subquery = ""
     sp_subquery_join = ""
     if sp:
@@ -612,15 +691,17 @@ def read_logins_per_idp(
 
 @app.get("/logins_per_sp/")
 def read_logins_per_sp(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    idp: str = None,
-    startDate: str = None,
-    endDate: str = None,
-    tenant_id: int,
-    unique_logins: Union[boolean, None] = False
+        *,
+        id_token: KeycloakIDToken = Security(auth.required),
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        idp: str = None,
+        startDate: str = None,
+        endDate: str = None,
+        tenant_id: int,
+        unique_logins: Union[boolean, None] = False
 ):
+    print(id_token)
     interval_subquery = ""
     idp_subquery_join = ""
     if idp:
@@ -661,19 +742,21 @@ def read_logins_per_sp(
 
 @app.get("/logins_per_country/")
 def read_logins_per_country(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    group_by: Union[str, None] = None,
-    startDate: str = None,
-    endDate: str = None,
-    tenant_id: int,
-    unique_logins: Union[boolean, None] = False,
-    idpId: Union[int, None] = None,
+        *,
+        id_token: KeycloakIDToken = Security(auth.required),
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        group_by: Union[str, None] = None,
+        startDate: str = None,
+        endDate: str = None,
+        tenant_id: int,
+        unique_logins: Union[boolean, None] = False,
+        idpId: Union[int, None] = None,
 ):
+    print(id_token)
     interval_subquery = ""
     entity_subquery = ""
-    if idpId: 
+    if idpId:
         entity_subquery = """
             AND sourceidpid = {0}
         """.format(idpId)
