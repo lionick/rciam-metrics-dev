@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 from sqlalchemy import func
 from sqlalchemy.orm import selectinload
+from starlette.middleware.sessions import SessionMiddleware
 
 from app.database import get_session
 from app.models.community_info_model import *
@@ -18,7 +19,7 @@ from app.models.country_model import *
 from app.models.idp_model import *
 from app.models.country_hashed_user_model import *
 
-from .routers import communities, countries, logins, users
+from .routers import authenticate, communities, countries, logins, users
 
 sys.path.insert(0, os.path.realpath('__file__'))
 # Development Environment: dev
@@ -42,7 +43,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(SessionMiddleware,
+                   secret_key="some-random-string")
 
+app.include_router(authenticate.router)
 app.include_router(users.router)
 app.include_router(communities.router)
 app.include_router(countries.router)
