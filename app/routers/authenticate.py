@@ -5,8 +5,6 @@ from typing import List, Optional, TYPE_CHECKING
 from app.utils import configParser
 import json
 from starlette.config import Config
-from starlette.middleware.sessions import SessionMiddleware
-from starlette.responses import HTMLResponse, RedirectResponse
 from authlib.integrations.starlette_client import OAuth
 
 router = APIRouter(
@@ -59,7 +57,7 @@ async def authorize_rciam(request: Request):
     # do something with the token and userinfo
     print(token['userinfo'])
 
-@router.get('/logout')
-async def logout(request):
-    request.session.pop('user', None)
-    return RedirectResponse(url='/')
+# @router.get('/logout')
+# async def logout(request):
+#     request.session.pop('user', None)
+#     return RedirectResponse(url='/')
