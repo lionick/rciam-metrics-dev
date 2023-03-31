@@ -1,11 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Security, Request
-from pydantic import BaseModel
-from typing import List, Optional, TYPE_CHECKING
 
 from app.utils import configParser
-import json
 from starlette.config import Config
-from authlib.integrations.starlette_client import OAuth
+from starlette.responses import HTMLResponse, RedirectResponse
+from authlib.integrations.starlette_client import OAuth, OAuthError
+from authlib.common.urls import urlparse
 
 router = APIRouter(
     tags=["authenticate"],
@@ -14,16 +13,6 @@ router = APIRouter(
 )
 
 OIDC_config = configParser.getConfig('oidc_client')
-# auth = Auth(
-#     openid_connect_url=OIDC_config['openid_connect_url'],
-#     issuer=OIDC_config['issuer'],
-#     client_id=OIDC_config['client_id'],
-#     redirect_uri=OIDC_config['redirect_uri'],
-#     idtoken_model=OIDC_config['idtoken_model'],
-#     scopes=["openid", "email", "profile", "eduperson_entitlement"],
-#     grant_types=[GrantType.AUTHORIZATION_CODE]
-# )
-
 config = Config('.env')
 oauth = OAuth(config)
 
@@ -35,16 +24,7 @@ oauth.register(
     client_kwargs={'scope': 'openid profile email eduperson_entitlement'}
 )
 
-# openid_configuration = requests.get(OIDC_config['openid_connect_url']).json()
-#
-# @router.get('/login'):
-# async def login_endpoint():
-#     session = OAuth2Session(OIDC_config['client_id'], OIDC_config['client_secret'],
-#                             token_endpoint=openid_configuration["token_endpoint"])
-#     uri, state = session.create_authorization_url(openid_configuration["authorization_endpoint"])
-#     print(uri)
-
-@router.get('/login')
+@router.get('/login', include_in_schema=False)
 async def login_endpoint(request: Request):
     rciam = oauth.create_client('rciam')
     redirect_uri = request.url_for('authorize_rciam')
@@ -53,11 +33,27 @@ async def login_endpoint(request: Request):
 @router.get('/auth', include_in_schema=False)
 async def authorize_rciam(request: Request):
     rciam = oauth.create_client('rciam')
-    token = await rciam.authorize_access_token(request)
-    # do something with the token and userinfo
-    print(token['userinfo'])
+    try:
+        token = await rciam.authorize_access_token(request)
+    except OAuthError as error:
+        return HTMLResponse(f'<h1>{error.error}</h1>')
+    user = token.get('userinfo')
+    if user:
+        request.session['user'] = dict(user)
+    # Fetch the userinfo data
+    if user.get("email") is None:
+        metadata = await rciam.load_server_metadata()
+        if not metadata['userinfo_endpoint']:
+            raise RuntimeError('Missing "userinfo_endpoint" value')
+        # Make a request to the userinfo endpoint
+        user_info = await rciam.get(metadata['userinfo_endpoint'], token=token)
+        user_info.raise_for_status()
+        data = user_info.json()
+        print(data)
 
-# @router.get('/logout')
-# async def logout(request):
-#     request.session.pop('user', None)
-#     return RedirectResponse(url='/')
+    return RedirectResponse(url='/')
+
+@router.get('/logout', include_in_schema=False)
+async def logout(request):
+    request.session.pop('user', None)
+    return RedirectResponse(url='/')
