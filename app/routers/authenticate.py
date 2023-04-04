@@ -1,10 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Security, Request
 
 from app.utils import configParser
-from starlette.config import Config
 from starlette.responses import HTMLResponse, RedirectResponse
 from authlib.integrations.starlette_client import OAuth, OAuthError
-from authlib.common.urls import urlparse
 
 router = APIRouter(
     tags=["authenticate"],
@@ -13,8 +11,7 @@ router = APIRouter(
 )
 
 OIDC_config = configParser.getConfig('oidc_client')
-config = Config('.env')
-oauth = OAuth(config)
+oauth = OAuth()
 
 oauth.register(
     'rciam',
