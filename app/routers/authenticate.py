@@ -47,6 +47,7 @@ async def authorize_rciam(request: Request):
         user_info.raise_for_status()
         data = user_info.json()
         print(data)
+        return data
 
     return RedirectResponse(url='/')
 
