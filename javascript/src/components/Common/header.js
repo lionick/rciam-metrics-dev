@@ -12,7 +12,7 @@ const Header = (props) => {
 
     const [bannerAlertInfo, setBannerAlertInfo] = useState([]);
     const { project, environment } = useParams();
-    const getConfig = key => config[project + "_" + environment][key]
+    const getConfig = key => config[project][environment][key]
 
     console.log(getConfig("config")["logo_url"])
     useEffect(() => {

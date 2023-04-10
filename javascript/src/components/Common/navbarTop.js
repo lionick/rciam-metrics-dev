@@ -21,7 +21,7 @@ const NavbarTop = (props) => {
   //const tenant = useContext(tenantContext);
   const [cookies] = useCookies(['metrics_logoutkey']);
   const {project, environment} = useParams();
-  const getConfig = key => config[project + "_" + environment][key]
+  const getConfig = key => config[project][environment][key]
   console.log(getConfig("config")["theme_color"] + project)
 
 

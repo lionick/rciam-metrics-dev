@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Image from 'react-bootstrap/Image';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import Navbar from 'react-bootstrap/Navbar';
 
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -16,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 const Footer = (props) => {
     const [language,setLanguage] = useContext(languageContext)
     const { project, environment } = useParams();
-    const getConfig = key => config[project + "_" + environment][key]
+    const getConfig = key => config[project][environment][key]
     const { t, i18n } = useTranslation();
     console.log(language)
     return (
