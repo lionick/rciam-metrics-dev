@@ -10,14 +10,15 @@ router = APIRouter(
     # responses={404: {"description": "Not found"}},
 )
 
-OIDC_config = configParser.getConfig('oidc_client')
+# TODO: Tenant hardcoded for now
+OIDC_config = configParser.getConfig('oidc_client_egi')
 oauth = OAuth()
 
 oauth.register(
     'rciam',
     client_id=OIDC_config['client_id'],
     client_secret=OIDC_config['client_secret'],
-    server_metadata_url=OIDC_config['openid_connect_url'],
+    server_metadata_url=OIDC_config['issuer'] + "/.well-known/openid-configuration",
     client_kwargs={'scope': 'openid profile email eduperson_entitlement'}
 )
 
