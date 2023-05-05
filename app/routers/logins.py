@@ -14,7 +14,7 @@ router = APIRouter(
 )
 
 
-@router.get("/logins_per_idp/")
+@router.get("/logins_per_idp")
 async def read_logins_per_idp(
         *,
         session: Session = Depends(get_session),
@@ -62,7 +62,7 @@ async def read_logins_per_idp(
     return logins
 
 
-@router.get("/logins_per_sp/")
+@router.get("/logins_per_sp")
 async def read_logins_per_sp(
         *,
         session: Session = Depends(get_session),
@@ -111,7 +111,7 @@ async def read_logins_per_sp(
     return logins
 
 
-@router.get("/logins_per_country/")
+@router.get("/logins_per_country")
 async def read_logins_per_country(
         *,
         session: Session = Depends(get_session),
