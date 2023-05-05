@@ -27,7 +27,7 @@ oauth.register(
 async def login_endpoint(request: Request):
     rciam = oauth.create_client('rciam')
     # redirect_uri = request.url_for('authorize_rciam')
-    redirect_uri = SERVER_config['protocol'] + "://" + SERVER_config['host'] + "/" + SERVER_config['api_path'] + "/auth"
+    redirect_uri = SERVER_config['protocol'] + "://" + SERVER_config['host'] + SERVER_config['api_path'] + "/auth"
     return await rciam.authorize_redirect(request, redirect_uri)
 
 @router.get('/auth', include_in_schema=False)
