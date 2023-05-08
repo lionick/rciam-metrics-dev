@@ -30,17 +30,6 @@ app = FastAPI() if environment == "dev" else FastAPI(root_path="/api/v1",
                                                      root_path_in_servers=False,
                                                      servers=[{"url": "/api/v1"}])
 
-
-@app.middleware("http")
-async def some_middleware(request: Request, call_next):
-    response = await call_next(request)
-    print(request.headers)
-    session = request.cookies.get('session')
-    print(session)
-    # if session:
-    #     response.set_cookie(key='session', value=request.cookies.get('session'), httponly=True)
-    # return response
-
 if environment == "dev":
     app.add_middleware(
         CORSMiddleware,

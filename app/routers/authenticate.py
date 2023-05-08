@@ -1,6 +1,11 @@
+from pprint import pprint
+
 from fastapi import APIRouter, Depends, HTTPException, status, Security, Request
+from fastapi.responses import JSONResponse
+import json, base64
 
 from app.utils import configParser
+import urllib.parse
 from starlette.responses import HTMLResponse, RedirectResponse
 from authlib.integrations.starlette_client import OAuth, OAuthError
 
@@ -26,12 +31,23 @@ oauth.register(
 @router.get('/login', include_in_schema=False)
 async def login_endpoint(request: Request):
     rciam = oauth.create_client('rciam')
-    # redirect_uri = request.url_for('authorize_rciam')
     redirect_uri = SERVER_config['protocol'] + "://" + SERVER_config['host'] + SERVER_config['api_path'] + "/auth"
     return await rciam.authorize_redirect(request, redirect_uri)
 
-@router.get('/auth', include_in_schema=False)
+@router.get('/auth',
+            include_in_schema=False,
+            response_class=RedirectResponse)
 async def authorize_rciam(request: Request):
+    login_start_url = request.cookies.get("login_start")
+    # pprint(request.cookies.get("login_start"))
+    if not login_start_url:
+        login_start_url = "/"
+
+    # Set cookies when returning a RedirectResponse
+    # https://github.com/tiangolo/fastapi/issues/2452
+    response = RedirectResponse(url=urllib.parse.unquote(login_start_url))
+    response.delete_cookie("login_start")
+
     rciam = oauth.create_client('rciam')
     try:
         token = await rciam.authorize_access_token(request)
@@ -48,13 +64,29 @@ async def authorize_rciam(request: Request):
         # Make a request to the userinfo endpoint
         user_info = await rciam.get(metadata['userinfo_endpoint'], token=token)
         user_info.raise_for_status()
-        data = user_info.json()
-        print(data)
-        return data
+        user_info_data = user_info.json()
+        # print(user_info_data)
 
-    return RedirectResponse(url='/')
+        response.set_cookie(key="userinfo",
+                            value=json.dumps(user_info_data),
+                            secure=None,
+                            domain="localhost")
 
-@router.get('/logout', include_in_schema=False)
+    return response
+
+@router.get('/logout',
+            include_in_schema=False,
+            response_class=RedirectResponse)
 async def logout(request):
+    logout_start_url = request.cookies.get("logout_start")
+    # pprint(request.cookies.get("logout_start"))
+    if not logout_start_url:
+        logout_start_url = "/"
+
+    # Set cookies when returning a RedirectResponse
+    # https://github.com/tiangolo/fastapi/issues/2452
+    response = RedirectResponse(url=urllib.parse.unquote(logout_start_url))
+    response.delete_cookie("logout_start")
+
     request.session.pop('user', None)
-    return RedirectResponse(url='/')
+    return response
