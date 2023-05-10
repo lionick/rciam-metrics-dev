@@ -65,12 +65,12 @@ async def authorize_rciam(request: Request):
         user_info = await rciam.get(metadata['userinfo_endpoint'], token=token)
         user_info.raise_for_status()
         user_info_data = user_info.json()
-        # print(user_info_data)
+        print(user_info_data)
 
         response.set_cookie(key="userinfo",
                             value=json.dumps(user_info_data),
                             secure=None,
-                            domain="localhost")
+                            domain=SERVER_config['domain'])
 
     return response
 
