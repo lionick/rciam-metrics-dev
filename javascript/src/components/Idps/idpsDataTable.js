@@ -86,7 +86,6 @@ const IdpsDataTable = ({ startDateHandler, endDateHandle, spId, dataTableId = "t
         }
         client.get("logins_per_idp/", params).
             then(response => {
-                //console.log(response);
                 response["data"].forEach(element => {
 
                     var perIdp = { "Identity Provider Name": element.name, "Identity Provider Identifier": element.entityid, "Number of Logins": element.count }

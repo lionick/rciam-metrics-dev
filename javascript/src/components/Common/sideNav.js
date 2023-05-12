@@ -10,7 +10,6 @@ const SideNav = (props) => {
   // const { t, i18n } = useTranslation();
   const [project] = useContext(projectContext);
   const [environment] = useContext(envContext);
-  console.log(project)
   return (
 
     <Sidebar expand="sm">

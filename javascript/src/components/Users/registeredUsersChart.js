@@ -79,7 +79,6 @@ const RegisteredUsersChart = (parameters) => {
                     fValues.push(temp);
                 });
 
-                console.log(fValues)
                 setRegisteredUsers(fValues)
 
                 setGlobalOptions({
@@ -109,7 +108,6 @@ const RegisteredUsersChart = (parameters) => {
     }, [selected])
 
     const handleChange = event => {
-        console.log(event.value);
         setSelected(event.value);
     };
 

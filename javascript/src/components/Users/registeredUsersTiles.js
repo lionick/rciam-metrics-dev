@@ -21,12 +21,9 @@ const RegisteredUsersTiles = (parameters) => {
                 return response;
             }));
         }).then(function (data) {
-            // Log the data to the console
             // You would do something with both sets of data here
-            console.log(data);
             var tilesArray = {}
             data.forEach(element => {
-                console.log(element)
                 if (element["config"]["params"]["interval"]) {
                     var name = element["config"]["params"]["interval"] + "_" + element["config"]["params"]["count_interval"]
                     tilesArray[[name]] = element["data"][0]["count"]
@@ -36,12 +33,10 @@ const RegisteredUsersTiles = (parameters) => {
                 }
 
             })
-            console.log(tilesArray)
             setTiles(tilesArray)
 
         }).catch(function (error) {
             // if there's an error, log it
-            console.log(error);
         });
 
 

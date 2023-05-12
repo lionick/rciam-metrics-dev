@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, Component } from "react";
+import {useState, useContext, useEffect, Component} from "react";
 import "jquery/dist/jquery.min.js";
 import "datatables.net-dt/js/dataTables.dataTables";
 import "datatables.net-dt/css/jquery.dataTables.min.css";
@@ -16,224 +16,226 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 
 var table;
-const title='';
+const title = '';
+
 class Datatable extends Component {
-   
-    componentDidUpdate(prevProps, prevState) {
-        console.log(this.props.items)
-        var dataTableId = this.props.dataTableId
-        if (prevProps.items !== this.props.items) {   
-            
-            this.setState({
-                items: this.props.items,
-                dataTableId: this.props.dataTableId
-            }) 
-        if (!$.fn.DataTable.isDataTable("#myTable")) {
-            setTimeout(function () {
-            console.log(dataTableId)
-            table = $("#" + dataTableId).DataTable({
-                pagingType: "full_numbers",
-                pageLength: 10,
-                //processing: true,
-                dom: "Bfrtip",
-                // select: {
-                //     style: "single",
-                // },
-                
+
+  componentDidUpdate(prevProps, prevState) {
+    var dataTableId = this.props.dataTableId
+    if (prevProps.items !== this.props.items) {
+
+      this.setState({
+        items: this.props.items,
+        dataTableId: this.props.dataTableId
+      })
+      if (!$.fn.DataTable.isDataTable("#myTable")) {
+        setTimeout(function () {
+          table = $("#" + dataTableId).DataTable({
+            pagingType: "full_numbers",
+            pageLength: 10,
+            //processing: true,
+            dom: "Bfrtip",
+            // select: {
+            //     style: "single",
+            // },
+
+            buttons: [
+              {
+                extend: 'collection',
+                text: 'Export',
                 buttons: [
-                    {
-                        extend: 'collection',
-                        text: 'Export',
-                        buttons: [
-                            {
-                                extend:'copy',
-                                exportOptions: {
-                                    stripHtml: false,
-                                    format: {
-                                        body: function (data, row, column, node) {
-                                            if (column === 3)
-                                                return data.replace(/<li>/g, "").replace(/<\/li>/g, ",").replace(/<ul>/g, "").replace(/<\/ul>/g, "")
-                                            else
-                                                return data.replace(/(<([^>]+)>)/ig, "");
-                                        }
-                                    }
-                                }
-                            },
-                            {
-                                extend: 'excel',
-                                title: title,
-                                exportOptions: {
-                                    stripHtml: false,
-                                    format: {
-                                        body: function (data, row, column, node) {
-                                            if (column === 3)
-                                                return data.replace("<li>","").replace(/<li>/g, ", ").replace(/<\/li>/g, "").replace(/<ul>/g, "").replace(/<\/ul>/g, "")
-                                            else
-                                                return data.replace(/(<([^>]+)>)/ig, "");
-                                        }
-                                    }
-                                }
-                            },
-                            {
-                                extend: 'csv',
-                                title: title,
-                                exportOptions: {
-                                    stripHtml: false,
-                                    format: {
-                                        body: function (data, row, column, node) {
-                                            if (column === 3)
-                                                return data.replace("<li>","").replace(/<li>/g, ", ").replace(/<\/li>/g, "").replace(/<ul>/g, "").replace(/<\/ul>/g, "")
-                                            else
-                                                return data.replace(/(<([^>]+)>)/ig, "");
-                                        }
-                                    }
-                                }
-                            },
-                            {
-                                extend: 'pdfHtml5',
-                                title: title,
-                                exportOptions: {
-                                    stripHtml: false,
-                                    format: {
-                                        body: function (data, row, column, node) {
-                                            if (column === 3)
-                                                return data.replace(/<li>/g, "• ").replace(/<\/li>/g, "\n").replace(/<ul>/g, "").replace(/<\/ul>/g, "")
-                                            else
-                                                return data.replace(/(<([^>]+)>)/ig, "");
-                                        }
-                                    }
-                                }
-                            },
-                            {
-                                extend: 'print',
-                                title: title
-                            }                       
-                        ]
-                    }
-                ],
-                "autoWidth": false,
-                fnRowCallback: function (
-                    nRow,
-                    aData,
-                    iDisplayIndex,
-                    iDisplayIndexFull
-                ) {
-                    
-                    var index = iDisplayIndexFull + 1;
-                    $("td", nRow).each(function (){
-                        var text = $(this).html()
-                        $(this).html(text.replaceAll('&lt;','<').replaceAll('&gt;', '>'));
-                    });
-                    return nRow;
-                },
-
-                // lengthMenu: [
-                //     [10, 20, 30, 50, -1],
-                //     [10, 20, 30, 50, "All"],
-                // ],
-                // columnDefs: [
-                //     {
-                //         targets: 0,
-                //         render: function (data, type, row, meta) {
-                //             return type === "export" ? meta.row + 1 : data;
-                //         },
-                //     },
-                // ],
-            });
-            }, 1000)
-        }
-        }
-    }
-    componentDidMount() {
-        
-    }
-
-    listNames = (names, key) => {
-        if (this.props.columnSep && key == this.props.columnSep && typeof names === 'string') {
-            return (
-                <ul>
-                    {  
-                        names.split("||").map((name, keyIndex) => (
-                            <li>{name}</li>
-                        ))
-                    }
-                    
-                </ul>
-            )
-        }
-        else return (
-            names
-        )
-        
-    }
-
-    showTable = (items) => {
-        if(!items || items.length==0) return (<tr><td></td><td>No data available in the table</td></tr>)
-        // try {
-            return items.map((item, index) => {       
-                
-                return (
-                    <tr className="test">
-                        <td className="text-xs font-weight-bold">{index + 1}</td>
-                        {
-                            Object.keys(item).map((key, keyIndex) => 
-                                
-                                (
-                                    
-                                    <td className="text-xs font-weight-bold">
-                                        {this.listNames(item[key], key)}
-                                    </td>
-                                )
-                            )
+                  {
+                    extend: 'copy',
+                    exportOptions: {
+                      stripHtml: false,
+                      format: {
+                        body: function (data, row, column, node) {
+                          if (column === 3)
+                            return data.replace(/<li>/g, "").replace(/<\/li>/g, ",").replace(/<ul>/g, "").replace(/<\/ul>/g, "")
+                          else
+                            return data.replace(/(<([^>]+)>)/ig, "");
                         }
-
-                    </tr>
-                );
-            });
-        // } catch (e) {
-        //     //alert(e.message);
-        // }
-        
-    };
-
-    showColumns = (items) => {
-        try {
-            return (
-                <tr>
-                    <th className="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">S/N</th>
-                    {
-                        items && items.length>0 ?
-                        Object.keys(items[0]).map((key, keyIndex) => (
-                            <th className="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">{key}</th>
-                        ))
-                        : 
-                        <th className="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">Data</th>
+                      }
                     }
-                </tr>
-            )
-        }
-        catch (e) {
-            //alert(e.message);
-        }
-    }
-    render() {
-        
-        return (
-            <div className="container py-4">
-                <div className="table-responsive p-0 pb-2">
-                    <table id={this.props.dataTableId} className="table align-items-center justify-content-center mb-0">
-                        <thead>
-                            {this.showColumns(this.props.items)}
-                        </thead>
+                  },
+                  {
+                    extend: 'excel',
+                    title: title,
+                    exportOptions: {
+                      stripHtml: false,
+                      format: {
+                        body: function (data, row, column, node) {
+                          if (column === 3)
+                            return data.replace("<li>", "").replace(/<li>/g, ", ").replace(/<\/li>/g, "").replace(/<ul>/g, "").replace(/<\/ul>/g, "")
+                          else
+                            return data.replace(/(<([^>]+)>)/ig, "");
+                        }
+                      }
+                    }
+                  },
+                  {
+                    extend: 'csv',
+                    title: title,
+                    exportOptions: {
+                      stripHtml: false,
+                      format: {
+                        body: function (data, row, column, node) {
+                          if (column === 3)
+                            return data.replace("<li>", "").replace(/<li>/g, ", ").replace(/<\/li>/g, "").replace(/<ul>/g, "").replace(/<\/ul>/g, "")
+                          else
+                            return data.replace(/(<([^>]+)>)/ig, "");
+                        }
+                      }
+                    }
+                  },
+                  {
+                    extend: 'pdfHtml5',
+                    title: title,
+                    exportOptions: {
+                      stripHtml: false,
+                      format: {
+                        body: function (data, row, column, node) {
+                          if (column === 3)
+                            return data.replace(/<li>/g, "• ").replace(/<\/li>/g, "\n").replace(/<ul>/g, "").replace(/<\/ul>/g, "")
+                          else
+                            return data.replace(/(<([^>]+)>)/ig, "");
+                        }
+                      }
+                    }
+                  },
+                  {
+                    extend: 'print',
+                    title: title
+                  }
+                ]
+              }
+            ],
+            "autoWidth": false,
+            fnRowCallback: function (
+              nRow,
+              aData,
+              iDisplayIndex,
+              iDisplayIndexFull
+            ) {
 
-                        <tbody>
-                            {this.showTable(this.props.items)}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        )
+              var index = iDisplayIndexFull + 1;
+              $("td", nRow).each(function () {
+                var text = $(this).html()
+                $(this).html(text.replaceAll('&lt;', '<').replaceAll('&gt;', '>'));
+              });
+              return nRow;
+            },
+
+            // lengthMenu: [
+            //     [10, 20, 30, 50, -1],
+            //     [10, 20, 30, 50, "All"],
+            // ],
+            // columnDefs: [
+            //     {
+            //         targets: 0,
+            //         render: function (data, type, row, meta) {
+            //             return type === "export" ? meta.row + 1 : data;
+            //         },
+            //     },
+            // ],
+          });
+        }, 1000)
+      }
     }
+  }
+
+  componentDidMount() {
+
+  }
+
+  listNames = (names, key) => {
+    if (this.props.columnSep && key == this.props.columnSep && typeof names === 'string') {
+      return (
+        <ul>
+          {
+            names.split("||").map((name, keyIndex) => (
+              <li>{name}</li>
+            ))
+          }
+
+        </ul>
+      )
+    } else return (
+      names
+    )
+
+  }
+
+  showTable = (items) => {
+    if (!items || items.length == 0) return (<tr>
+      <td></td>
+      <td>No data available in the table</td>
+    </tr>)
+    // try {
+    return items.map((item, index) => {
+
+      return (
+        <tr className="test">
+          <td className="text-xs font-weight-bold">{index + 1}</td>
+          {
+            Object.keys(item).map((key, keyIndex) =>
+
+              (
+
+                <td className="text-xs font-weight-bold">
+                  {this.listNames(item[key], key)}
+                </td>
+              )
+            )
+          }
+
+        </tr>
+      );
+    });
+    // } catch (e) {
+    //     //alert(e.message);
+    // }
+
+  };
+
+  showColumns = (items) => {
+    try {
+      return (
+        <tr>
+          <th className="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">S/N</th>
+          {
+            items && items.length > 0 ?
+              Object.keys(items[0]).map((key, keyIndex) => (
+                <th className="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">{key}</th>
+              ))
+              :
+              <th className="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">Data</th>
+          }
+        </tr>
+      )
+    } catch (e) {
+      //alert(e.message);
+    }
+  }
+
+  render() {
+
+    return (
+      <div className="container py-4">
+        <div className="table-responsive p-0 pb-2">
+          <table id={this.props.dataTableId} className="table align-items-center justify-content-center mb-0">
+            <thead>
+            {this.showColumns(this.props.items)}
+            </thead>
+
+            <tbody>
+            {this.showTable(this.props.items)}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    )
+  }
 }
 
 export default Datatable;

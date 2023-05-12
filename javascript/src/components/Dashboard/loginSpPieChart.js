@@ -31,7 +31,6 @@ const LoginSpPieChart = ({ setShowModalHandler, idpId, tenantId, uniqueLogins, g
 
     useEffect(() => {
         var params = null
-        console.log(idpId)
         params = { params: { tenant_id: tenantId, unique_logins: uniqueLogins } }
         if (idpId) {
             params["params"]["idp"] = idpId
@@ -39,14 +38,12 @@ const LoginSpPieChart = ({ setShowModalHandler, idpId, tenantId, uniqueLogins, g
 
         client.get("logins_per_sp/", params).
             then(response => {
-                console.log(response)
                 response["data"].forEach(element => {
                     spsChartArray.push([element.name, element.count])
                     spsArray.push([element.id, element.name, element.identifier])
                 })
 
                 setSps(spsChartArray)
-                console.log(spsChartArray)
             })
 
     }, [uniqueLogins])
@@ -88,8 +85,6 @@ const LoginSpPieChart = ({ setShowModalHandler, idpId, tenantId, uniqueLogins, g
                                     if (selection.length) {
                                         var identifier = spsArray[selection[0].row];
                                         //var legend = data.getValue(selection[0].row, 0);
-                                        console.log(selection[0])
-                                        console.log(identifier)
                                         // Show Modal
                                         // setShowModalHandler(true)
                                         // activeTab = $("ul.tabset_tabs li.ui-tabs-active").attr("aria-controls").replace("Tab","");

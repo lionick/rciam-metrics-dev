@@ -48,7 +48,6 @@ const SpsDataTable = ({ startDateHandler, endDateHandler, idpId, dataTableId = "
     }, [uniqueLogins])
 
     const handleChange = () => {
-        //console.log(event.value);
         spsLoginsArray = []
         if (!startDate || !endDate) {
             toast.error('You have to fill both startDate and endDate.', {

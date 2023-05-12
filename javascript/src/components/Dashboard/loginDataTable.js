@@ -36,10 +36,8 @@ const LoginDataTable = ({startDateHandler, endDateHandler, tenantId, uniqueLogin
         'unique_logins': uniqueLogins
       }
     }).then(response => {
-      console.log(response);
       var minDateFromData = ""
       response["data"].forEach(element => {
-        //var community = {"created":element.created, "name":element.community_info.name}
 
         var range_date = new Date(element.range_date);
         if (minDateFromData == "") {

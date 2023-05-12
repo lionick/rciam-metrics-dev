@@ -35,7 +35,6 @@ const RegisteredUsersDataTable =({startDateHandler, endDateHandler, tenantId}) =
             }
         }).
         then(response => {
-            console.log(response);
             var minDateFromData = ""
             response["data"].forEach(element => {     
                 //var community = {"created":element.created, "name":element.community_info.name}
@@ -56,7 +55,6 @@ const RegisteredUsersDataTable =({startDateHandler, endDateHandler, tenantId}) =
     }, [])
     
     const handleChange = event => {
-        console.log(event.value);
         usersPerCountryPerPeriodArray = []
         if(!startDate || !endDate) {
             toast.error('You have to fill both startDate and endDate.', {
@@ -84,8 +82,7 @@ const RegisteredUsersDataTable =({startDateHandler, endDateHandler, tenantId}) =
                 }
             }).
         then(response => {
-            //console.log(response);
-            response["data"].forEach(element => {     
+            response["data"].forEach(element => {
                 
                 var range_date = new Date(element.range_date);
                 
