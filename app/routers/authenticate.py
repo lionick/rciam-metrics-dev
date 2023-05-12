@@ -4,7 +4,6 @@ from fastapi import APIRouter, Depends, HTTPException, status, Security, Request
 from fastapi.responses import JSONResponse
 import json, jwt
 
-
 from app.utils import configParser
 import urllib.parse
 from starlette.responses import HTMLResponse, RedirectResponse
@@ -29,11 +28,13 @@ oauth.register(
     client_kwargs={'scope': 'openid profile email eduperson_entitlement'}
 )
 
+
 @router.get('/login', include_in_schema=False)
 async def login_endpoint(request: Request):
     rciam = oauth.create_client('rciam')
     redirect_uri = SERVER_config['protocol'] + "://" + SERVER_config['host'] + SERVER_config['api_path'] + "/auth"
     return await rciam.authorize_redirect(request, redirect_uri)
+
 
 @router.get('/auth',
             include_in_schema=False,
@@ -55,6 +56,8 @@ async def authorize_rciam(request: Request):
     except OAuthError as error:
         return HTMLResponse(f'<h1>{error.error}</h1>')
     user = token.get('userinfo')
+    pprint(token)
+
     if user:
         request.session['user'] = dict(user)
     # Fetch the userinfo data
@@ -66,6 +69,7 @@ async def authorize_rciam(request: Request):
         user_info = await rciam.get(metadata['userinfo_endpoint'], token=token)
         user_info.raise_for_status()
         user_info_data = user_info.json()
+        print(user_info_data)
         # Encode the data to jwt
         # todo: the key could become configurable and per tenant
         jwt_user = jwt.encode(payload=user_info_data,
@@ -79,24 +83,30 @@ async def authorize_rciam(request: Request):
                             secure=None,
                             domain=SERVER_config['domain'])
 
+        response.set_cookie(key="idtoken",
+                            value=token.get('id_token'),
+                            secure=None,
+                            domain=SERVER_config['domain'])
+
     return response
+
 
 @router.get('/logout',
             include_in_schema=False,
             response_class=RedirectResponse)
 async def logout(request: Request):
-    logout_start_url = request.cookies.get("logout_start")
-    # pprint(request.cookies.get("logout_start"))
-    if not logout_start_url:
-        logout_start_url = "/"
+    rciam = oauth.create_client('rciam')
+    metadata = await rciam.load_server_metadata()
+    redirect_uri = SERVER_config['protocol'] + "://" + SERVER_config['host'] + SERVER_config['api_path'] + "egi/devel"
+    logout_endpoint = metadata['end_session_endpoint'] + "?redirect=" + urllib.parse.unquote(
+        redirect_uri) + "&id_token_hint=" + request.cookies.get("idtoken")
 
-    print(logout_start_url)
+    print(logout_endpoint)
     # Set cookies when returning a RedirectResponse
     # https://github.com/tiangolo/fastapi/issues/2452
-    response = RedirectResponse(url=urllib.parse.unquote(logout_start_url))
-    response.delete_cookie("logout_start")
+    response = RedirectResponse(url=logout_endpoint)
     response.delete_cookie("userinfo")
+    response.delete_cookie("idtoken")
 
     request.session.pop('user', None)
     return response
-

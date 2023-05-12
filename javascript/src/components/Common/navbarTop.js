@@ -16,7 +16,6 @@ const NavbarTop = (props) => {
   const [userInfo, setUserInfo] = useContext(userinfoContext);
   // eslint-disable-next-line
   const {t, i18n} = useTranslation();
-  const [cookies, setCookie] = useCookies();
   const {project, environment} = useParams();
   const getConfig = key => config[project][environment][key]
 
@@ -25,8 +24,6 @@ const NavbarTop = (props) => {
   }
 
   const handleLogoutClick = () => {
-    // Set a cookie with the current location so the backend knows where to go
-    setCookie('logout_start', window.location.href, {path: '/'});
     // Redirect to the logout endpoint
     window.location.href = getConfig("config")["logout_url"]
   }
