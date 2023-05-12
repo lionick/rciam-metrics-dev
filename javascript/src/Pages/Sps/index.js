@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { client } from '../../utils/api';
 import { useNavigate } from "react-router-dom";
-import { envContext, projectContext } from "../../components/Common/context";
+import { envContext, projectContext } from "../../Context/context";
 import Container from "react-bootstrap/Container";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';

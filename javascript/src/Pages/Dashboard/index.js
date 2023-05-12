@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { client } from '../../utils/api';
 import { useNavigate } from "react-router-dom";
-import { envContext, projectContext } from "../../components/Common/context";
+import { envContext, projectContext } from "../../Context/context";
 import Form from 'react-bootstrap/Form';
 import LoginDataTable from "../../components/Dashboard/loginDataTable";
 import LoginIdpPieChart from "../../components/Dashboard/loginIdpPieChart";

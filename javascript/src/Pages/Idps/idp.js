@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import { useNavigate } from "react-router-dom";
 import { client } from '../../utils/api';
-import { envContext, projectContext } from "../../components/Common/context";
+import { envContext, projectContext } from "../../Context/context";
 import LoginLineChart from "../../components/Dashboard/loginLineChart";
 import LoginSpPieChart from "../../components/Dashboard/loginSpPieChart";
 import LoginTiles from "../../components/Dashboard/loginTiles";

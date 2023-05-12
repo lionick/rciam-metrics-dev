@@ -1,6 +1,7 @@
 import * as React from 'react'
-import { BrowserRouter as Router } from 'react-router-dom'
-import { QueryClient, QueryClientProvider } from 'react-query'
+import {BrowserRouter as Router} from 'react-router-dom'
+import {QueryClient, QueryClientProvider} from 'react-query'
+import {CookiesProvider} from 'react-cookie';
 
 function AppProviders({children}) {
 
@@ -8,9 +9,11 @@ function AppProviders({children}) {
 
   return (
     <Router>
-      <QueryClientProvider client={queryClient}>
-        {children}
-      </QueryClientProvider>
+      <CookiesProvider>
+        <QueryClientProvider client={queryClient}>
+          {children}
+        </QueryClientProvider>
+      </CookiesProvider>
     </Router>
   )
 }

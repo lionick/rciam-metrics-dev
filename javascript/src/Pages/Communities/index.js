@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { client } from '../../utils/api';
-import { envContext, projectContext } from "../../components/Common/context";
+import { envContext, projectContext } from "../../Context/context";
 import Container from "react-bootstrap/Container";
 import CommunitiesChart from "../../components/Communities/communitiesChart";
 import CommunitiesDataTable from "../../components/Communities/communitiesDataTable";

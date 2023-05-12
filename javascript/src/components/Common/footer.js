@@ -9,7 +9,7 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import parse from 'html-react-parser';
 import config from "./../../config_react.json";
-import { languageContext } from './context';
+import { languageContext } from '../../Context/context';
 import { useTranslation } from 'react-i18next';
 
 const Footer = (props) => {

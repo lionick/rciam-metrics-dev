@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import Sidebar from "react-bootstrap-sidebar-menu";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDoorOpen, faHome, faUser, faUsers, faWarehouse } from '@fortawesome/free-solid-svg-icons';
-import { envContext, projectContext } from './context';
+import { envContext, projectContext } from '../../Context/context';
 
 const SideNav = (props) => {
 

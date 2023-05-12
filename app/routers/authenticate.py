@@ -2,7 +2,8 @@ from pprint import pprint
 
 from fastapi import APIRouter, Depends, HTTPException, status, Security, Request
 from fastapi.responses import JSONResponse
-import json, base64
+import json, jwt
+
 
 from app.utils import configParser
 import urllib.parse
@@ -65,10 +66,15 @@ async def authorize_rciam(request: Request):
         user_info = await rciam.get(metadata['userinfo_endpoint'], token=token)
         user_info.raise_for_status()
         user_info_data = user_info.json()
-        print(user_info_data)
+        # Encode the data to jwt
+        # todo: the key could become configurable and per tenant
+        jwt_user = jwt.encode(payload=user_info_data,
+                              key="a custom key",
+                              algorithm="HS256")
+        print(jwt_user)
 
         response.set_cookie(key="userinfo",
-                            value=json.dumps(user_info_data),
+                            value=jwt_user,
                             secure=None,
                             domain=SERVER_config['domain'])
 
