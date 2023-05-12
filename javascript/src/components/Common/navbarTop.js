@@ -1,6 +1,4 @@
 import React, {useContext} from 'react';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faUser, faUserShield, faSignOutAlt} from '@fortawesome/free-solid-svg-icons';
 import Navbar from 'react-bootstrap/Navbar';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -10,13 +8,15 @@ import {useCookies} from 'react-cookie';
 import {useParams} from "react-router-dom";
 import config from "./../../config_react.json";
 import Login from "../../Pages/Authentication/Login"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faSignOutAlt} from "@fortawesome/free-solid-svg-icons";
 
 const NavbarTop = (props) => {
   // eslint-disable-next-line
   const [userInfo, setUserInfo] = useContext(userinfoContext);
   // eslint-disable-next-line
   const {t, i18n} = useTranslation();
-  const [cookies, setCookies] = useCookies();
+  const [cookies, setCookie] = useCookies();
   const {project, environment} = useParams();
   const getConfig = key => config[project][environment][key]
 
@@ -24,8 +24,12 @@ const NavbarTop = (props) => {
     return null
   }
 
-  console.log('userinfo', userInfo)
-  console.log('config', getConfig("config"))
+  const handleLogoutClick = () => {
+    // Set a cookie with the current location so the backend knows where to go
+    setCookie('logout_start', window.location.href, {path: '/'});
+    // Redirect to the logout endpoint
+    window.location.href = getConfig("config")["logout_url"]
+  }
 
   return (
     <Navbar className={"navbar-fixed-top"}>
@@ -46,13 +50,15 @@ const NavbarTop = (props) => {
               }
               id="dropdown-menu-align-left"
             >
-              <Dropdown.Item>
-                {userInfo.sub} <strong>(sub)</strong>
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => {
-                window.location.assign(getConfig("config")["logout_uri"]);
-              }}>
-                {t('logout')}<FontAwesomeIcon icon={faSignOutAlt}/>
+              <Dropdown.Item as="button"
+                             onClick={handleLogoutClick}>
+                <Dropdown.ItemText>
+                  {userInfo.sub}<span className="ml-1">(sub)</span>
+                </Dropdown.ItemText>
+                <div className="px-3">
+                  <span className="me-1">{t('logout')}</span>
+                  <FontAwesomeIcon icon={faSignOutAlt}/>
+                </div>
               </Dropdown.Item>
             </DropdownButton>
             : <Login/>

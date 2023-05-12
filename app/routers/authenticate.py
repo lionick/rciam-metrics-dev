@@ -84,12 +84,13 @@ async def authorize_rciam(request: Request):
 @router.get('/logout',
             include_in_schema=False,
             response_class=RedirectResponse)
-async def logout(request):
+async def logout(request: Request):
     logout_start_url = request.cookies.get("logout_start")
     # pprint(request.cookies.get("logout_start"))
     if not logout_start_url:
         logout_start_url = "/"
 
+    print(logout_start_url)
     # Set cookies when returning a RedirectResponse
     # https://github.com/tiangolo/fastapi/issues/2452
     response = RedirectResponse(url=urllib.parse.unquote(logout_start_url))
@@ -98,3 +99,4 @@ async def logout(request):
 
     request.session.pop('user', None)
     return response
+

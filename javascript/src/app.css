@@ -119,9 +119,9 @@ body .nav-header {
     margin-left: 0.2rem;
 }
 
-.drop-container-header .dropdown-menu {
-    font-size: 4rem!important;
-}
+/*.drop-container-header .dropdown-menu {*/
+/*    font-size: 4rem!important;*/
+/*}*/
   
 .drop-container-header .dropdown-menu a {
     padding:0.3rem 1rem!important;
