@@ -7,6 +7,7 @@
       "config": {
         "website_url": "https://www.egi.eu/",
         "login_url": "http://localhost:8004/login",
+        "logout_url": "http://localhost:8004/logout",
         "logo_url": "https://aai-dev.egi.eu/proxy/module.php/themeegi/resources/images/logo.svg",
         "home_page_title": "EGI Metrics (Development)",
         "contact": "faai@grnet.gr",

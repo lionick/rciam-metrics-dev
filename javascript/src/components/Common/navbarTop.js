@@ -4,7 +4,7 @@ import {faUser, faUserShield, faSignOutAlt} from '@fortawesome/free-solid-svg-ic
 import Navbar from 'react-bootstrap/Navbar';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
-import {userContext} from '../../Context/context';
+import {userinfoContext} from '../../Context/context';
 import {useTranslation} from 'react-i18next';
 import {useCookies} from 'react-cookie';
 import {useParams} from "react-router-dom";
@@ -12,62 +12,53 @@ import config from "./../../config_react.json";
 import Login from "../../Pages/Authentication/Login"
 
 const NavbarTop = (props) => {
-  //const history = useHistory();
   // eslint-disable-next-line
-
-  const user = useContext(userContext);
+  const [userInfo, setUserInfo] = useContext(userinfoContext);
   // eslint-disable-next-line
   const {t, i18n} = useTranslation();
-  //const tenant = useContext(tenantContext);
-  const [cookies] = useCookies(['metrics_logoutkey']);
+  const [cookies, setCookies] = useCookies();
   const {project, environment} = useParams();
   const getConfig = key => config[project][environment][key]
-  console.log(getConfig("config")["theme_color"] + project)
 
+  if (!getConfig("config") || !getConfig("config")["theme_color"]) {
+    return null
+  }
+
+  console.log('userinfo', userInfo)
+  console.log('config', getConfig("config"))
 
   return (
-    <React.Fragment>
-      {getConfig("config") && getConfig("config")["theme_color"] &&
-        <Navbar className={"navbar-fixed-top"}>
-          <Navbar.Collapse className="justify-content-end">
-            {user ?
-              <DropdownButton
-                variant="link"
-                alignRight
-                className='drop-menu drop-container-header'
-                title={<React.Fragment>
+    <Navbar className={"navbar-fixed-top"}>
+      <Navbar.Collapse className="justify-content-end">
+        {
+          userInfo != undefined ?
+            <DropdownButton
+              variant="link"
+              alignLeft
+              className='drop-menu drop-container-header'
+              title={
+                <>
                   <span style={getConfig("theme_color")}>
-                  {user ? user.name : 'login'}
-                    <span>{user && ' (' + user.role + ')'}</span>
-                  <FontAwesomeIcon icon={user.actions.includes('review_petition') ? faUserShield : faUser}/>
+                    {userInfo ? userInfo.name : 'login'}
+                    <span>{userInfo && ' (' + userInfo.email + ')'}</span>
                   </span>
-                </React.Fragment>}
-                id="dropdown-menu-align-right"
-              >
-                {user &&
-                  <Dropdown.Item>
-                    {user.sub} <strong>(sub)</strong>
-                  </Dropdown.Item>
-                }
-                {/* <Dropdown.Item onClick={()=>{history.push('/'+(getConfig("config")&&(getConfig("config")["name"]+'/userinfo')));}}>
-                {t('nav_link_userinfo')}
-                </Dropdown.Item> */}
-                <Dropdown.Item onClick={() => {
-                  window.location.assign(getConfig("config")["logout_uri"] + "&id_token_hint=" + cookies.federation_logoutkey);
-                }}>
-                  {t('logout')}<FontAwesomeIcon icon={faSignOutAlt}/>
-                </Dropdown.Item>
-              </DropdownButton>
-              : (
-                <React.Fragment>
-                  <Login/>
-                </React.Fragment>
-              )
-            }
-          </Navbar.Collapse>
-        </Navbar>
-      }
-    </React.Fragment>
+                </>
+              }
+              id="dropdown-menu-align-left"
+            >
+              <Dropdown.Item>
+                {userInfo.sub} <strong>(sub)</strong>
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => {
+                window.location.assign(getConfig("config")["logout_uri"]);
+              }}>
+                {t('logout')}<FontAwesomeIcon icon={faSignOutAlt}/>
+              </Dropdown.Item>
+            </DropdownButton>
+            : <Login/>
+        }
+      </Navbar.Collapse>
+    </Navbar>
   )
 }
 export default NavbarTop

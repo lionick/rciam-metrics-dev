@@ -73,6 +73,7 @@ async def authorize_rciam(request: Request):
                               algorithm="HS256")
         print(jwt_user)
 
+        # todo: For how long should this cookie be valid?
         response.set_cookie(key="userinfo",
                             value=jwt_user,
                             secure=None,
@@ -93,6 +94,7 @@ async def logout(request):
     # https://github.com/tiangolo/fastapi/issues/2452
     response = RedirectResponse(url=urllib.parse.unquote(logout_start_url))
     response.delete_cookie("logout_start")
+    response.delete_cookie("userinfo")
 
     request.session.pop('user', None)
     return response
