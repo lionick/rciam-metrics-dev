@@ -97,7 +97,7 @@ async def authorize_rciam(request: Request):
 async def logout(request: Request):
     rciam = oauth.create_client('rciam')
     metadata = await rciam.load_server_metadata()
-    redirect_uri = SERVER_config['protocol'] + "://" + SERVER_config['client'] + SERVER_config['api_path'] + "egi/devel"
+    redirect_uri = SERVER_config['protocol'] + "://" + SERVER_config['client'] + "/egi/devel"
     logout_endpoint = metadata['end_session_endpoint'] + "?post_logout_redirect_uri=" + urllib.parse.unquote(
         redirect_uri) + "&id_token_hint=" + request.cookies.get("idtoken")
 
