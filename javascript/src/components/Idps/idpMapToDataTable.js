@@ -38,7 +38,7 @@ const IdpMapToDataTable = ({startDate, endDate, tenantId, uniqueLogins, idpId}) 
                  
              });
             //  setMinDate(minDateFromData)
-             $("#table").DataTable().destroy()
+             $("#table-idp").DataTable().destroy()
              setLoginsPerCountry(loginsPerCountryArray)
         })
     }, [uniqueLogins])
@@ -50,7 +50,7 @@ const IdpMapToDataTable = ({startDate, endDate, tenantId, uniqueLogins, idpId}) 
                 <div className="box-header with-border">
                     <h3 className="box-title">Logins Per Country</h3>
                 </div>
-                <Datatable dataTableId="table" items={loginsPerCountry}></Datatable>
+                <Datatable dataTableId="table-idp" items={loginsPerCountry}></Datatable>
             </Col>
 
         </Row>

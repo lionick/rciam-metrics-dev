@@ -13,7 +13,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'react-dropdown/style.css';
 import "react-datepicker/dist/react-datepicker.css";
 
-const SpsDataTable = ({ startDateHandler, endDateHandler, idpId, dataTableId = "table", tenantId, uniqueLogins }) => {
+const SpsDataTable = ({ startDateHandler, endDateHandler, idpId, dataTableId = "table-sp", tenantId, uniqueLogins }) => {
     const [spsLogins, setSpsLogins] = useState();
     var spsLoginsArray = [];
     const [minDate, setMinDate] = useState("");

@@ -35,7 +35,6 @@ const NavbarTop = (props) => {
           userInfo != undefined ?
             <DropdownButton
               variant="link"
-              alignLeft
               className='drop-menu drop-container-header'
               title={
                 <>
@@ -50,7 +49,7 @@ const NavbarTop = (props) => {
               <Dropdown.Item as="button"
                              onClick={handleLogoutClick}>
                 <Dropdown.ItemText>
-                  {userInfo.sub}<span className="ml-1">(sub)</span>
+                  {userInfo.voperson_id}<span className="ml-1">(voPerson)</span>
                 </Dropdown.ItemText>
                 <div className="px-3">
                   <span className="me-1">{t('logout')}</span>

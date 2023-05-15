@@ -91,7 +91,7 @@ const RegisteredUsersDataTable =({startDateHandler, endDateHandler, tenantId}) =
                 
             });
             // This is essential: We must destroy the datatable in order to be refreshed with the new data
-            $("#table").DataTable().destroy()
+            $("#table-users").DataTable().destroy()
             setusersPerCountryPerPeriod(usersPerCountryPerPeriodArray)
 
           })
@@ -121,7 +121,7 @@ const RegisteredUsersDataTable =({startDateHandler, endDateHandler, tenantId}) =
                     theme="dark" />
             </Col>
             <Col lg={12}>
-                <Datatable dataTableId="table" items={usersPerCountryPerPeriod} columnSep="Registered Users per country"></Datatable>
+                <Datatable dataTableId="table-users" items={usersPerCountryPerPeriod} columnSep="Registered Users per country"></Datatable>
             </Col>
         </Row>
 

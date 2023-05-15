@@ -38,7 +38,7 @@ const SpMapToDataTable = ({startDate, endDate, tenantId, uniqueLogins, spId}) =>
                  
              });
             //  setMinDate(minDateFromData)
-             $("#table").DataTable().destroy()
+             $("#table-sp").DataTable().destroy()
              setLoginsPerCountry(loginsPerCountryArray)
         })
     }, [uniqueLogins])
@@ -50,7 +50,7 @@ const SpMapToDataTable = ({startDate, endDate, tenantId, uniqueLogins, spId}) =>
                 <div className="box-header with-border">
                     <h3 className="box-title">Logins Per Country</h3>
                 </div>
-                <Datatable dataTableId="table" items={loginsPerCountry}></Datatable>
+                <Datatable dataTableId="table-sp" items={loginsPerCountry}></Datatable>
             </Col>
 
         </Row>

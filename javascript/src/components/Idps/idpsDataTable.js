@@ -24,7 +24,7 @@ const dropdownOptions = [
     { value: 'year', label: 'Yearly Basis' },
 ]
 
-const IdpsDataTable = ({ startDateHandler, endDateHandle, spId, dataTableId = "table", tenantId, uniqueLogins }) => {
+const IdpsDataTable = ({ startDateHandler, endDateHandle, spId, dataTableId = "table-idp", tenantId, uniqueLogins }) => {
     const [idpsLogins, setIdpsLogins] = useState();
     var idpsLoginsArray = [];
     const [minDate, setMinDate] = useState("");

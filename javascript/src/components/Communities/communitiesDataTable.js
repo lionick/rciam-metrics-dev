@@ -100,7 +100,7 @@ const CommunitiesDataTable = (parameters) => {
 
       }
       // This is essential: We must destroy the datatable in order to be refreshed with the new data
-      $("#table").DataTable().destroy()
+      $("#table-community").DataTable().destroy()
       setCommunities(communitiesArray)
     })
   };
@@ -130,7 +130,7 @@ const CommunitiesDataTable = (parameters) => {
                       theme="dark"/>
     </Col>
     <Col lg={12}>
-      <Datatable dataTableId="table" items={communities} columnSep="Names"></Datatable>
+      <Datatable dataTableId="table-community" items={communities} columnSep="Names"></Datatable>
     </Col>
   </Row>
 

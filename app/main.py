@@ -1,9 +1,10 @@
-from typing import List, Optional, Union
 import os
 import sys
-from xmlrpc.client import boolean
+import time
+from pprint import pprint
 
-from fastapi import Depends, FastAPI, HTTPException, Query, Request
+from xmlrpc.client import boolean
+from fastapi import Depends, FastAPI, HTTPException, Query, Request, HTTPException, status
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 
@@ -25,10 +26,19 @@ from .routers import authenticate, communities, countries, logins, users
 sys.path.insert(0, os.path.realpath('__file__'))
 # Development Environment: dev
 environment = os.getenv('API_ENVIRONMENT')
+
+async def is_authenticated(request: Request):
+    pprint(request.cookies.get('userinfo'))
+    pprint(request.body)
+    pprint(request.headers)
+    pprint(request.client.host)
+
 # Instantiate app according to the environment configuration
-app = FastAPI() if environment == "dev" else FastAPI(root_path="/api/v1",
+app = FastAPI(dependencies=[Depends(is_authenticated)]) if environment == "dev" else FastAPI(root_path="/api/v1",
+                                                     dependencies=[Depends(is_authenticated)],
                                                      root_path_in_servers=False,
                                                      servers=[{"url": "/api/v1"}])
+
 
 if environment == "dev":
     app.add_middleware(
@@ -54,7 +64,6 @@ app.include_router(users.router)
 app.include_router(communities.router)
 app.include_router(countries.router)
 app.include_router(logins.router)
-
 
 
 @app.get("/tenant/{project_name}/{environment_name}")
@@ -92,6 +101,7 @@ async def read_environment_byname(
         """.format(environment_name)).all()
     return environment
 
+
 @app.get("/idps")
 async def read_idps(
         *,
@@ -109,6 +119,7 @@ async def read_idps(
             WHERE tenant_id='{0}' {1}
         """.format(tenant_id, idpId_subquery)).all()
     return idps
+
 
 @app.get("/sps")
 async def read_sps(

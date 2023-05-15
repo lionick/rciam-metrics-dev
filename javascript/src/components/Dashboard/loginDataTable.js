@@ -52,7 +52,7 @@ const LoginDataTable = ({startDateHandler, endDateHandler, tenantId, uniqueLogin
 
       });
       setMinDate(minDateFromData)
-      $("#table").DataTable().destroy()
+      $("#table-login").DataTable().destroy()
       setLoginsPerCountryPerPeriod(loginsPerCountryPerPeriodArray)
     })
     //
@@ -102,7 +102,7 @@ const LoginDataTable = ({startDateHandler, endDateHandler, tenantId, uniqueLogin
 
       });
       // This is essential: We must destroy the datatable in order to be refreshed with the new data
-      $("#table").DataTable().destroy()
+      $("#table-login").DataTable().destroy()
       setLoginsPerCountryPerPeriod(loginsPerCountryPerPeriodArray)
 
     })
@@ -134,7 +134,7 @@ const LoginDataTable = ({startDateHandler, endDateHandler, tenantId, uniqueLogin
                       theme="dark"/>
     </Col>
     <Col lg={12}>
-      <Datatable dataTableId="table" items={loginsPerCountryPerPeriod}
+      <Datatable dataTableId="table-login" items={loginsPerCountryPerPeriod}
                  columnSep="Number of Logins per Country"></Datatable>
     </Col>
   </Row>

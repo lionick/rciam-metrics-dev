@@ -25,7 +25,7 @@ oauth.register(
     client_id=OIDC_config['client_id'],
     client_secret=OIDC_config['client_secret'],
     server_metadata_url=OIDC_config['issuer'] + "/.well-known/openid-configuration",
-    client_kwargs={'scope': 'openid profile email eduperson_entitlement'}
+    client_kwargs={'scope': 'openid profile email voperson_id eduperson_entitlement'}
 )
 
 
@@ -97,8 +97,8 @@ async def authorize_rciam(request: Request):
 async def logout(request: Request):
     rciam = oauth.create_client('rciam')
     metadata = await rciam.load_server_metadata()
-    redirect_uri = SERVER_config['protocol'] + "://" + SERVER_config['host'] + SERVER_config['api_path'] + "egi/devel"
-    logout_endpoint = metadata['end_session_endpoint'] + "?redirect=" + urllib.parse.unquote(
+    redirect_uri = SERVER_config['protocol'] + "://" + SERVER_config['client'] + SERVER_config['api_path'] + "egi/devel"
+    logout_endpoint = metadata['end_session_endpoint'] + "?post_logout_redirect_uri=" + urllib.parse.unquote(
         redirect_uri) + "&id_token_hint=" + request.cookies.get("idtoken")
 
     print(logout_endpoint)
