@@ -101,12 +101,19 @@ async def logout(request: Request):
     logout_endpoint = metadata['end_session_endpoint'] + "?post_logout_redirect_uri=" + urllib.parse.unquote(
         redirect_uri) + "&id_token_hint=" + request.cookies.get("idtoken")
 
-    print(logout_endpoint)
+    request.session.pop('user', None)
+
     # Set cookies when returning a RedirectResponse
     # https://github.com/tiangolo/fastapi/issues/2452
     response = RedirectResponse(url=logout_endpoint)
-    response.delete_cookie("userinfo")
-    response.delete_cookie("idtoken")
+    response.set_cookie('userinfo',
+                        expires=0,
+                        max_age=0,
+                        domain=SERVER_config['domain'])
 
-    request.session.pop('user', None)
+    response.set_cookie('idtoken',
+                        expires=0,
+                        max_age=0,
+                        domain=SERVER_config['domain'])
+
     return response
