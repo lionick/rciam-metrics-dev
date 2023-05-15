@@ -1,6 +1,6 @@
 from pprint import pprint
 
-from fastapi import APIRouter, Depends, HTTPException, status, Security, Request
+from fastapi import APIRouter, Depends, HTTPException, status, Security, Request, Response
 from fastapi.responses import JSONResponse
 import json, jwt
 
@@ -94,7 +94,7 @@ async def authorize_rciam(request: Request):
 @router.get('/logout',
             include_in_schema=False,
             response_class=RedirectResponse)
-async def logout(request: Request):
+async def logout(request: Request, response: Response):
     rciam = oauth.create_client('rciam')
     metadata = await rciam.load_server_metadata()
     redirect_uri = SERVER_config['protocol'] + "://" + SERVER_config['client'] + "/egi/devel"
@@ -102,11 +102,13 @@ async def logout(request: Request):
         redirect_uri) + "&id_token_hint=" + request.cookies.get("idtoken")
 
     print(logout_endpoint)
-    # Set cookies when returning a RedirectResponse
-    # https://github.com/tiangolo/fastapi/issues/2452
-    response = RedirectResponse(url=logout_endpoint)
     response.delete_cookie("userinfo")
     response.delete_cookie("idtoken")
+    # Set cookies when returning a RedirectResponse
+    # https://github.com/tiangolo/fastapi/issues/2452
+    rresponse = RedirectResponse(url=logout_endpoint)
+    rresponse.delete_cookie("userinfo")
+    rresponse.delete_cookie("idtoken")
 
     request.session.pop('user', None)
-    return response
+    return rresponse
