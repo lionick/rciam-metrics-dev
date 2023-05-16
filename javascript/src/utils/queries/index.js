@@ -21,10 +21,9 @@ export const delUser = async({queryKey}) => {
     return response.data
 }
 
-// Authorization
-// Login
-export const loginQuery = async ({queryKey}) => {
+// Tenant
+export const getTenant = async({queryKey}) => {
     const [_, params] = queryKey
-    const response = await apiClient.get('/login')
+    const response  = await apiClient.get("tenant/" + params.projectId + "/" + params.environment)
     return response.data
 }
