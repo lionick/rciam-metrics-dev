@@ -39,7 +39,6 @@ const LoginTiles = (parameters) => {
         }).then(function (data) {
             // Log the data to the console
             // You would do something with both sets of data here
-            console.log(data);
             var tilesArray = {}
             data.forEach(element => {
 
@@ -52,7 +51,6 @@ const LoginTiles = (parameters) => {
                 }
 
             })
-            console.log(tilesArray)
             setTiles(tilesArray)
 
         }).catch(function (error) {

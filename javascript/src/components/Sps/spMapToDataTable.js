@@ -26,7 +26,6 @@ const SpMapToDataTable = ({startDate, endDate, tenantId, uniqueLogins, spId}) =>
                 }
             }).then(response => {
                  //var community = {"created":element.created, "name":element.community_info.name}
-                 console.log(response);
                  var minDateFromData = ""
                  response["data"].forEach(element => {     
                  //var range_date = new Date(element.range_date);

@@ -39,7 +39,6 @@ const IdpsDataTable = ({ startDateHandler, endDateHandle, spId, dataTableId = "t
         }
         client.get("logins_per_idp/", params).
             then(response => {
-                console.log(project);
                 //var minDateFromData = ""
                 response["data"].forEach(element => {
 
@@ -56,7 +55,6 @@ const IdpsDataTable = ({ startDateHandler, endDateHandle, spId, dataTableId = "t
     }, [uniqueLogins])
 
     const handleChange = () => {
-        //console.log(event.value);
         idpsLoginsArray = []
         if (!startDate || !endDate) {
             toast.error('You have to fill both startDate and endDate.', {

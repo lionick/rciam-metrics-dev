@@ -21,8 +21,6 @@ const LoginsMap = ({startDate, endDate, tenantId, uniqueLogins}) => {
                     'unique_logins': uniqueLogins             
                 }
             }).then(response => {
-                console.log("MAP????")
-            console.log(response["data"])
             createMap("loginsMap", response["data"])
         })
     }, [startDate, endDate, uniqueLogins])

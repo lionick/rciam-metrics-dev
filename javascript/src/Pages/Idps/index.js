@@ -31,7 +31,6 @@ const Idps = () => {
     }, [])
     const handleChange = event => {
         setUniqueLogins(event.target.checked);
-        console.log(uniqueLogins)
     }
     let navigate = useNavigate();
     const goToSpecificProvider = (id, provider) => {

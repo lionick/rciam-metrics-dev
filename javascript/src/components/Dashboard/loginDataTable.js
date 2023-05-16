@@ -60,7 +60,6 @@ const LoginDataTable = ({startDateHandler, endDateHandler, tenantId, uniqueLogin
   }, [uniqueLogins])
 
   const handleChange = event => {
-    console.log(event.value);
     loginsPerCountryPerPeriodArray = []
     if (!startDate || !endDate) {
       toast.error('You have to fill both startDate and endDate.', {
@@ -88,7 +87,6 @@ const LoginDataTable = ({startDateHandler, endDateHandler, tenantId, uniqueLogin
           'unique_logins': uniqueLogins
         }
       }).then(response => {
-      //console.log(response);
       response["data"].forEach(element => {
 
         var range_date = new Date(element.range_date);

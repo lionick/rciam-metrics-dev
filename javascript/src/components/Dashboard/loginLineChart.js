@@ -97,7 +97,6 @@ const LoginLineChart = ({type, id, tenantId, uniqueLogins}) => {
                   setZerosIfNoDate(chartWrapper.getDataTable(), google)
                 }
                 google.visualization.events.addListener(chart, "click", (e) => {
-                  console.log("CLICK");
                 });
               }
             }

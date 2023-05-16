@@ -26,7 +26,6 @@ const SpsDataTable = ({ startDateHandler, endDateHandler, idpId, dataTableId = "
         if (idpId)
             params["params"]["idp"] = idpId
         client.get("logins_per_sp/", params).then(response => {
-                console.log(response);
                 //var minDateFromData = ""
                 response["data"].forEach(element => {
                     //var community = {"created":element.created, "name":element.community_info.name}
@@ -75,7 +74,6 @@ const SpsDataTable = ({ startDateHandler, endDateHandler, idpId, dataTableId = "
             }
         }
         client.get("logins_per_sp/", params).then(response => {
-                //console.log(response);
                 response["data"].forEach(element => {
 
                     var perSp = { "Service Provider Name": element.name, "Service Provider Identifier": element.entityid, "Number of Logins": element.count }

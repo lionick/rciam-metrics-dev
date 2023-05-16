@@ -35,8 +35,6 @@ const Communities = () => {
 
   if (tenantId == undefined || tenantId == 0 || tenantId == "") return
 
-  console.log("hi")
-    console.log("tenant id 2:", tenant?.data?.[0]?.id)
   return (
     <Container>
       <Header></Header>

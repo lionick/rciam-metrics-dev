@@ -42,7 +42,6 @@ function App() {
   }, [cookies])
 
   useEffect(() => {
-    console.log('userinfo', userInfo)
     if (userInfo != undefined) {
       toast.info(`Welcome ${userInfo.name}`)
     }

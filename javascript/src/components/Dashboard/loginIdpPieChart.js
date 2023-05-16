@@ -36,13 +36,11 @@ const LoginIdpPieChart = ({setShowModalHandler, spId, tenantId, uniqueLogins, go
       params["params"]["sp"] = spId
     }
     client.get("logins_per_idp/", params).then(response => {
-      console.log(response)
       response["data"].forEach(element => {
         idpsChartArray.push([element.name, element.count])
         idpsArray.push([element.id, element.name, element.entityid])
       })
       setIdps(idpsChartArray)
-      console.log(idpsChartArray)
     })
 
   }, [uniqueLogins])
@@ -65,10 +63,6 @@ const LoginIdpPieChart = ({setShowModalHandler, spId, tenantId, uniqueLogins, go
               eventName: "ready",
               callback: ({chartWrapper, google}) => {
                 const chart = chartWrapper.getChart();
-                // if(!managed){
-                //   console.log(managed)
-                //   setZerosIfNoDate(chartWrapper.getDataTable(), google)
-                // }
 
                 google.visualization.events.addListener(chart, 'click', selectHandler);
                 google.visualization.events.addListener(chart, 'onmouseover', showTooltip);
