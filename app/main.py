@@ -28,10 +28,8 @@ sys.path.insert(0, os.path.realpath('__file__'))
 environment = os.getenv('API_ENVIRONMENT')
 
 async def is_authenticated(request: Request):
-    pprint(request.cookies.get('userinfo'))
-    pprint(request.body)
     pprint(request.headers)
-    pprint(request.client.host)
+
 
 # Instantiate app according to the environment configuration
 app = FastAPI(dependencies=[Depends(is_authenticated)]) if environment == "dev" else FastAPI(root_path="/api/v1",
