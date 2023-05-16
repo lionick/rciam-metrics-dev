@@ -58,7 +58,7 @@ const Sp = () => {
   }
 
 
-  if (tenantId === 0) return;
+  if (tenantId == undefined || tenantId == 0 || tenantId == "") return;
 
 
   return (
