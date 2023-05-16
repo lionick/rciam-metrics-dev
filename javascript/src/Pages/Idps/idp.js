@@ -2,7 +2,6 @@ import {useState, useEffect, useContext, useId} from "react";
 import {useParams} from "react-router-dom";
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import {useNavigate} from "react-router-dom";
-import {client} from '../../utils/api';
 import {envContext, projectContext} from "../../Context/context";
 import LoginLineChart from "../../components/Dashboard/loginLineChart";
 import LoginSpPieChart from "../../components/Dashboard/loginSpPieChart";
@@ -16,8 +15,10 @@ import EntityInfo from "../../components/Common/entityInfo";
 import IdpMap from "../../components/Idps/idpMap";
 import IdpMapToDataTable from "../../components/Idps/idpMapToDataTable";
 import Header from "../../components/Common/header";
-
 import 'react-tabs/style/react-tabs.css';
+import {useQuery} from "react-query";
+import {tenantKey} from "../../utils/queryKeys";
+import {getTenant} from "../../utils/queries";
 
 const Idp = () => {
   const {project, environment, id} = useParams();
@@ -26,14 +27,21 @@ const Idp = () => {
   const [projectCon, setProjectCon] = useContext(projectContext);
   const [envCon, setEnvCon] = useContext(envContext)
 
+  const tenant = useQuery(
+    [tenantKey, {projectId: project, environment: environment}],
+    getTenant, {
+      retry: 0,
+    })
+
+
   useEffect(() => {
     setProjectCon(project)
     setEnvCon(environment)
-    client.get("tenant/" + project + "/" + environment).then(response => {
-      setTenantId(response["data"][0]["id"])
-    })
+    setTenantId(tenant?.data?.[0]?.id)
+  }, [!tenant.isLoading
+           && tenant.isSuccess
+           && !tenant.isFetching])
 
-  }, [])
   const handleChange = event => {
     setUniqueLogins(event.target.checked);
   }
@@ -47,46 +55,47 @@ const Idp = () => {
     }
     navigate(path);
   }
-  if (tenantId === 0) return;
-  else
-    return (
-      <Container>
-        <Header></Header>
-        <Row>
-          <Col className="title-container" md={12}>
-            <Col md={6}><EntityInfo tenantId={tenantId} idpId={id}></EntityInfo></Col>
-            <Col md={6} className="unique-logins">
-              <Form className="unique-logins-form">
-                <Form.Check
-                  type="checkbox"
-                  id="unique-logins"
-                  label="Unique Logins"
-                  onChange={handleChange}
-                />
-              </Form>
-            </Col>
-          </Col>
-        </Row>
-        <LoginTiles tenantId={tenantId} uniqueLogins={uniqueLogins} idpId={id}></LoginTiles>
-        <LoginLineChart tenantId={tenantId} type="idp" id={id} uniqueLogins={uniqueLogins}></LoginLineChart>
-        <LoginSpPieChart tenantId={tenantId} idpId={id} uniqueLogins={uniqueLogins}
-                         goToSpecificProviderHandler={goToSpecificProvider}></LoginSpPieChart>
-        <SpsDataTable tenantId={tenantId} idpId={id} dataTableId="tableSps" uniqueLogins={uniqueLogins}></SpsDataTable>
-        <Tabs>
-          <TabList>
-            <Tab>Map</Tab>
-            <Tab>Datatable</Tab>
-          </TabList>
 
-          <TabPanel>
-            <IdpMap tenantId={tenantId} idpId={id} uniqueLogins={uniqueLogins}></IdpMap>
-          </TabPanel>
-          <TabPanel>
-            <IdpMapToDataTable tenantId={tenantId} idpId={id} uniqueLogins={uniqueLogins}></IdpMapToDataTable>
-          </TabPanel>
-        </Tabs>
-      </Container>
-    )
+  if (tenantId === 0) return;
+
+  return (
+    <Container>
+      <Header></Header>
+      <Row>
+        <Col className="title-container" md={12}>
+          <Col md={6}><EntityInfo tenantId={tenantId} idpId={id}></EntityInfo></Col>
+          <Col md={6} className="unique-logins">
+            <Form className="unique-logins-form">
+              <Form.Check
+                type="checkbox"
+                id="unique-logins"
+                label="Unique Logins"
+                onChange={handleChange}
+              />
+            </Form>
+          </Col>
+        </Col>
+      </Row>
+      <LoginTiles tenantId={tenantId} uniqueLogins={uniqueLogins} idpId={id}></LoginTiles>
+      <LoginLineChart tenantId={tenantId} type="idp" id={id} uniqueLogins={uniqueLogins}></LoginLineChart>
+      <LoginSpPieChart tenantId={tenantId} idpId={id} uniqueLogins={uniqueLogins}
+                       goToSpecificProviderHandler={goToSpecificProvider}></LoginSpPieChart>
+      <SpsDataTable tenantId={tenantId} idpId={id} dataTableId="tableSps" uniqueLogins={uniqueLogins}></SpsDataTable>
+      <Tabs>
+        <TabList>
+          <Tab>Map</Tab>
+          <Tab>Datatable</Tab>
+        </TabList>
+
+        <TabPanel>
+          <IdpMap tenantId={tenantId} idpId={id} uniqueLogins={uniqueLogins}></IdpMap>
+        </TabPanel>
+        <TabPanel>
+          <IdpMapToDataTable tenantId={tenantId} idpId={id} uniqueLogins={uniqueLogins}></IdpMapToDataTable>
+        </TabPanel>
+      </Tabs>
+    </Container>
+  )
 }
 
 export default Idp
