@@ -25,13 +25,10 @@ const Communities = () => {
       retry: 0,
     })
 
-  console.log('tenant', tenant)
-
-
   useEffect(() => {
     setProjectCon(project)
     setEnvCon(environment)
-    setTenantId(tenant?.data?.data?.id)
+    setTenantId(tenant?.data?.[0]?.id)
   }, [!tenant.isLoading
            && tenant.isSuccess
            && !tenant.isFetching])

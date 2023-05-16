@@ -9,6 +9,7 @@ import 'jquery-mapael/js/maps/world_countries_mercator.js';
 
 const RegisteredUsersMap = ({ startDate, endDate, tenantId }) => {
 
+
     useEffect(() => {
         client.get("registered_users_country",
             {
