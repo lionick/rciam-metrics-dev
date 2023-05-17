@@ -88,6 +88,11 @@ async def authorize_rciam(request: Request):
                             secure=None,
                             domain=SERVER_config['domain'])
 
+        response.set_cookie(key="atoken",
+                            value=token.get('access_token'),
+                            secure=None,
+                            domain=SERVER_config['domain'])
+
     return response
 
 
@@ -112,6 +117,11 @@ async def logout(request: Request):
                         domain=SERVER_config['domain'])
 
     response.set_cookie('idtoken',
+                        expires=0,
+                        max_age=0,
+                        domain=SERVER_config['domain'])
+
+    response.set_cookie(key="atoken",
                         expires=0,
                         max_age=0,
                         domain=SERVER_config['domain'])

@@ -4,7 +4,6 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import {userinfoContext} from '../../Context/context';
 import {useTranslation} from 'react-i18next';
-import {useCookies} from 'react-cookie';
 import {useParams} from "react-router-dom";
 import config from "./../../config_react.json";
 import Login from "../../Pages/Authentication/Login"
