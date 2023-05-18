@@ -1,23 +1,19 @@
 import {useState, useEffect} from "react";
 import {useParams} from "react-router-dom";
-import {client} from '../../utils/api';
 import "jquery/dist/jquery.min.js";
 import $ from "jquery";
 import Datatable from "../datatable";
-import dateFormat from 'dateformat';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import DatePicker from "react-datepicker";
-import Dropdown from 'react-dropdown';
-import {ToastContainer, toast} from 'react-toastify';
-import {convertDateByGroup, getWeekNumber} from "../Common/utils";
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-dropdown/style.css';
 import "react-datepicker/dist/react-datepicker.css";
 import {useQuery, useQueryClient} from "react-query";
 import {loginsPerIdpKey} from "../../utils/queryKeys";
 import {getLoginsPerIdp} from "../../utils/queries";
+import {useCookies} from "react-cookie";
 
 const IdpsDataTable = ({
                          startDateHandler,
@@ -27,6 +23,7 @@ const IdpsDataTable = ({
                          tenantId,
                          uniqueLogins
                        }) => {
+  const [cookies, setCookie] = useCookies();
   const [idpsLogins, setIdpsLogins] = useState([]);
   const [minDate, setMinDate] = useState("");
   const [btnPressed, setBtnPressed] = useState(false);
@@ -56,27 +53,6 @@ const IdpsDataTable = ({
   console.log('loginsPerIpd', loginsPerIpd)
 
   useEffect(() => {
-    // try {
-    //   const response = queryClient.fetchQuery([loginsPerIdpKey, params])
-    //   console.log('response', response)
-    //   console.log('response', response.value)
-    //   console.log('loginsPerIpd', loginsPerIpd)
-    //   !loginsPerIpd.isLoading
-    //   && !loginsPerIpd.isFetching
-    //   && loginsPerIpd.isSuccess
-    //   && loginsPerIpd?.data?.map(idp => ({
-    //     "Identity Provider Name": '<a href="/' + project + '/' + environment + '/identity-providers/' + element.id + '">' + element.name + '</a>',
-    //     "Identity Provider Identifier": element.entityid,
-    //     "Number of Logins": element.count
-    //   }))
-    //
-    //   console.log('per idp', perIdp)
-    //
-    //   setIdpsLogins(perIdp)
-    // } catch (error) {
-    //   // todo: Here we can handle any authentication or authorization errors
-    //   console.log(error)
-    // }
     params = {
       params: {
         'startDate': startDate,
@@ -102,7 +78,7 @@ const IdpsDataTable = ({
       && !loginsPerIpd.isFetching
       && loginsPerIpd.isSuccess
       && loginsPerIpd?.data?.map(idp => ({
-        "Identity Provider Name": idp.name,
+        "Identity Provider Name": cookies.userinfo == undefined ? idp.name : '<a href="/' + project + '/' + environment + '/identity-providers/' + idp.id + '">' + idp.name + '</a>',
         "Identity Provider Identifier": idp.entityid,
         "Number of Logins": idp.count
       }))
@@ -110,7 +86,9 @@ const IdpsDataTable = ({
     // This is essential: We must destroy the datatable in order to be refreshed with the new data
     $("#" + dataTableId).DataTable().destroy()
     setIdpsLogins(perIdp)
-  }, [!loginsPerIpd.isLoading && !loginsPerIpd.isFetching && loginsPerIpd.isSuccess])
+  }, [!loginsPerIpd.isLoading
+  && !loginsPerIpd.isFetching
+  && loginsPerIpd.isSuccess])
 
   if (loginsPerIpd.isLoading
     || loginsPerIpd.isFetching
@@ -127,9 +105,9 @@ const IdpsDataTable = ({
       </Col>
       <Col lg={12} className="range_inputs">
         From: <DatePicker selected={startDate} minDate={minDate} dateFormat="dd/MM/yyyy"
-                          onChange={(date: Date) => setStartDate(date)}></DatePicker>
+                          onChange={(date) => setStartDate(date)}></DatePicker>
         To: <DatePicker selected={endDate} minDate={minDate} dateFormat="dd/MM/yyyy"
-                        onChange={(date: Date) => setEndDate(date)}></DatePicker>
+                        onChange={(date) => setEndDate(date)}></DatePicker>
         {/* Probably add a tooltip here that both fields are required */}
         <Button variant="light"
                 disabled={startDate == undefined || endDate == undefined}

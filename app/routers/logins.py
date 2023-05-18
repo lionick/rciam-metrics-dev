@@ -245,6 +245,7 @@ async def read_logins_countby(
 async def read_logins_groupby(
         *,
         session: Session = Depends(get_session),
+        request: Request,
         offset: int = 0,
         group_by: str,
         idp: str = None,
@@ -254,12 +255,20 @@ async def read_logins_groupby(
 ):
     interval_subquery = ""
     if idp != None:
+        # Is the user authenticated?
+        await is_authenticated(request)
+
+        # Fetch the data
         interval_subquery = """ 
             JOIN identityprovidersmap ON sourceidpid=identityprovidersmap.id
                 AND identityprovidersmap.tenant_id=statistics_country_hashed.tenant_id
             WHERE identityprovidersmap.id = '{0}'
         """.format(idp)
     elif sp != None:
+        # Is the user authenticated?
+        await is_authenticated(request)
+
+        # Fetch the data
         interval_subquery = """ 
             JOIN serviceprovidersmap ON serviceid=serviceprovidersmap.id
                 AND serviceprovidersmap.tenant_id=statistics_country_hashed.tenant_id
