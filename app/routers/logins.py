@@ -7,6 +7,8 @@ from app.database import get_session
 
 # from ..dependencies import get_token_header
 
+# LOGINS ROUTES ARE OPEN
+
 router = APIRouter(
     tags=["logins"],
     # dependencies=[Depends(get_token_header)],

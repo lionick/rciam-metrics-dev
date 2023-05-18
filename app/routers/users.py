@@ -3,12 +3,14 @@ from sqlmodel import Field, Session, SQLModel, create_engine, select
 from typing import Union
 
 from app.database import get_session
+from app.utils.globalMethods import is_authenticated
+
 
 # from ..dependencies import get_token_header
 
 router = APIRouter(
     tags=["users"],
-    # dependencies=[Depends(get_token_header)],
+    dependencies=[Depends(is_authenticated)],
     # responses={404: {"description": "Not found"}},
 )
 

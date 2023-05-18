@@ -1,11 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Field, Session, SQLModel, create_engine, select
-from typing import List, Union
+from typing import Union
 
 from app.database import get_session
 from app.models.community_info_model import *
 from app.models.community_model import *
 from app.models.member_model import MembersReadWithCommunityInfo
+from app.utils.globalMethods import is_authenticated
+
 
 # from ..dependencies import get_token_header
 
@@ -15,20 +17,9 @@ MembersReadWithCommunityInfo.update_forward_refs(
 
 router = APIRouter(
     tags=["communities"],
-    # dependencies=[Depends(get_token_header)],
+    dependencies=[Depends(is_authenticated)]
     # responses={404: {"description": "Not found"}},
 )
-
-
-# @router.get("/communities/", response_model=List[CommunityReadwithInfo])
-# async def read_communities(
-#     *,
-#     session: Session = Depends(get_session),
-#     offset: int = 0
-# ):
-
-#     communities = session.exec(select(Community).offset(offset)).all()
-#     return communities
 
 @router.get("/members/", response_model=List[MembersReadWithCommunityInfo])
 async def read_members(
