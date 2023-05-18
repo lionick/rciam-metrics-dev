@@ -22,7 +22,7 @@ const IdpMapToDataTable = ({startDate, endDate, tenantId, uniqueLogins, idpId}) 
                     'endDate':endDate,
                     'tenant_id': tenantId,
                     'unique_logins': uniqueLogins,
-                    'idpId': idpId            
+                    'idpId': idpId
                 }
             }).then(response => {
                  //var community = {"created":element.created, "name":element.community_info.name}
@@ -44,7 +44,6 @@ const IdpMapToDataTable = ({startDate, endDate, tenantId, uniqueLogins, idpId}) 
 
     return (
         <Row className="loginsByCountry">
-            
             <Col md={12} className="box">
                 <div className="box-header with-border">
                     <h3 className="box-title">Logins Per Country</h3>

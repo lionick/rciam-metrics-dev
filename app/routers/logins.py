@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 from typing import Union
 from xmlrpc.client import boolean
 
 from app.database import get_session
+from app.utils.globalMethods import is_authenticated
 
 # from ..dependencies import get_token_header
 
@@ -19,6 +20,7 @@ router = APIRouter(
 @router.get("/logins_per_idp")
 async def read_logins_per_idp(
         *,
+        request: Request,
         session: Session = Depends(get_session),
         offset: int = 0,
         sp: str = None,
@@ -30,6 +32,10 @@ async def read_logins_per_idp(
     interval_subquery = ""
     sp_subquery_join = ""
     if sp:
+        # Is the user authenticated?
+        await is_authenticated(request)
+
+        # Fetch the data
         sp_subquery_join = """
         JOIN serviceprovidersmap ON serviceprovidersmap.id=serviceid
         AND serviceprovidersmap.tenant_id=statistics_country_hashed.tenant_id
@@ -68,6 +74,7 @@ async def read_logins_per_idp(
 async def read_logins_per_sp(
         *,
         session: Session = Depends(get_session),
+        request: Request,
         offset: int = 0,
         idp: str = None,
         startDate: str = None,
@@ -78,6 +85,10 @@ async def read_logins_per_sp(
     interval_subquery = ""
     idp_subquery_join = ""
     if idp:
+        # Is the user authenticated?
+        await is_authenticated(request)
+
+        # Fetch the data
         idp_subquery_join = """
         JOIN identityprovidersmap ON identityprovidersmap.id=sourceidpid
         AND identityprovidersmap.tenant_id=statistics_country_hashed.tenant_id

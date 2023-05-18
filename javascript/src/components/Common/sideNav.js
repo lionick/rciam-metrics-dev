@@ -4,8 +4,12 @@ import Sidebar from "react-bootstrap-sidebar-menu";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faDoorOpen, faHome, faUser, faUsers, faWarehouse} from '@fortawesome/free-solid-svg-icons';
 import {envContext, projectContext} from '../../Context/context';
+import {useCookies} from 'react-cookie';
+
 
 const SideNav = (props) => {
+  const [cookies, setCookie] = useCookies();
+
 
   // const { t, i18n } = useTranslation();
   const [project] = useContext(projectContext);
@@ -38,18 +42,23 @@ const SideNav = (props) => {
               <Sidebar.Nav.Icon><FontAwesomeIcon icon={faDoorOpen}/></Sidebar.Nav.Icon>
               <Sidebar.Nav.Title>Services</Sidebar.Nav.Title>
             </Link>
-            {/* Users */}
-            <Link className="sidebar-menu-nav-link"
-                  to={"/" + project + "/" + environment + "/users"}>
-              <Sidebar.Nav.Icon><FontAwesomeIcon icon={faUser}/></Sidebar.Nav.Icon>
-              <Sidebar.Nav.Title>Users</Sidebar.Nav.Title>
-            </Link>
-            {/* Communities */}
-            <Link className="sidebar-menu-nav-link"
-                  to={"/" + project + "/" + environment + "/communities"}>
-              <Sidebar.Nav.Icon><FontAwesomeIcon icon={faUsers}/></Sidebar.Nav.Icon>
-              <Sidebar.Nav.Title>Communities</Sidebar.Nav.Title>
-            </Link>
+            {
+              cookies.userinfo != undefined ?
+                <>
+                  {/* Users */}
+                  <Link className="sidebar-menu-nav-link"
+                        to={"/" + project + "/" + environment + "/users"}>
+                    <Sidebar.Nav.Icon><FontAwesomeIcon icon={faUser}/></Sidebar.Nav.Icon>
+                    <Sidebar.Nav.Title>Users</Sidebar.Nav.Title>
+                  </Link>
+                  {/* Communities */}
+                  <Link className="sidebar-menu-nav-link"
+                        to={"/" + project + "/" + environment + "/communities"}>
+                    <Sidebar.Nav.Icon><FontAwesomeIcon icon={faUsers}/></Sidebar.Nav.Icon>
+                    <Sidebar.Nav.Title>Communities</Sidebar.Nav.Title>
+                  </Link>
+                </> : null
+            }
           </Sidebar.Nav>
         </Sidebar.Body>
       </Sidebar.Collapse>
