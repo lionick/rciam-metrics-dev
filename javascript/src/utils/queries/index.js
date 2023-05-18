@@ -13,3 +13,10 @@ export const getLoginsPerSP = async({queryKey}) => {
     const response  = await apiClient.get("logins_per_sp", params)
     return response.data
 }
+
+export const getLoginsPerIdp = async({queryKey}) => {
+    const [_, params] = queryKey
+
+    const response  = await apiClient.get("logins_per_idp", params)
+    return response.data
+}
