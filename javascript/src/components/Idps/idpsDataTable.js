@@ -50,8 +50,6 @@ const IdpsDataTable = ({
     }
   )
 
-  console.log('loginsPerIpd', loginsPerIpd)
-
   useEffect(() => {
     params = {
       params: {

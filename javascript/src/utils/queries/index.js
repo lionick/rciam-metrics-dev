@@ -16,7 +16,19 @@ export const getLoginsPerSP = async({queryKey}) => {
 
 export const getLoginsPerIdp = async({queryKey}) => {
     const [_, params] = queryKey
-
     const response  = await apiClient.get("logins_per_idp", params)
+    return response.data
+}
+
+// Get Idps, Sps
+export const getIdps = async({queryKey}) => {
+    const [_, params] = queryKey
+    const response  = await apiClient.get("idps", params)
+    return response.data
+}
+
+export const getSps = async({queryKey}) => {
+    const [_, params] = queryKey
+    const response  = await apiClient.get("sps", params)
     return response.data
 }
