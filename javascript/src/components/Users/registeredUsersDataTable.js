@@ -106,8 +106,8 @@ const RegisteredUsersDataTable =({startDateHandler, endDateHandler, tenantId}) =
         </Col>
             <Col lg={12} className="range_inputs">
                 
-                From: <DatePicker selected={startDate} minDate={minDate} dateFormat="dd/MM/yyyy" onChange={(date:Date) => setStartDate(date)}></DatePicker>
-                To: <DatePicker selected={endDate} minDate={minDate} dateFormat="dd/MM/yyyy" onChange={(date:Date) => setEndDate(date)}></DatePicker>
+                From: <DatePicker selected={startDate} minDate={minDate} dateFormat="dd/MM/yyyy" onChange={(date) => setStartDate(date)}></DatePicker>
+                To: <DatePicker selected={endDate} minDate={minDate} dateFormat="dd/MM/yyyy" onChange={(date) => setEndDate(date)}></DatePicker>
                 <Dropdown placeholder='Filter' options={dropdownOptions} onChange={handleChange}/>
                 <ToastContainer position="top-center"
                     autoClose={5000}

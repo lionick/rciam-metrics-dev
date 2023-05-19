@@ -75,17 +75,26 @@ const Dashboard = () => {
           </Col>
         </Col>
       </Row>
-      <LoginTiles tenantId={tenantId} uniqueLogins={uniqueLogins}></LoginTiles>
-      <LoginLineChart tenantId={tenantId} uniqueLogins={uniqueLogins}></LoginLineChart>
-      <LoginIdpPieChart tenantId={tenantId} setShowModalHandler={setShowModal} uniqueLogins={uniqueLogins}
-                        goToSpecificProviderHandler={goToSpecificProvider}></LoginIdpPieChart>
-      <LoginSpPieChart tenantId={tenantId} setShowModalHandler={setShowModal} uniqueLogins={uniqueLogins}
-                       goToSpecificProviderHandler={goToSpecificProvider}></LoginSpPieChart>
-      <LoginDataTable startDateHandler={setStartDate} endDateHandler={setEndDate} tenantId={tenantId}
-                      uniqueLogins={uniqueLogins}></LoginDataTable>
-      <LoginsMap startDate={startDate} endDate={endDate} tenantId={tenantId} uniqueLogins={uniqueLogins}></LoginsMap>
-
-      {/* <IdpModal tenantId={tenantId} showModal={showModal} setShowModalHandler={setShowModal}></IdpModal> */}
+      <LoginTiles tenantId={tenantId}
+                  uniqueLogins={uniqueLogins}/>
+      <LoginLineChart tenantId={tenantId}
+                      uniqueLogins={uniqueLogins}/>
+      <LoginIdpPieChart tenantId={tenantId}
+                        setShowModalHandler={setShowModal}
+                        uniqueLogins={uniqueLogins}
+                        goToSpecificProviderHandler={goToSpecificProvider}/>
+      <LoginSpPieChart tenantId={tenantId}
+                       setShowModalHandler={setShowModal}
+                       uniqueLogins={uniqueLogins}
+                       goToSpecificProviderHandler={goToSpecificProvider}/>
+      <LoginDataTable startDateHandler={setStartDate}
+                      endDateHandler={setEndDate}
+                      tenantId={tenantId}
+                      uniqueLogins={uniqueLogins}/>
+      <LoginsMap startDate={startDate}
+                 endDate={endDate}
+                 tenantId={tenantId}
+                 uniqueLogins={uniqueLogins}/>
       <Footer></Footer>
     </Container>
   )
