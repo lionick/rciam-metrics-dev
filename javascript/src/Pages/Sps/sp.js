@@ -40,8 +40,8 @@ const Sp = () => {
     setEnvCon(environment)
     setTenantId(tenant?.data?.[0]?.id)
   }, [!tenant.isLoading
-           && tenant.isSuccess
-           && !tenant.isFetching])
+  && tenant.isSuccess
+  && !tenant.isFetching])
 
   const handleChange = event => {
     setUniqueLogins(event.target.checked);
@@ -68,7 +68,7 @@ const Sp = () => {
         <Col className="title-container" md={12}>
           <Col md={6}>
             <EntityInfoSp tenantId={tenantId}
-                                    spId={id}/>
+                          spId={id}/>
           </Col>
           <Col md={6} className="unique-logins">
             <Form className="unique-logins-form">
@@ -82,11 +82,11 @@ const Sp = () => {
           </Col>
         </Col>
       </Row>
-      <LoginTiles tenantId={tenantId} uniqueLogins={uniqueLogins} spId={id}></LoginTiles>
-      <LoginLineChart tenantId={tenantId} type="sp" id={id} uniqueLogins={uniqueLogins}></LoginLineChart>
+      <LoginTiles tenantId={tenantId} uniqueLogins={uniqueLogins} spId={id}/>
+      <LoginLineChart tenantId={tenantId} type="sp" id={id} uniqueLogins={uniqueLogins}/>
       <LoginIdpPieChart tenantId={tenantId} spId={id} uniqueLogins={uniqueLogins}
-                        goToSpecificProviderHandler={goToSpecificProvider}></LoginIdpPieChart>
-      <IdpsDataTable tenantId={tenantId} spId={id} dataTableId="tableSps" uniqueLogins={uniqueLogins}></IdpsDataTable>
+                        goToSpecificProviderHandler={goToSpecificProvider}/>
+      <IdpsDataTable tenantId={tenantId} spId={id} dataTableId="tableSps" uniqueLogins={uniqueLogins}/>
       <Tabs>
         <TabList>
           <Tab>Map</Tab>
@@ -94,10 +94,14 @@ const Sp = () => {
         </TabList>
 
         <TabPanel>
-          <SpMap tenantId={tenantId} spId={id} uniqueLogins={uniqueLogins}></SpMap>
+          <SpMap tenantId={tenantId}
+                 spId={id}
+                 uniqueLogins={uniqueLogins}/>
         </TabPanel>
         <TabPanel>
-          <SpMapToDataTable tenantId={tenantId} spId={id} uniqueLogins={uniqueLogins}></SpMapToDataTable>
+          <SpMapToDataTable tenantId={tenantId}
+                            spId={id}
+                            uniqueLogins={uniqueLogins}/>
         </TabPanel>
       </Tabs>
     </Container>

@@ -20,6 +20,12 @@ export const getLoginsPerIdp = async({queryKey}) => {
     return response.data
 }
 
+export const getLoginsPerCountry = async({queryKey}) => {
+    const [_, params] = queryKey
+    const response  = await apiClient.get("logins_per_country", params)
+    return response.data
+}
+
 // Get Idps, Sps
 export const getIdps = async({queryKey}) => {
     const [_, params] = queryKey
