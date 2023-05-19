@@ -11,7 +11,7 @@ import Form from 'react-bootstrap/Form';
 import Container from "react-bootstrap/Container";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import EntityInfo from "../../components/Common/entityInfo";
+import EntityInfoIdp from "../../components/Common/entityInfoIdp";
 import IdpMap from "../../components/Idps/idpMap";
 import IdpMapToDataTable from "../../components/Idps/idpMapToDataTable";
 import Header from "../../components/Common/header";
@@ -63,7 +63,10 @@ const Idp = () => {
       <Header></Header>
       <Row>
         <Col className="title-container" md={12}>
-          <Col md={6}><EntityInfo tenantId={tenantId} idpId={id}></EntityInfo></Col>
+          <Col md={6}>
+            <EntityInfoIdp tenantId={tenantId}
+                           idpId={id}/>
+          </Col>
           <Col md={6} className="unique-logins">
             <Form className="unique-logins-form">
               <Form.Check

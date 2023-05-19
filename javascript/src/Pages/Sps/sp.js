@@ -9,7 +9,7 @@ import Form from 'react-bootstrap/Form';
 import Container from "react-bootstrap/Container";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import EntityInfo from "../../components/Common/entityInfo";
+import EntityInfoSp from "../../components/Common/entityInfoSp";
 import LoginIdpPieChart from "../../components/Dashboard/loginIdpPieChart";
 import IdpsDataTable from "../../components/Idps/idpsDataTable";
 import SpMap from "../../components/Sps/spMap";
@@ -66,7 +66,10 @@ const Sp = () => {
       <Header></Header>
       <Row>
         <Col className="title-container" md={12}>
-          <Col md={6}><EntityInfo tenantId={tenantId} spId={id}></EntityInfo></Col>
+          <Col md={6}>
+            <EntityInfoSp tenantId={tenantId}
+                                    spId={id}/>
+          </Col>
           <Col md={6} className="unique-logins">
             <Form className="unique-logins-form">
               <Form.Check
