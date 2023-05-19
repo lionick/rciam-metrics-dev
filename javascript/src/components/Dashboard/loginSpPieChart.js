@@ -25,7 +25,6 @@ export const options = {
 
 var spsArray = [];
 
-
 const LoginSpPieChart = ({
                            setShowModalHandler,
                            idpId,
@@ -33,6 +32,9 @@ const LoginSpPieChart = ({
                            uniqueLogins,
                            goToSpecificProviderHandler
                          }) => {
+  let spsChartArray = [["Service Provider", "Logins"]];
+  const [sps, setSps] = useState(spsChartArray);
+
   const params = {
     params:
       {
@@ -41,9 +43,6 @@ const LoginSpPieChart = ({
         idp: idpId
       }
   }
-
-  let spsChartArray = [["Service Provider", "Logins"]];
-  const [sps, setSps] = useState(spsChartArray);
 
   const loginsPerSp = useQuery(
     [loginsPerSpKey, params],
@@ -64,7 +63,11 @@ const LoginSpPieChart = ({
       })
   }, [uniqueLogins])
 
-  if (loginsPerSp.isLoading || loginsPerSp.isFetching) return null
+  if (loginsPerSp.isLoading
+      || loginsPerSp.isFetching
+      || sps.length === 1) {
+    return null
+  }
 
   return (
     <Row>

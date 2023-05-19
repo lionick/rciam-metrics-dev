@@ -50,7 +50,6 @@ const IdpMapToDataTable = ({startDate, endDate, tenantId, uniqueLogins, idpId}) 
                 </div>
                 <Datatable dataTableId="table-idp" items={loginsPerCountry}></Datatable>
             </Col>
-
         </Row>
     )
 }

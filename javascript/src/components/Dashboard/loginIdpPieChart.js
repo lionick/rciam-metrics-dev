@@ -10,7 +10,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "jquery/dist/jquery.min.js";
 import $ from "jquery";
 import {convertDateByGroup, getWeekNumber} from "../Common/utils";
-
+import {useQuery} from "react-query";
+import {loginsPerIdpKey} from "../../utils/queryKeys";
+import {getLoginsPerIdp} from "../../utils/queries";
 
 export const options = {
   pieSliceText: 'value',
@@ -26,24 +28,46 @@ export const options = {
   tooltip: {isHtml: true, trigger: "selection"}
 };
 var idpsArray = [];
-const LoginIdpPieChart = ({setShowModalHandler, spId, tenantId, uniqueLogins, goToSpecificProviderHandler}) => {
-  const [idps, setIdps] = useState([["Identity Provider", "Identifier", "Logins"]]);
-  var idpsChartArray = [["Identity Provider", "Logins"]];
+const LoginIdpPieChart = ({
+                            setShowModalHandler,
+                            spId,
+                            tenantId,
+                            uniqueLogins,
+                            goToSpecificProviderHandler
+                          }) => {
+  let idpsChartArray = [["Identity Provider", "Logins"]];
+  const [idps, setIdps] = useState(idpsChartArray);
+
+  const params = {
+    params: {
+      'tenant_id': tenantId,
+      'unique_logins': uniqueLogins,
+      'sp': spId
+    }
+  }
+
+  const loginsPerIpd = useQuery(
+    [loginsPerIdpKey, params],
+    getLoginsPerIdp
+  )
 
   useEffect(() => {
-    var params = {params: {tenant_id: tenantId, 'unique_logins': uniqueLogins}}
-    if (spId) {
-      params["params"]["sp"] = spId
-    }
-    client.get("logins_per_idp/", params).then(response => {
-      response["data"].forEach(element => {
-        idpsChartArray.push([element.name, element.count])
-        idpsArray.push([element.id, element.name, element.entityid])
+    loginsPerIpd.refetch()
+      .then(response => {
+        response?.data.forEach(element => {
+          idpsChartArray.push([element.name, element.count])
+          idpsArray.push([element.id, element.name, element.identifier])
+        })
+        setIdps(idpsChartArray)
       })
-      setIdps(idpsChartArray)
-    })
 
   }, [uniqueLogins])
+
+  if (loginsPerIpd.isLoading
+    || loginsPerIpd.isFetching
+    || idps.length === 1 ) {
+    return null
+  }
 
   return (
     <Row>
@@ -85,13 +109,7 @@ const LoginIdpPieChart = ({setShowModalHandler, spId, tenantId, uniqueLogins, go
                   var selection = chart.getSelection();
                   if (selection.length) {
                     var identifier = idpsArray[selection[0].row];
-                    //var legend = data.getValue(selection[0].row, 0);
-                    // Show Modal
-                    //setShowModalHandler(true)
                     goToSpecificProviderHandler(identifier[0])
-                    // activeTab = $("ul.tabset_tabs li.ui-tabs-active").attr("aria-controls").replace("Tab","");
-                    // unique_logins = $("#myModal").is(':visible') ? $("#unique-logins-modal").is(":checked") : $("#unique-logins-"+activeTab).is(":checked");
-                    // goToSpecificProvider(identifier, legend, type, unique_logins);
                   }
                 }
               }
