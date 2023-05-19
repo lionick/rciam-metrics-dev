@@ -72,6 +72,7 @@ const IdpsDataTable = ({
   useEffect(() => {
     const perIdp = !loginsPerIpd.isLoading
       && !loginsPerIpd.isFetching
+      && loginsPerIpd.isFetched
       && loginsPerIpd.isSuccess
       && loginsPerIpd?.data?.map(idp => ({
         "Identity Provider Name": cookies.userinfo == undefined ? idp.name : '<a href="/' + project + '/' + environment + '/identity-providers/' + idp.id + '">' + idp.name + '</a>',
@@ -79,9 +80,13 @@ const IdpsDataTable = ({
         "Number of Logins": idp.count
       }))
 
-    // This is essential: We must destroy the datatable in order to be refreshed with the new data
-    $("#" + dataTableId).DataTable().destroy()
-    setIdpsLogins(perIdp)
+    if (!!loginsPerIpd?.data && !!perIdp) {
+      // console.log('destroy')
+      // console.log('perIdp', perIdp)
+      // This is essential: We must destroy the datatable in order to be refreshed with the new data
+      $("#" + dataTableId).DataTable().destroy()
+      setIdpsLogins(perIdp)
+    }
   }, [!loginsPerIpd.isLoading
   && !loginsPerIpd.isFetching
   && loginsPerIpd.isSuccess])

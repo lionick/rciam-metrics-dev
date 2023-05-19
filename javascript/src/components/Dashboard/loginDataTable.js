@@ -28,6 +28,7 @@ const LoginDataTable = ({startDateHandler, endDateHandler, tenantId, uniqueLogin
   const [minDate, setMinDate] = useState("");
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
+
   useEffect(() => {
     client.get("logins_per_country/", {
       params: {

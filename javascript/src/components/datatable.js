@@ -1,4 +1,4 @@
-import {useState, useContext, useEffect, Component} from "react";
+import {Component} from "react";
 import "jquery/dist/jquery.min.js";
 import "datatables.net-dt/js/dataTables.dataTables";
 import "datatables.net-dt/css/jquery.dataTables.min.css";
@@ -155,7 +155,7 @@ class Datatable extends Component {
         <ul>
           {
             names.split("||").map((name, keyIndex) => (
-              <li>{name}</li>
+              <li key={name.toString() + keyIndex.toString()}>{name}</li>
             ))
           }
 
@@ -174,22 +174,20 @@ class Datatable extends Component {
     </tr>)
     // try {
     return items.map((item, index) => {
-
       return (
-        <tr className="test">
+        <tr key={index.toString()}
+            className="test">
           <td className="text-xs font-weight-bold">{index + 1}</td>
           {
             Object.keys(item).map((key, keyIndex) =>
-
               (
-
-                <td className="text-xs font-weight-bold">
+                <td key={key.toString()+keyIndex.toString()}
+                    className="text-xs font-weight-bold">
                   {this.listNames(item[key], key)}
                 </td>
               )
             )
           }
-
         </tr>
       );
     });
@@ -207,7 +205,8 @@ class Datatable extends Component {
           {
             items && items.length > 0 ?
               Object.keys(items[0]).map((key, keyIndex) => (
-                <th className="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">{key}</th>
+                <th key={key.toString() + keyIndex.toString()}
+                    className="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">{key}</th>
               ))
               :
               <th className="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">Data</th>
