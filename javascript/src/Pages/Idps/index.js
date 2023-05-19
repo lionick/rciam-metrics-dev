@@ -74,13 +74,16 @@ const Idps = () => {
       </Row>
 
       <LoginTiles tenantId={tenantId}
-                  uniqueLogins={uniqueLogins}></LoginTiles>
+                  uniqueLogins={uniqueLogins}/>
       <LoginIdpPieChart tenantId={tenantId}
                         uniqueLogins={uniqueLogins}
                         setShowModalHandler={setShowModal}
-                        goToSpecificProviderHandler={goToSpecificProvider}></LoginIdpPieChart>
-      <IdpsDataTable tenantId={tenantId} uniqueLogins={uniqueLogins}></IdpsDataTable>
-      <IdpModal tenantId={tenantId} showModal={showModal} setShowModalHandler={setShowModal}></IdpModal>
+                        goToSpecificProviderHandler={goToSpecificProvider}/>
+      <IdpsDataTable tenantId={tenantId}
+                     uniqueLogins={uniqueLogins}/>
+      <IdpModal tenantId={tenantId}
+                showModal={showModal}
+                setShowModalHandler={setShowModal}/>
     </Container>)
 
 }

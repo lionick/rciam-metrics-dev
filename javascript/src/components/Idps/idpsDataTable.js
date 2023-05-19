@@ -16,8 +16,6 @@ import {getLoginsPerIdp} from "../../utils/queries";
 import {useCookies} from "react-cookie";
 
 const IdpsDataTable = ({
-                         startDateHandler,
-                         endDateHandle,
                          spId,
                          dataTableId = "table-idp",
                          tenantId,
@@ -102,10 +100,14 @@ const IdpsDataTable = ({
         </div>
       </Col>
       <Col lg={12} className="range_inputs">
-        From: <DatePicker selected={startDate} minDate={minDate} dateFormat="dd/MM/yyyy"
-                          onChange={(date) => setStartDate(date)}></DatePicker>
-        To: <DatePicker selected={endDate} minDate={minDate} dateFormat="dd/MM/yyyy"
-                        onChange={(date) => setEndDate(date)}></DatePicker>
+        From: <DatePicker selected={startDate}
+                          minDate={minDate}
+                          dateFormat="dd/MM/yyyy"
+                          onChange={(date) => setStartDate(date)}/>
+        To: <DatePicker selected={endDate}
+                        minDate={minDate}
+                        dateFormat="dd/MM/yyyy"
+                        onChange={(date) => setEndDate(date)}/>
         {/* Probably add a tooltip here that both fields are required */}
         <Button variant="light"
                 disabled={startDate == undefined || endDate == undefined}
@@ -114,7 +116,8 @@ const IdpsDataTable = ({
         </Button>
       </Col>
       <Col lg={12}>
-        <Datatable items={idpsLogins} dataTableId={dataTableId}></Datatable>
+        <Datatable items={idpsLogins}
+                   dataTableId={dataTableId}/>
       </Col>
     </Row>
   )

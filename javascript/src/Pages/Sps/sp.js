@@ -86,7 +86,10 @@ const Sp = () => {
       <LoginLineChart tenantId={tenantId} type="sp" id={id} uniqueLogins={uniqueLogins}/>
       <LoginIdpPieChart tenantId={tenantId} spId={id} uniqueLogins={uniqueLogins}
                         goToSpecificProviderHandler={goToSpecificProvider}/>
-      <IdpsDataTable tenantId={tenantId} spId={id} dataTableId="tableSps" uniqueLogins={uniqueLogins}/>
+      <IdpsDataTable tenantId={tenantId}
+                     spId={id}
+                     dataTableId="tableSps"
+                     uniqueLogins={uniqueLogins}/>
       <Tabs>
         <TabList>
           <Tab>Map</Tab>
