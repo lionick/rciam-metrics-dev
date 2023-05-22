@@ -59,7 +59,7 @@ const SpMap = ({
 
   const spMapDrawRef = useCallback(node => {
     if (loginsPerCountry?.data != undefined && node != undefined) {
-      createMap(node, loginsPerCountry?.data)
+      createMap(node, areaLegendRef, loginsPerCountry?.data)
     }
   }, [!loginsPerCountry.isLoading && loginsPerCountry.isSuccess && loginsPerCountry?.data])
 

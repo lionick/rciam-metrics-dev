@@ -77,20 +77,25 @@ async def authorize_rciam(request: Request):
                               algorithm="HS256")
         print(jwt_user)
 
-        # todo: For how long should this cookie be valid?
+        # XXX The max_age of the cookie is the same as the
+        # access token max age value we set in the
+        # configuration of the service
         response.set_cookie(key="userinfo",
                             value=jwt_user,
                             secure=None,
+                            max_age=3600,
                             domain=SERVER_config['domain'])
 
         response.set_cookie(key="idtoken",
                             value=token.get('id_token'),
                             secure=None,
+                            max_age=3600,
                             domain=SERVER_config['domain'])
 
         response.set_cookie(key="atoken",
                             value=token.get('access_token'),
                             secure=None,
+                            max_age=3600,
                             domain=SERVER_config['domain'])
 
     return response

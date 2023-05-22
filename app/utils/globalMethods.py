@@ -1,7 +1,6 @@
 from pprint import pprint
 import requests as reqs
-from fastapi import Depends, FastAPI, HTTPException, Query, Request, HTTPException, status
-from starlette.responses import HTMLResponse, RedirectResponse
+from fastapi import Depends, FastAPI, HTTPException, Query, Request, HTTPException, status, Response
 
 from app.utils import configParser
 from authlib.integrations.starlette_client import OAuth, OAuthError
@@ -19,8 +18,7 @@ oauth.register(
     client_kwargs={'scope': 'openid profile email voperson_id eduperson_entitlement'}
 )
 
-async def is_authenticated(request: Request,
-                           response_class=RedirectResponse):
+async def is_authenticated(request: Request):
     access_token = request.headers.get('x-access-token')
     try:
         rciam = oauth.create_client('rciam')
@@ -36,28 +34,6 @@ async def is_authenticated(request: Request,
         data = resp.json()
         pprint(data)
     except Exception as er:
-        # Force deleting the cookies
-        # redirect_uri = SERVER_config['protocol'] + "://" + SERVER_config['client'] + "/egi/devel"
-        # request.session.pop('user', None)
-        #
-        # # Set cookies when returning a RedirectResponse
-        # # https://github.com/tiangolo/fastapi/issues/2452
-        # response = RedirectResponse(url=redirect_uri)
-        # response.set_cookie('userinfo',
-        #                     expires=0,
-        #                     max_age=0,
-        #                     domain=SERVER_config['domain'])
-        #
-        # response.set_cookie('idtoken',
-        #                     expires=0,
-        #                     max_age=0,
-        #                     domain=SERVER_config['domain'])
-        #
-        # response.set_cookie(key="atoken",
-        #                     expires=0,
-        #                     max_age=0,
-        #                     domain=SERVER_config['domain'])
-
         raise HTTPException(status_code=401)
 
 

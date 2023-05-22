@@ -155,6 +155,7 @@ export const createAnchorElement = (title, link) => {
 }
 
 export const createMap = (node,
+                          areaLegendRef,
                           mapData,
                           tooltipLabel = "Logins",
                           legendLabel = 'Logins per country') => {
