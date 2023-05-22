@@ -1,5 +1,4 @@
 import axios from "axios"
-import {useCookies} from 'react-cookie';
 import config from "./../../config_react.json";
 const getConfig = key => config["configReact"][key]
 

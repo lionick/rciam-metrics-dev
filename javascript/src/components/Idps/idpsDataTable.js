@@ -14,6 +14,7 @@ import {useQuery, useQueryClient} from "react-query";
 import {loginsPerIdpKey} from "../../utils/queryKeys";
 import {getLoginsPerIdp} from "../../utils/queries";
 import {useCookies} from "react-cookie";
+import {createAnchorElement} from "../Common/utils";
 
 const IdpsDataTable = ({
                          spId,
@@ -75,7 +76,7 @@ const IdpsDataTable = ({
       && loginsPerIpd.isFetched
       && loginsPerIpd.isSuccess
       && loginsPerIpd?.data?.map(idp => ({
-        "Identity Provider Name": cookies.userinfo == undefined ? idp.name : '<a href="/' + project + '/' + environment + '/identity-providers/' + idp.id + '">' + idp.name + '</a>',
+        "Identity Provider Name": cookies.userinfo == undefined ? idp.name : createAnchorElement(idp.name, `/${project}/${environment}/identity-providers/${idp.id}`),
         "Identity Provider Identifier": idp.entityid,
         "Number of Logins": idp.count
       }))

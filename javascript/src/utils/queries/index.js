@@ -1,40 +1,41 @@
-import { client as apiClient } from '../api';
+import {client as apiClient} from '../api';
+import axios from "axios";
 
 // Tenant
-export const getTenant = async({queryKey}) => {
-    const [_, params] = queryKey
-    const response  = await apiClient.get("tenant/" + params.projectId + "/" + params.environment)
-    return response.data
+export const getTenant = async ({queryKey}) => {
+  const [_, params] = queryKey
+  const response = await apiClient.get("tenant/" + params.projectId + "/" + params.environment)
+  return response.data
 }
 
 // Logins
-export const getLoginsPerSP = async({queryKey}) => {
-    const [_, params] = queryKey
-    const response  = await apiClient.get("logins_per_sp", params)
-    return response.data
+export const getLoginsPerSP = async ({queryKey}) => {
+  const [_, params] = queryKey
+  const response = await apiClient.get("logins_per_sp", params)
+  return response.data
 }
 
-export const getLoginsPerIdp = async({queryKey}) => {
-    const [_, params] = queryKey
-    const response  = await apiClient.get("logins_per_idp", params)
-    return response.data
+export const getLoginsPerIdp = async ({queryKey}) => {
+  const [_, params] = queryKey
+  const response = await apiClient.get("logins_per_idp", params)
+  return response.data
 }
 
-export const getLoginsPerCountry = async({queryKey}) => {
-    const [_, params] = queryKey
-    const response  = await apiClient.get("logins_per_country", params)
-    return response.data
+export const getLoginsPerCountry = async ({queryKey}) => {
+  const [_, params] = queryKey
+  const response = await apiClient.get("logins_per_country", params)
+  return response.data
 }
 
 // Get Idps, Sps
-export const getIdps = async({queryKey}) => {
-    const [_, params] = queryKey
-    const response  = await apiClient.get("idps", params)
-    return response.data
+export const getIdps = async ({queryKey}) => {
+  const [_, params] = queryKey
+  const response = await apiClient.get("idps", params)
+  return response.data
 }
 
-export const getSps = async({queryKey}) => {
-    const [_, params] = queryKey
-    const response  = await apiClient.get("sps", params)
-    return response.data
+export const getSps = async ({queryKey}) => {
+  const [_, params] = queryKey
+  const response = await apiClient.get("sps", params)
+  return response.data
 }

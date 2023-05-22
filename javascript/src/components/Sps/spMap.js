@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useRef} from "react";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import $, {map} from "jquery";
+import {createMap} from "../Common/utils";
 import {calculateLegends, setMapConfiguration, setLegend} from "../Common/utils";
 import 'jquery-mapael';
 import 'jquery-mapael/js/maps/world_countries_mercator.js';
@@ -56,35 +56,6 @@ const SpMap = ({
       console.log(error)
     }
   }, [startDate, endDate, uniqueLogins])
-
-  const createMap = (node,
-                     mapData,
-                     tooltipLabel = "Logins",
-                     legendLabel = 'Logins per country') => {
-    let areas = {};
-    let i = 1;
-    let maxSum = 0;
-    mapData?.forEach(function (mapRow) {
-      const contentTooltip = "<span style=\"font-weight:bold;\">" + mapRow.country + "</span><br />" + tooltipLabel + " : " + mapRow.sum
-
-      areas[mapRow.countrycode] = {
-        value: mapRow.sum,
-        tooltip: {content: contentTooltip}
-      }
-      if (mapRow.sum > maxSum) {
-        maxSum = mapRow.sum;
-      }
-      i++;
-    })
-    // Calculate Legends
-    const legends = calculateLegends(maxSum)
-    $(areaLegendRef.current).show()
-    $(node).mapael({
-      map: setMapConfiguration(),
-      legend: setLegend(legendLabel, legends),
-      areas: areas
-    })
-  }
 
   const spMapDrawRef = useCallback(node => {
     if (loginsPerCountry?.data != undefined && node != undefined) {
