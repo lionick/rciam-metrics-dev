@@ -35,9 +35,11 @@ const Idp = () => {
 
 
   useEffect(() => {
-    setProjectCon(project)
-    setEnvCon(environment)
-    setTenantId(tenant?.data?.[0]?.id)
+    if (!!tenant?.data?.[0]?.id) {
+      setProjectCon(project)
+      setEnvCon(environment)
+      setTenantId(tenant?.data?.[0]?.id)
+    }
   }, [!tenant.isLoading
   && tenant.isSuccess
   && !tenant.isFetching])

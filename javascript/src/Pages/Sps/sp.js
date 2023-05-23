@@ -36,9 +36,11 @@ const Sp = () => {
 
 
   useEffect(() => {
-    setProjectCon(project)
-    setEnvCon(environment)
-    setTenantId(tenant?.data?.[0]?.id)
+    if (!!tenant?.data?.[0]?.id) {
+      setProjectCon(project)
+      setEnvCon(environment)
+      setTenantId(tenant?.data?.[0]?.id)
+    }
   }, [!tenant.isLoading
   && tenant.isSuccess
   && !tenant.isFetching])
@@ -48,12 +50,9 @@ const Sp = () => {
   }
   let navigate = useNavigate();
   const goToSpecificProvider = (id, provider) => {
-    var path = ""
-    if (provider === "sp") {
-      path = "/" + project + "/" + environment + "/services/" + id;
-    } else {
-      path = "/" + project + "/" + environment + "/identity-providers/" + id;
-    }
+    const path = provider === "sp" ?
+      `/${project}/${environment}/services/${id}` :
+      `/${project}/${environment}/identity-providers/${id}`
     navigate(path);
   }
 
@@ -82,9 +81,16 @@ const Sp = () => {
           </Col>
         </Col>
       </Row>
-      <LoginTiles tenantId={tenantId} uniqueLogins={uniqueLogins} spId={id}/>
-      <LoginLineChart tenantId={tenantId} type="sp" id={id} uniqueLogins={uniqueLogins}/>
-      <LoginIdpPieChart tenantId={tenantId} spId={id} uniqueLogins={uniqueLogins}
+      <LoginTiles tenantId={tenantId}
+                  uniqueLogins={uniqueLogins}
+                  spId={id}/>
+      <LoginLineChart tenantId={tenantId}
+                      type="sp"
+                      id={id}
+                      uniqueLogins={uniqueLogins}/>
+      <LoginIdpPieChart tenantId={tenantId}
+                        spId={id}
+                        uniqueLogins={uniqueLogins}
                         goToSpecificProviderHandler={goToSpecificProvider}/>
       <IdpsDataTable tenantId={tenantId}
                      spId={id}
