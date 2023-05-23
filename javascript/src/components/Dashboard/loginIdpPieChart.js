@@ -55,7 +55,7 @@ const LoginIdpPieChart = ({
       enabled: false
     }
   )
-  
+
   useEffect(() => {
     loginsPerIpd.refetch()
       .then(response => {
@@ -74,6 +74,8 @@ const LoginIdpPieChart = ({
     return null
   }
 
+  console.log('idps', idps)
+
   return (
     <Row>
       <Col md={12} className="box">
@@ -82,7 +84,7 @@ const LoginIdpPieChart = ({
         </div>
         <Chart
           chartType="PieChart"
-          data={idps}
+          data={idps ?? []}
           options={options}
           width={"100%"}
           height={"400px"}
@@ -92,6 +94,8 @@ const LoginIdpPieChart = ({
               eventName: "ready",
               callback: ({chartWrapper, google}) => {
                 const chart = chartWrapper.getChart();
+                console.log('hi from idp pie chart')
+
                 if (cookies.userinfo != undefined) {
                   google.visualization.events.addListener(chart, 'click', selectHandler);
                 }
@@ -116,6 +120,7 @@ const LoginIdpPieChart = ({
                   var selection = chart.getSelection();
                   if (selection.length) {
                     var identifier = idpsArray[selection[0].row];
+                    console.log('identifier', identifier)
                     goToSpecificProviderHandler(identifier[0])
                   }
                 }

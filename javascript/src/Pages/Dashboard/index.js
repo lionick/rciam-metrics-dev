@@ -39,23 +39,23 @@ const Dashboard = () => {
     setEnvCon(environment)
     setTenantId(tenant?.data?.[0]?.id)
   }, [!tenant.isLoading
-           && tenant.isSuccess
-           && !tenant.isFetching])
+  && tenant.isSuccess
+  && !tenant.isFetching])
 
   const handleChange = event => {
     setUniqueLogins(event.target.checked);
   }
   let navigate = useNavigate();
   const goToSpecificProvider = (id, provider) => {
-    if (provider == "sp") {
-      var path = "/" + project + "/" + environment + "/services/" + id;
-    } else {
-      var path = "/" + project + "/" + environment + "/identity-providers/" + id;
-    }
+    const path = provider === "sp" ?
+      `/${project}/${environment}/services/${id}` :
+      `/${project}/${environment}/identity-providers/${id}`
     navigate(path);
   }
 
   if (tenantId == undefined || tenantId == 0 || tenantId == "") return
+
+  console.log('dashboard tenant Id', tenantId)
 
   return (
     <Container>
@@ -65,11 +65,10 @@ const Dashboard = () => {
           <Col md={6}><h2>Dashboard</h2></Col>
           <Col md={6} className="unique-logins">
             <Form className="unique-logins-form">
-              <Form.Check
-                type="checkbox"
-                id="unique-logins"
-                label="Unique Logins"
-                onChange={handleChange}
+              <Form.Check type="checkbox"
+                          id="unique-logins"
+                          label="Unique Logins"
+                          onChange={handleChange}
               />
             </Form>
           </Col>

@@ -73,6 +73,8 @@ const LoginSpPieChart = ({
     return null
   }
 
+  console.log('sps', sps)
+
   return (
     <Row>
       <Col md={12} className="box">
@@ -81,7 +83,7 @@ const LoginSpPieChart = ({
         </div>
         <Chart
           chartType="PieChart"
-          data={sps}
+          data={sps ?? []}
           options={options}
           width={"100%"}
           height={"400px"}
@@ -91,6 +93,8 @@ const LoginSpPieChart = ({
               eventName: "ready",
               callback: ({chartWrapper, google}) => {
                 const chart = chartWrapper.getChart();
+
+                console.log('hi from sp pie chart')
 
                 if (cookies.userinfo != undefined) {
                   google.visualization.events.addListener(chart, 'click', selectHandler);

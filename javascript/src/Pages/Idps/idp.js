@@ -39,24 +39,23 @@ const Idp = () => {
     setEnvCon(environment)
     setTenantId(tenant?.data?.[0]?.id)
   }, [!tenant.isLoading
-           && tenant.isSuccess
-           && !tenant.isFetching])
+  && tenant.isSuccess
+  && !tenant.isFetching])
 
   const handleChange = event => {
     setUniqueLogins(event.target.checked);
   }
   let navigate = useNavigate();
   const goToSpecificProvider = (id, provider) => {
-    var path = ""
-    if (provider === "sp") {
-      path = "/" + project + "/" + environment + "/services/" + id;
-    } else {
-      path = "/" + project + "/" + environment + "/identity-providers/" + id;
-    }
+    const path = provider === "sp" ?
+      `/${project}/${environment}/services/${id}` :
+      `/${project}/${environment}/identity-providers/${id}`
     navigate(path);
   }
 
   if (tenantId == undefined || tenantId == 0 || tenantId == "") return;
+
+  console.log('dashboard tenant Id', tenantId)
 
   return (
     <Container>
@@ -79,11 +78,21 @@ const Idp = () => {
           </Col>
         </Col>
       </Row>
-      <LoginTiles tenantId={tenantId} uniqueLogins={uniqueLogins} idpId={id}></LoginTiles>
-      <LoginLineChart tenantId={tenantId} type="idp" id={id} uniqueLogins={uniqueLogins}></LoginLineChart>
-      <LoginSpPieChart tenantId={tenantId} idpId={id} uniqueLogins={uniqueLogins}
-                       goToSpecificProviderHandler={goToSpecificProvider}></LoginSpPieChart>
-      <SpsDataTable tenantId={tenantId} idpId={id} dataTableId="tableSps" uniqueLogins={uniqueLogins}></SpsDataTable>
+      <LoginTiles tenantId={tenantId}
+                  uniqueLogins={uniqueLogins}
+                  idpId={id}/>
+      <LoginLineChart tenantId={tenantId}
+                      type="idp"
+                      id={id}
+                      uniqueLogins={uniqueLogins}/>
+      <LoginSpPieChart tenantId={tenantId}
+                       idpId={id}
+                       uniqueLogins={uniqueLogins}
+                       goToSpecificProviderHandler={goToSpecificProvider}/>
+      <SpsDataTable tenantId={tenantId}
+                    idpId={id}
+                    dataTableId="tableSps"
+                    uniqueLogins={uniqueLogins}/>
       <Tabs>
         <TabList>
           <Tab>Map</Tab>
@@ -91,10 +100,14 @@ const Idp = () => {
         </TabList>
 
         <TabPanel>
-          <IdpMap tenantId={tenantId} idpId={id} uniqueLogins={uniqueLogins}></IdpMap>
+          <IdpMap tenantId={tenantId}
+                  idpId={id}
+                  uniqueLogins={uniqueLogins}/>
         </TabPanel>
         <TabPanel>
-          <IdpMapToDataTable tenantId={tenantId} idpId={id} uniqueLogins={uniqueLogins}></IdpMapToDataTable>
+          <IdpMapToDataTable tenantId={tenantId}
+                             idpId={id}
+                             uniqueLogins={uniqueLogins}/>
         </TabPanel>
       </Tabs>
     </Container>
