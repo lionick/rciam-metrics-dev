@@ -69,33 +69,31 @@ async def authorize_rciam(request: Request):
         user_info = await rciam.get(metadata['userinfo_endpoint'], token=token)
         user_info.raise_for_status()
         user_info_data = user_info.json()
-        print(user_info_data)
+        print("user info data:")
+        pprint(user_info_data)
         # Encode the data to jwt
         # todo: the key could become configurable and per tenant
         jwt_user = jwt.encode(payload=user_info_data,
                               key="a custom key",
                               algorithm="HS256")
-        print(jwt_user)
+        # print(jwt_user)
 
-        # XXX The max_age of the cookie is the same as the
-        # access token max age value we set in the
-        # configuration of the service
         response.set_cookie(key="userinfo",
                             value=jwt_user,
                             secure=None,
-                            max_age=3600,
+                            max_age=token.get('expires_in'),
                             domain=SERVER_config['domain'])
 
         response.set_cookie(key="idtoken",
                             value=token.get('id_token'),
                             secure=None,
-                            max_age=3600,
+                            max_age=token.get('expires_in'),
                             domain=SERVER_config['domain'])
 
         response.set_cookie(key="atoken",
                             value=token.get('access_token'),
                             secure=None,
-                            max_age=3600,
+                            max_age=token.get('expires_in'),
                             domain=SERVER_config['domain'])
 
     return response

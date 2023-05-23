@@ -18,6 +18,7 @@ oauth.register(
     client_kwargs={'scope': 'openid profile email voperson_id eduperson_entitlement'}
 )
 
+
 async def is_authenticated(request: Request):
     access_token = request.headers.get('x-access-token')
     try:
