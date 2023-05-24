@@ -1,18 +1,23 @@
 import os, sys
-import pwd
 from configparser import RawConfigParser
 
-CONFIG_FILE = 'config.py'
-
-def getConfig(section='source_database'):
+# TODO: We need to cache the content of the file
+def getConfig(section='source_database', config_file='config.py'):
 
   # create a parser
   parser = RawConfigParser()
-  print(sys.argv[0])
-  print(os.path.dirname(os.path.abspath(sys.argv[0])))
+
+  # XXX Since Entitlement contain both colons(:) and equal signs
+  #     we will configure the semi colon (;) as a delimiter for
+  #     the case of authorize configuration.
+  #     Which means that we have to modify the comment prefix as well
+  if config_file=="authorize.py":
+    parser = RawConfigParser(delimiters=';', comment_prefixes='%%', )
+  # print(sys.argv[0])
+  # print(os.path.dirname(os.path.abspath(sys.argv[0])))
   # read config file
   file_dir = os.path.dirname(os.path.realpath('__file__'))
-  parser.read(os.path.join(file_dir, CONFIG_FILE))
+  parser.read(os.path.join(file_dir, config_file))
 
   # get section, default to source_database
   config = {}
@@ -25,6 +30,6 @@ def getConfig(section='source_database'):
 
   else:
     raise Exception(
-      'Section {0} not found in the {1} file'.format(section, CONFIG_FILE))
+      'Section {0} not found in the {1} file'.format(section, config_file))
 
   return config

@@ -20,7 +20,7 @@ from app.models.idp_model import *
 from app.models.country_hashed_user_model import *
 
 from .routers import authenticate, communities, countries, logins, users
-from app.utils.globalMethods import is_authenticated
+from app.utils.globalMethods import AuthNZCheck
 
 sys.path.insert(0, os.path.realpath('__file__'))
 # Development Environment: dev

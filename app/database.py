@@ -1,5 +1,3 @@
-import os
-import sys
 from app.utils import configParser
 from sqlmodel import create_engine, SQLModel, Session
 

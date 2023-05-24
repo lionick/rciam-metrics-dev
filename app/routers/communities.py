@@ -6,10 +6,7 @@ from app.database import get_session
 from app.models.community_info_model import *
 from app.models.community_model import *
 from app.models.member_model import MembersReadWithCommunityInfo
-from app.utils.globalMethods import is_authenticated
-
-
-# from ..dependencies import get_token_header
+from app.utils.globalMethods import AuthNZCheck
 
 
 MembersReadWithCommunityInfo.update_forward_refs(
@@ -17,8 +14,7 @@ MembersReadWithCommunityInfo.update_forward_refs(
 
 router = APIRouter(
     tags=["communities"],
-    dependencies=[Depends(is_authenticated)]
-    # responses={404: {"description": "Not found"}},
+    dependencies=[Depends(AuthNZCheck("communities"))]
 )
 
 @router.get("/members/", response_model=List[MembersReadWithCommunityInfo])

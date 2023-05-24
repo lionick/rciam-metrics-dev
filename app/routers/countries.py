@@ -5,14 +5,14 @@ from typing import Union
 
 from app.models.country_model import *
 from app.models.country_hashed_user_model import *
-from app.utils.globalMethods import is_authenticated
+from app.utils.globalMethods import AuthNZCheck
 
 
 # from ..dependencies import get_token_header
 
 router = APIRouter(
     tags=["countries"],
-    dependencies=[Depends(is_authenticated)],
+    dependencies=[Depends(AuthNZCheck)],
     # responses={404: {"description": "Not found"}},
 )
 

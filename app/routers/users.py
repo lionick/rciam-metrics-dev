@@ -3,14 +3,14 @@ from sqlmodel import Field, Session, SQLModel, create_engine, select
 from typing import Union
 
 from app.database import get_session
-from app.utils.globalMethods import is_authenticated
+from app.utils.globalMethods import AuthNZCheck
 
 
 # from ..dependencies import get_token_header
 
 router = APIRouter(
     tags=["users"],
-    dependencies=[Depends(is_authenticated)],
+    dependencies=[Depends(AuthNZCheck("registered_users"))],
     # responses={404: {"description": "Not found"}},
 )
 
