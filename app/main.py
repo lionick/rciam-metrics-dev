@@ -21,11 +21,13 @@ from app.models.country_hashed_user_model import *
 
 from .routers import authenticate, communities, countries, logins, users
 from app.utils.globalMethods import AuthNZCheck
+from app.utils import configParser
+
 
 sys.path.insert(0, os.path.realpath('__file__'))
 # Development Environment: dev
 environment = os.getenv('API_ENVIRONMENT')
-
+SERVER_config = configParser.getConfig('server_config')
 
 # Instantiate app according to the environment configuration
 app = FastAPI() if environment == "dev" else FastAPI(root_path="/api/v1",

@@ -55,8 +55,6 @@ const Dashboard = () => {
 
   if (tenantId == undefined || tenantId == 0 || tenantId == "") return
 
-  console.log('dashboard tenant Id', tenantId)
-
   return (
     <Container>
       <Header></Header>

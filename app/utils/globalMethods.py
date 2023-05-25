@@ -1,6 +1,7 @@
 from pprint import pprint
 import requests as reqs
 from fastapi import Depends, FastAPI, HTTPException, Query, Request, HTTPException, status, Response
+import json, jwt
 
 from app.utils import configParser
 from authlib.integrations.starlette_client import OAuth, OAuthError
@@ -20,29 +21,41 @@ oauth.register(
     client_kwargs={'scope': 'openid profile email voperson_id eduperson_entitlement'}
 )
 
+
 class AuthNZCheck:
     def __init__(self, tag: str = ""):
         self.tag = tag
 
-    async def __call__(self, request: Request):
+    async def __call__(self, request: Request, response: Response):
         access_token = request.headers.get('x-access-token')
         rciam = oauth.create_client('rciam')
         metadata = await rciam.load_server_metadata()
 
         headers = {'Authorization': f'Bearer {access_token}'}
         resp = reqs.get(metadata['userinfo_endpoint'], headers=headers)
+
+        print(resp.status_code)
+
+        # Authentication
         if resp.status_code == 401:
             HTTPException(status_code=401)
         else:
-            resp.raise_for_status()
+            try:
+                resp.raise_for_status()
+            except Exception as er:
+                raise HTTPException(status_code=401)
         data = resp.json()
+
+        # Authorization
         permissions = permissionsCalculation(data)
-        # pprint(permissions)
-        # pprint(permissions['actions'][self.tag]['view'])
+        permissions_json = json.dumps(permissions).replace(" ", "").replace("\n", "")
         if bool(self.tag):
             # Currently we only care about view
             if permissions['actions'][self.tag]['view'] == False:
-                HTTPException(status_code=404)
+                HTTPException(status_code=403)
+
+        # Add the permission to a custom header field
+        response.headers["X-Permissions"] = permissions_json
 
 
 def permissionsCalculation(user_info):
@@ -97,4 +110,3 @@ def permissionsCalculation(user_info):
         'roles': roles,
         'actions': actions
     }
-

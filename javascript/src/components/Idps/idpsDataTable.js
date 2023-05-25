@@ -82,8 +82,6 @@ const IdpsDataTable = ({
       }))
 
     if (!!loginsPerIpd?.data && !!perIdp) {
-      // console.log('destroy')
-      // console.log('perIdp', perIdp)
       // This is essential: We must destroy the datatable in order to be refreshed with the new data
       $("#" + dataTableId).DataTable().destroy()
       setIdpsLogins(perIdp)

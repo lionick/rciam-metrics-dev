@@ -47,6 +47,8 @@ async def authorize_rciam(request: Request):
 
     # Set cookies when returning a RedirectResponse
     # https://github.com/tiangolo/fastapi/issues/2452
+    # Creating our own redirect url is what make it possible
+    # to add the cookie
     response = RedirectResponse(url=urllib.parse.unquote(login_start_url))
     response.delete_cookie("login_start")
 
