@@ -43,7 +43,8 @@ class AuthNZCheck:
             try:
                 resp.raise_for_status()
             except Exception as er:
-                raise HTTPException(status_code=401)
+                # TODO: Log here
+                raise HTTPException(status_code=500)
         data = resp.json()
 
         # Authorization
