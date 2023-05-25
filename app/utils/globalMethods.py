@@ -34,8 +34,6 @@ class AuthNZCheck:
         headers = {'Authorization': f'Bearer {access_token}'}
         resp = reqs.get(metadata['userinfo_endpoint'], headers=headers)
 
-        print(resp.status_code)
-
         # Authentication
         if resp.status_code == 401:
             HTTPException(status_code=401)
