@@ -33,7 +33,7 @@ async def read_logins_per_idp(
     sp_subquery_join = ""
     if sp:
         # Is the user authenticated?
-        await AuthNZCheck(request)
+        AuthNZCheck(request)
 
         # Fetch the data
         sp_subquery_join = """
@@ -86,7 +86,7 @@ async def read_logins_per_sp(
     idp_subquery_join = ""
     if idp:
         # Is the user authenticated?
-        await AuthNZCheck(request)
+        AuthNZCheck(request)
 
         # Fetch the data
         idp_subquery_join = """
@@ -256,7 +256,7 @@ async def read_logins_groupby(
     interval_subquery = ""
     if idp != None:
         # Is the user authenticated?
-        await AuthNZCheck(request)
+        AuthNZCheck(request)
 
         # Fetch the data
         interval_subquery = """ 
@@ -266,7 +266,7 @@ async def read_logins_groupby(
         """.format(idp)
     elif sp != None:
         # Is the user authenticated?
-        await AuthNZCheck(request)
+        AuthNZCheck(request)
 
         # Fetch the data
         interval_subquery = """ 

@@ -22,6 +22,7 @@ oauth.register(
 )
 
 
+# https://www.fastapitutorial.com/blog/class-based-dependency-injection/
 class AuthNZCheck:
     def __init__(self, tag: str = ""):
         self.tag = tag
