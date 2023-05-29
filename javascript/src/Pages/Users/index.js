@@ -48,11 +48,14 @@ const Users = () => {
           <Col md={6}><h2>Users</h2></Col>
         </Col>
       </Row>
-      <RegisteredUsersTiles tenantId={tenantId}></RegisteredUsersTiles>
-      <RegisteredUsersChart tenantId={tenantId}></RegisteredUsersChart>
-      <RegisteredUsersDataTable tenantId={tenantId} startDateHandler={setStartDate}
-                                endDateHandler={setEndDate}></RegisteredUsersDataTable>
-      <RegisteredUsersMap tenantId={tenantId} startDate={startDate} endDate={endDate}></RegisteredUsersMap>
+      <RegisteredUsersTiles tenantId={tenantId}/>
+      <RegisteredUsersChart tenantId={tenantId}/>
+      <RegisteredUsersDataTable tenantId={tenantId}
+                                startDateHandler={setStartDate}
+                                endDateHandler={setEndDate}/>
+      <RegisteredUsersMap tenantId={tenantId}
+                          startDate={startDate}
+                          endDate={endDate}/>
       <Footer></Footer>
     </Container>)
 

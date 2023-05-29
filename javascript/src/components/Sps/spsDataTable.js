@@ -109,7 +109,7 @@ const SpsDataTable = ({
         {/* Probably add a tooltip here that both fields are required */}
         <Button variant="light"
                 disabled={startDate == undefined || endDate == undefined}
-                onClick={() => setBtnPressed(!btnPressed)}>
+                onClick={() => setBtnPressed((prev) => !prev)}>
           Filter
         </Button>
       </Col>

@@ -1,5 +1,4 @@
-import {useState, useContext, useEffect} from "react";
-import {client} from '../../utils/api';
+import {useState, useEffect, useRef} from "react";
 import "jquery/dist/jquery.min.js";
 import $ from "jquery";
 import Datatable from "../datatable";
@@ -8,140 +7,136 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import DatePicker from "react-datepicker";
 import Dropdown from 'react-dropdown';
-import {ToastContainer, toast} from 'react-toastify';
-import {convertDateByGroup, getWeekNumber} from "../Common/utils";
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-dropdown/style.css';
 import "react-datepicker/dist/react-datepicker.css";
+import {dropdownOptions} from "../../../src/utils/helpers/methods"
+import {useQuery, useQueryClient} from "react-query";
+import {loginsPerCountryKey} from "../../utils/queryKeys";
+import {getLoginsPerCountry} from "../../utils/queries";
+import {toast} from "react-toastify";
 
-const dropdownOptions = [
+const LoginDataTable = ({
+                          startDateHandler,
+                          endDateHandler,
+                          tenantId,
+                          uniqueLogins
+                        }) => {
+  const [loginsPerCountryPerPeriod, setLoginsPerCountryPerPeriod] = useState([]);
+  const [minDate, setMinDate] = useState(null);
+  // By default we fetch by month
+  const [groupBy, setGroupBy] = useState("month");
+  const [endDate, setEndDate] = useState(null);
+  const [startDate, setStartDate] = useState(null);
 
-  {value: 'day', label: 'Daily Basis', className: 'myOptionClassName'},
-  {value: 'week', label: 'Weekly Basis', className: 'myOptionClassName'},
-  {value: 'month', label: 'Monthly Basis'},
-  {value: 'year', label: 'Yearly Basis'},
-]
+  const queryClient = useQueryClient();
 
-const LoginDataTable = ({startDateHandler, endDateHandler, tenantId, uniqueLogins}) => {
-  const [loginsPerCountryPerPeriod, setLoginsPerCountryPerPeriod] = useState();
-  var loginsPerCountryPerPeriodArray = [];
-  const [minDate, setMinDate] = useState("");
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
+
+  let params = {
+    params: {
+      'group_by': groupBy,
+      'startDate': startDate,
+      'endDate': endDate,
+      'tenant_id': tenantId,
+      'unique_logins': uniqueLogins
+    }
+  }
+
+  const loginsPerCountry = useQuery(
+    [loginsPerCountryKey, params],
+    getLoginsPerCountry,
+    {
+      enabled: false,
+      refetchOnWindowFocus: false
+    }
+  )
 
   useEffect(() => {
-    client.get("logins_per_country/", {
+    params = {
       params: {
-        'group_by': 'month',
+        'group_by': groupBy,
+        'startDate': startDate,
+        'endDate': endDate,
         'tenant_id': tenantId,
         'unique_logins': uniqueLogins
       }
-    }).then(response => {
-      // need to be initialized every time gets here
-      loginsPerCountryPerPeriodArray = []
-      
-      var minDateFromData = ""
-      response["data"].forEach(element => {
+    }
 
-        var range_date = new Date(element.range_date);
-        if (minDateFromData == "") {
-          minDateFromData = new Date(element.min_date)
-        }
-        var perPeriod = {
-          "Date": dateFormat(range_date, "yyyy-mm"),
-          "Number of Logins": element.count,
-          "Number of Logins per Country": element.countries
-        }
-        loginsPerCountryPerPeriodArray.push(perPeriod)
+    try {
+      const response = queryClient.refetchQueries([loginsPerCountryKey, params])
+    } catch (error) {
+      // todo: Here we can handle any authentication or authorization errors
+      console.log(error)
+    }
 
-      });
-      setMinDate(minDateFromData)
+  }, [uniqueLogins, groupBy])
+
+  // Construct the data required for the datatable
+  useEffect(() => {
+    const loginsPerCountryPerPeriodArray = !loginsPerCountry.isLoading
+      && !loginsPerCountry.isFetching
+      && loginsPerCountry.isSuccess
+      && loginsPerCountry?.data?.map(element => ({
+        "Date": !!element?.range_date ? dateFormat(new Date(element?.range_date), "yyyy-mm") : null,
+        "Number of Logins": element?.count,
+        "Number of Logins per Country": element?.countries
+      }))
+
+    if (!!loginsPerCountry?.data && !!loginsPerCountryPerPeriodArray) {
+      // We only keep the first date because the backend returns the dataset sorted and we only care about the
+      // min of the min dates.
+      setMinDate(!!loginsPerCountry?.data?.[0]?.min_date ? new Date(loginsPerCountry?.data?.[0]?.min_date) : null)
       $("#table-login").DataTable().destroy()
       setLoginsPerCountryPerPeriod(loginsPerCountryPerPeriodArray)
-    })
-    //
+    }
+  }, [!loginsPerCountry.isLoading
+  && !loginsPerCountry.isFetching
+  && loginsPerCountry.isSuccess])
 
-  }, [uniqueLogins])
-
-  const handleChange = event => {
-    loginsPerCountryPerPeriodArray = []
+  const handleChange = (event) => {
     if (!startDate || !endDate) {
-      toast.error('You have to fill both startDate and endDate.', {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
+      toast.warning("You have to fill both startDate and endDate")
       return
     }
-    // set parent states
+    setGroupBy(event.value)
     startDateHandler(startDate)
     endDateHandler(endDate)
-    client.get("logins_per_country/",
-      {
-        params: {
-          'group_by': event.value,
-          'startDate': startDate,
-          'endDate': endDate,
-          'tenant_id': tenantId,
-          'unique_logins': uniqueLogins
-        }
-      }).then(response => {
-      response["data"].forEach(element => {
-
-        var range_date = new Date(element.range_date);
-
-        var perPeriod = {
-          "Date": convertDateByGroup(range_date, event.value),
-          "Number of Logins": element.count,
-          "Number of Logins per Country": element.countries
-        }
-        loginsPerCountryPerPeriodArray.push(perPeriod)
-
-      });
-      // This is essential: We must destroy the datatable in order to be refreshed with the new data
-      $("#table-login").DataTable().destroy()
-      setLoginsPerCountryPerPeriod(loginsPerCountryPerPeriodArray)
-
-    })
-    //setSelected(event.value);
   };
 
-  return <Row className="box">
-    <Col md={12}>
-      <div className="box-header with-border">
-        <h3 className="box-title">Number of logins</h3>
-      </div>
-    </Col>
-    <Col lg={12} className="range_inputs">
+  if (loginsPerCountry.isLoading
+    || loginsPerCountry.isFetching
+    || minDate == undefined
+    || loginsPerCountryPerPeriod.length === 0) {
+    return null
+  }
 
-      From: <DatePicker selected={startDate} minDate={minDate} dateFormat="dd/MM/yyyy"
-                        onChange={(date) => setStartDate(date)}></DatePicker>
-      To: <DatePicker selected={endDate} minDate={minDate} dateFormat="dd/MM/yyyy"
-                      onChange={(date) => setEndDate(date)}></DatePicker>
-      <Dropdown placeholder='Filter' options={dropdownOptions} onChange={handleChange}/>
-      <ToastContainer position="top-center"
-                      autoClose={5000}
-                      hideProgressBar={false}
-                      newestOnTop={false}
-                      closeOnClick
-                      rtl={false}
-                      pauseOnFocusLoss
-                      draggable
-                      pauseOnHover
-                      theme="dark"/>
-    </Col>
-    <Col lg={12}>
-      <Datatable dataTableId="table-login" items={loginsPerCountryPerPeriod}
-                 columnSep="Number of Logins per Country"></Datatable>
-    </Col>
-  </Row>
-
-
+  return (
+    <Row className="box">
+      <Col md={12}>
+        <div className="box-header with-border">
+          <h3 className="box-title">Number of logins</h3>
+        </div>
+      </Col>
+      <Col lg={12} className="range_inputs">
+        From: <DatePicker selected={startDate}
+                          minDate={minDate ?? null}
+                          dateFormat="dd/MM/yyyy"
+                          onChange={(date) => setStartDate(date)}/>
+        To: <DatePicker selected={endDate}
+                        minDate={minDate ?? null}
+                        dateFormat="dd/MM/yyyy"
+                        onChange={(date) => setEndDate(date)}/>
+        <Dropdown placeholder='Filter'
+                  options={dropdownOptions}
+                  onChange={handleChange}/>
+      </Col>
+      <Col lg={12}>
+        <Datatable dataTableId="table-login"
+                   items={loginsPerCountryPerPeriod}
+                   columnSep="Number of Logins per Country"/>
+      </Col>
+    </Row>
+  )
 }
 
 export default LoginDataTable

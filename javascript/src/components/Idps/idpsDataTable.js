@@ -15,6 +15,7 @@ import {loginsPerIdpKey} from "../../utils/queryKeys";
 import {getLoginsPerIdp} from "../../utils/queries";
 import {useCookies} from "react-cookie";
 import {createAnchorElement} from "../Common/utils";
+import {toast} from "react-toastify";
 
 const IdpsDataTable = ({
                          spId,
@@ -90,6 +91,14 @@ const IdpsDataTable = ({
   && !loginsPerIpd.isFetching
   && loginsPerIpd.isSuccess])
 
+  const handleBtnclick = () => {
+    if (!startDate || !endDate) {
+      toast.warning("You have to fill both startDate and endDate")
+      return
+    }
+    setBtnPressed(!btnPressed)
+  }
+
   if (loginsPerIpd.isLoading
     || loginsPerIpd.isFetching
     || idpsLogins.length === 0) {
@@ -115,7 +124,7 @@ const IdpsDataTable = ({
         {/* Probably add a tooltip here that both fields are required */}
         <Button variant="light"
                 disabled={startDate == undefined || endDate == undefined}
-                onClick={() => setBtnPressed(!btnPressed)}>
+                onClick={handleBtnclick}>
           Filter
         </Button>
       </Col>
