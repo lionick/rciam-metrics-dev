@@ -4,3 +4,9 @@ export const dropdownOptions = [
   {value: 'month', label: 'Monthly Basis'},
   {value: 'year', label: 'Yearly Basis'},
 ]
+
+export const StatusEnumeration = {
+  'A': 'Active',
+  'GP': 'Grace Period',
+  'O': 'Other'
+}

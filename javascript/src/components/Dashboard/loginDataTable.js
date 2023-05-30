@@ -10,7 +10,7 @@ import Dropdown from 'react-dropdown';
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-dropdown/style.css';
 import "react-datepicker/dist/react-datepicker.css";
-import {dropdownOptions} from "../../../src/utils/helpers/methods"
+import {dropdownOptions} from "../../../src/utils/helpers/enums"
 import {useQuery, useQueryClient} from "react-query";
 import {loginsPerCountryKey} from "../../utils/queryKeys";
 import {getLoginsPerCountry} from "../../utils/queries";

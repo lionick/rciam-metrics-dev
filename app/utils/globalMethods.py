@@ -68,7 +68,7 @@ def permissionsCalculation(user_info):
     }
 
     for ent, role in entitlements_config.items():
-        if ent in user_entitlements:
+        if user_entitlements is not None and ent in user_entitlements:
             # The role might be a csv list. So we need to
             # explode and act accordingly
             for item_role in role.split(","):

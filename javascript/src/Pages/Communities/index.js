@@ -43,9 +43,9 @@ const Communities = () => {
           <Col md={6}><h2>Communities</h2></Col>
         </Col>
       </Row>
-      <CommunitiesChart tenantId={tenantId}></CommunitiesChart>
-      <CommunitiesDataTable tenantId={tenantId}></CommunitiesDataTable>
-      <CommunitiesMap tenantId={tenantId}></CommunitiesMap>
+      <CommunitiesChart tenantId={tenantId}/>
+      <CommunitiesDataTable tenantId={tenantId}/>
+      <CommunitiesMap tenantId={tenantId}/>
       <Footer></Footer>
     </Container>)
 
