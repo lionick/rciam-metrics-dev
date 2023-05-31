@@ -3,6 +3,11 @@ import {sortByNamePropertyCallback} from "../Common/utils"
 import ReactTooltip from "react-tooltip";
 
 const ListCommunities = ({communities}) => {
+  useEffect(() => {
+    ReactTooltip.rebuild();
+  }, [communities])
+
+
   if (communities.isLoading
     || communities.isFetching
     || communities?.data == undefined) {
@@ -19,10 +24,6 @@ const ListCommunities = ({communities}) => {
       })
     )
   })
-
-  useEffect(() => {
-    ReactTooltip.rebuild();
-  }, [communities])
 
   if (communitiesList?.length == 0) {
     return null
