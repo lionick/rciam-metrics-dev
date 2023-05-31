@@ -1,24 +1,50 @@
 import {useEffect} from "react";
+import {sortByNamePropertyCallback} from "../Common/utils"
 import ReactTooltip from "react-tooltip";
 
-const ListCommunities = ({communitiesList}) => {
+const ListCommunities = ({communities}) => {
+  if (communities.isLoading
+    || communities.isFetching
+    || communities?.data == undefined) {
+    return null
+  }
+
+  const communitiesList = communities?.data.map((element) => {
+    // Construct the list with COUs
+    const createdDate = element?.created_date?.split(", ")
+    const description = element?.description?.split("|| ")
+    return element?.names?.split("|| ").map((name, index) => ({
+        name: name,
+        description: `${description[index]}<br/>Created Date: ${createdDate[index]}`
+      })
+    )
+  })
+
   useEffect(() => {
     ReactTooltip.rebuild();
-  }, [communitiesList])
+  }, [communities])
 
-  return <ul className="couNames columnList">
-    {
-      communitiesList.map((cou, index) => (
-        <li key={index}
-            className="rowList"
-            data-tip={cou['description']}>
-          {cou["name"]}
-        </li>
-      ))
-    }
-    <ReactTooltip className={"tooltip"} multiline={true} place="top"/>
-  </ul>
+  if (communitiesList?.length == 0) {
+    return null
+  }
 
+  return (
+    <ul className="couNames columnList">
+      {
+        communitiesList
+          .flat()
+          .sort(sortByNamePropertyCallback)
+          .map((cou, index) => (
+            <li key={index}
+                className="rowList"
+                data-tip={cou['description']}>
+              {cou["name"]}
+            </li>
+          ))
+      }
+      <ReactTooltip className={"tooltip"} multiline={true} place="top"/>
+    </ul>
+  )
 }
 
 export default ListCommunities

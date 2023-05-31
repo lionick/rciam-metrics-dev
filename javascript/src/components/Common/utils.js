@@ -188,22 +188,35 @@ export const createMap = (node,
 export const axisChartOptions = (title, hAxisFormat, hAxisTicks) => {
   return (
     {
-        title: title,
-        backgroundColor: {fill: 'transparent'},
-        vAxis: {
-          format: '0'
-        },
-        hAxis: {
-          format: hAxisFormat,
-          maxTextLines: 2,
-          textStyle: {fontSize: 15},
-          ticks: hAxisTicks,
-        },
-        tooltip: {isHtml: true},
-        width: '100%',
-        height: '350',
-        bar: {groupWidth: "92%"},
-        legend: {position: "none"},
-      }
+      title: title,
+      backgroundColor: {fill: 'transparent'},
+      vAxis: {
+        format: '0'
+      },
+      hAxis: {
+        format: hAxisFormat,
+        maxTextLines: 2,
+        textStyle: {fontSize: 15},
+        ticks: hAxisTicks,
+      },
+      tooltip: {isHtml: true},
+      width: '100%',
+      height: '350',
+      bar: {groupWidth: "92%"},
+      legend: {position: "none"},
+    }
   )
+}
+
+export function sortByNamePropertyCallback(a, b) {
+  const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+  const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+  if (nameA < nameB) {
+    return -1;
+  }
+  if (nameA > nameB) {
+    return 1;
+  }
+  // names must be equal
+  return 0;
 }
