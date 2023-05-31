@@ -71,7 +71,8 @@ const CommunitiesDataTable = ({tenantId}) => {
         "Names": element?.names
       }))
 
-    if (!!communitiesGroupBy?.data && !!communitiesGroupByPerPeriodArray) {
+    if (!!communitiesGroupBy?.data
+        && !!communitiesGroupByPerPeriodArray) {
       // We only keep the first date because the backend returns the dataset sorted and we only care about the
       // min of the min dates.
       setMinDate(!!communitiesGroupBy?.data?.[0]?.min_date ? new Date(communitiesGroupBy?.data?.[0]?.min_date) : null)

@@ -1,4 +1,5 @@
 import $ from "jquery";
+import {options} from "../../utils/helpers/enums";
 
 export function convertDateByGroup(jsDate, groupBy) {
   var month = (jsDate.getMonth() + 1).toString()
@@ -182,4 +183,27 @@ export const createMap = (node,
     legend: setLegend(legendLabel, legends),
     areas: areas
   })
+}
+
+export const axisChartOptions = (title, hAxisFormat, hAxisTicks) => {
+  return (
+    {
+        title: title,
+        backgroundColor: {fill: 'transparent'},
+        vAxis: {
+          format: '0'
+        },
+        hAxis: {
+          format: hAxisFormat,
+          maxTextLines: 2,
+          textStyle: {fontSize: 15},
+          ticks: hAxisTicks,
+        },
+        tooltip: {isHtml: true},
+        width: '100%',
+        height: '350',
+        bar: {groupWidth: "92%"},
+        legend: {position: "none"},
+      }
+  )
 }

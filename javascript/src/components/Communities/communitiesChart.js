@@ -1,45 +1,23 @@
 import {useState, useEffect} from "react";
 import {Chart} from "react-google-charts";
 import {client} from '../../utils/api';
-import {convertDateByGroup, getWeekNumber} from "../Common/utils";
+import {
+  convertDateByGroup,
+  getWeekNumber,
+  axisChartOptions
+} from "../Common/utils";
 import Select from 'react-select';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ListCommunities from "./listCommunities";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import {
+  options,
+  options_group_by
+} from "../../utils/helpers/enums";
 
-export const options = {
-  year: {
-    title: "Number of Communities created per year",
-    hAxis: {
-      format: 'Y',
-    },
-    count_interval: 12
-  },
-  month: {
-    title: "Number of Communities created per month",
-    hAxis: {
-      format: 'YYYY-MM',
-    },
-    count_interval: 24
-  },
-  week: {
-    title: "Number of Communities created per week",
-    hAxis: {
-      format: '',
-    },
-    count_interval: 24
-  }
-};
-
-const options_group_by = [
-  {value: 'year', label: 'yearly'},
-  {value: 'month', label: 'monthly'},
-  {value: 'week', label: 'weekly'},
-];
-
-const CommunitiesChart = (parameters) => {
+const CommunitiesChart = ({tenantId}) => {
 
   const [selected, setSelected] = useState(options_group_by[0].value);
   const [communities, setCommunities] = useState();
@@ -52,13 +30,14 @@ const CommunitiesChart = (parameters) => {
     var hticksArray = [];
     var fValues = [['Date', 'Count', {'type': 'string', 'role': 'tooltip', 'p': {'html': true}}]]
     // Get data for the last 4 years
+
     client.get("communities_groupby/" + selected,
       {
         params:
           {
             'interval': selected,
             'count_interval': options[selected]["count_interval"],
-            'tenant_id': parameters["tenantId"],
+            'tenant_id': tenantId,
           }
       }).then(response => {
       response["data"].forEach(element => {
@@ -112,72 +91,50 @@ const CommunitiesChart = (parameters) => {
       setCommunities(fValues)
 
 
-      setGlobalOptions({
-        title: options[selected]["title"],
-        backgroundColor: {fill: 'transparent'},
-        vAxis: {
-          //title: vAxisTitle[tab],
-          format: '0'
-        },
-        hAxis: {
-          format: options[selected]["hAxis"]["format"],
-          maxTextLines: 2,
-          //title: registeredUsersBy[type], // globar variable found at index.ctp
-          textStyle: {fontSize: 15},
-          ticks: hticksArray,
-          //showTextEvery: 5
-        },
-        tooltip: {isHtml: true},
-        width: '100%',
-        height: '350',
-        bar: {groupWidth: "92%"},
-        legend: {position: "none"},
-      })
+      setGlobalOptions(axisChartOptions(options[selected]["title"],
+                                        options[selected]["hAxis"]["format"],
+                                        hticksArray))
 
     })
 
-  }, [selected, parameters])
+  }, [selected, tenantId])
 
 
-  const handleChange = event => {
-    setSelected(event.value);
-  };
+  return (
+    <Row className="box">
+      <Col md={12}>
+        <div className="box-header with-border">
+          <h3 className="box-title">Number of Communities created
+          </h3>
+        </div>
+      </Col>
+      <Col lg={9}>
+        <Chart chartType="ColumnChart"
+               width="100%"
+               height="400px"
+               data={communities}
+               options={global_options}/>
 
+      </Col>
+      <Col lg={3}>
+        <Container>
+          <Row>
+            <Col lg={4}>Select Period:</Col>
+            <Col lg={8}>
+              <Select options={options_group_by}
+                      onChange={(event) => setSelected(event?.value)}/>
+            </Col>
 
-  return <Row className="box">
-    <Col md={12}>
-      <div className="box-header with-border">
-        <h3 className="box-title">Number of Communities created
-        </h3>
-      </div>
-    </Col>
-    <Col lg={9}>
-      <Chart chartType="ColumnChart" width="100%" height="400px" data={communities}
-             options={global_options}/>
-
-    </Col>
-    <Col lg={3}>
-      <Container>
-        <Row>
-
-          <Col lg={4}>Select Period:</Col>
-          <Col lg={8}>
-            <Select options={options_group_by} onChange={handleChange}></Select>
-          </Col>
-
-        </Row>
-        <Row>
-          <Col lg={12}>
-
-            <ListCommunities communitiesList={communitiesList}></ListCommunities>
-
-          </Col>
-        </Row>
-      </Container>
-    </Col>
-  </Row>
-
-
+          </Row>
+          <Row>
+            <Col lg={12}>
+              <ListCommunities communitiesList={communitiesList}/>
+            </Col>
+          </Row>
+        </Container>
+      </Col>
+    </Row>
+  )
 }
 
 export default CommunitiesChart
