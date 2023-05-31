@@ -1,8 +1,7 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "react-query";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { convertDateByGroup, getWeekNumber } from "../Common/utils";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { loginsCountByKey } from "../../utils/queryKeys";
 import { getLoginsCountBy } from "../../utils/queries";
@@ -131,7 +130,6 @@ const LoginTiles = (parameters) => {
         const { data } = response;
         
         data.forEach(element => {
-          console.log(data)
           if (params["interval"]) {
             var name = params["interval"] + "_" + params["count_interval"]
             tilesArray[[name]] = (element["count"] != null) ? element["count"] : 0

@@ -6,38 +6,46 @@ import {client} from '../../utils/api';
 import $ from "jquery";
 import 'jquery-mapael';
 import 'jquery-mapael/js/maps/world_countries_mercator.js';
-import {calculateLegends, setMapConfiguration, setLegend} from "../Common/utils";
+import {
+  calculateLegends,
+  setMapConfiguration,
+  setLegend
+} from "../Common/utils";
+import {StatusEnumeration} from "../../utils/helpers/enums";
+import {useQuery, useQueryClient} from "react-query";
+import {communitiesKey} from "../../utils/queryKeys";
+import {getCommunities} from "../../utils/queries";
 
-
-const CommunitiesMap = (parameters) => {
-  const StatusEnumeration = {
-    'A': 'Active',
-    'GP': 'Grace Period',
-    'O': 'Other'
-  }
-
+const CommunitiesMap = ({tenantId}) => {
   const [communities, setCommunities] = useState();
   const [selectedCommunity, setSelectedCommunity] = useState({});
   const [membersStatus, setMembersStatus] = useState([]);
   var communitiesArray = [];
-  useEffect(() => {
-    client.get("communities",
-      {
-        params:
-          {
-            'tenant_id': parameters["tenantId"],
-          }
-      }).then(response => {
 
-      response["data"].forEach(element => {
-        var community = {label: element.name, value: element.id}
-        communitiesArray.push(community)
-      })
+  const queryClient = useQueryClient();
 
-      setCommunities(communitiesArray)
+  let params = {
+    params: {
+      'tenant_id': tenantId
+    }
+  }
 
-    })
-  }, [])
+  const communitiesQuery = useQuery(
+    [communitiesKey, params],
+    getCommunities
+  )
+
+  console.log('communitiesQuery', communitiesQuery)
+
+
+  const communitiesOptionsList = !communitiesQuery.isLoading
+    && communitiesQuery.isSuccess
+    && communitiesQuery.isFetched
+    && communitiesQuery.data.length > 0
+    && communitiesQuery?.data?.map((elem) => ({
+      label: elem.name,
+      value: elem.id
+    }))
 
   const createMap = (id, mapData, tooltipLabel = "Users", legendLabel = 'Users per country') => {
     var areas = {};
@@ -102,7 +110,7 @@ const CommunitiesMap = (parameters) => {
     client.get("communities/" + community_id,
       {
         params: {
-          'tenant_id': parameters["tenantId"],
+          'tenant_id': tenantId,
         }
       }).then(result => {
         var community = result["data"]
@@ -113,13 +121,17 @@ const CommunitiesMap = (parameters) => {
       {
         params:
           {
-            'tenant_id': parameters["tenantId"],
+            'tenant_id': tenantId,
           }
       }).then(result => {
       var stats = result["data"]
       createMap("communitiesMap", stats)
     })
   }
+
+
+  console.log('communitiesOptionsList', communitiesOptionsList)
+
   return (
     <Row className="box communityMembersByCountry">
       <Col lg={12}>
@@ -128,11 +140,15 @@ const CommunitiesMap = (parameters) => {
         </div>
       </Col>
       <Col lg={3}>
-        <Select className="select-community" options={communities} onChange={handleChange}></Select>
-        {selectedCommunity["name"] && <Row><Col lg={12}>{selectedCommunity["name"]}</Col>
-          <Col lg={12}>{selectedCommunity["description"]}</Col>
-        </Row>
-
+        <Select className="select-community"
+                options={communitiesOptionsList}
+                onChange={handleChange}/>
+        {
+          selectedCommunity["name"] &&
+          <Row>
+            <Col lg={12}>{selectedCommunity["name"]}</Col>
+            <Col lg={12}>{selectedCommunity["description"]}</Col>
+          </Row>
         }
       </Col>
       <Col lg={7}>
@@ -142,23 +158,23 @@ const CommunitiesMap = (parameters) => {
         </div>
       </Col>
 
-      {membersStatus["A"] !== undefined && <Col lg={2}>
-        <Row>
-          <Col lg={12}>ACTIVE USERS</Col>
-          <Col lg={12}>{membersStatus["A"]}</Col>
-        </Row>
-        <Row>
-          <Col lg={12}>GRACE PERIOD USERS</Col>
-          <Col lg={12}>{membersStatus["GP"]}</Col>
-        </Row>
-        <Row>
-          <Col lg={12}>OTHER STATUS USERS</Col>
-          <Col lg={12}>{membersStatus["O"]}</Col>
-        </Row>
-      </Col>
+      {
+        membersStatus["A"] !== undefined &&
+        <Col lg={2}>
+          <Row>
+            <Col lg={12}>ACTIVE USERS</Col>
+            <Col lg={12}>{membersStatus["A"]}</Col>
+          </Row>
+          <Row>
+            <Col lg={12}>GRACE PERIOD USERS</Col>
+            <Col lg={12}>{membersStatus["GP"]}</Col>
+          </Row>
+          <Row>
+            <Col lg={12}>OTHER STATUS USERS</Col>
+            <Col lg={12}>{membersStatus["O"]}</Col>
+          </Row>
+        </Col>
       }
-
-
     </Row>
   )
 }
