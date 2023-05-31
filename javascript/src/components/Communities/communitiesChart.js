@@ -121,7 +121,6 @@ const CommunitiesChart = ({tenantId}) => {
                height="400px"
                data={communities}
                options={global_options}/>
-
       </Col>
       <Col lg={3}>
         <Container>
@@ -131,7 +130,6 @@ const CommunitiesChart = ({tenantId}) => {
               <Select options={options_group_by}
                       onChange={(event) => setSelected(event?.value)}/>
             </Col>
-
           </Row>
           <Row>
             <Col lg={12}>
