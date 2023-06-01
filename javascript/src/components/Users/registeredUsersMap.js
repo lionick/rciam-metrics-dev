@@ -1,15 +1,18 @@
-import { useCallback, useRef, useEffect } from "react";
-import { createMap } from "../Common/utils";
-import { useQuery, useQueryClient } from "react-query";
+import {useRef, useEffect} from "react";
+import {useQuery, useQueryClient} from "react-query";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import 'jquery-mapael';
 import 'jquery-mapael/js/maps/world_countries_mercator.js';
-import { getRegisteredUsersByCountry } from "../../utils/queries";
-import { registeredUsersByCountryKey } from "../../utils/queryKeys";
+import {getRegisteredUsersByCountry} from "../../utils/queries";
+import {registeredUsersByCountryKey} from "../../utils/queryKeys";
+import EarthMap from "../Common/earthMap";
 
-const RegisteredUsersMap = ({ startDate, endDate, tenantId }) => {
-  const areaLegendRef = useRef(null)
+const RegisteredUsersMap = ({
+                              startDate,
+                              endDate,
+                              tenantId
+                            }) => {
   const queryClient = useQueryClient();
 
   let params = {
@@ -36,11 +39,12 @@ const RegisteredUsersMap = ({ startDate, endDate, tenantId }) => {
     }
   }, [startDate, endDate, tenantId])
 
-  const registeredUsersMapDrawRef = useCallback(node => {
-    if (registeredUsersByCountry?.data !== undefined && node !== undefined) {
-      createMap(node, areaLegendRef, registeredUsersByCountry?.data, "Users", "Users per country")
-    }
-  }, [!registeredUsersByCountry.isLoading && registeredUsersByCountry.isSuccess && registeredUsersByCountry?.data])
+  if(registeredUsersByCountry.isIdle
+     || registeredUsersByCountry.isLoading
+     || registeredUsersByCountry.isFetching
+     || registeredUsersByCountry.isRefetching) {
+    return null
+  }
 
   return (
     <Row className="box usersByCountry">
@@ -51,10 +55,9 @@ const RegisteredUsersMap = ({ startDate, endDate, tenantId }) => {
       </Col>
 
       <Col lg={12}>
-        <div className="container_map" ref={registeredUsersMapDrawRef} id="usersMap">
-          <div className="map"></div>
-          <div ref={areaLegendRef} className="areaLegend"></div>
-        </div>
+        <EarthMap datasetQuery={registeredUsersByCountry}
+                  tooltipLabel="Users"
+                  legendLabel="Users per country"/>
       </Col>
 
     </Row>
