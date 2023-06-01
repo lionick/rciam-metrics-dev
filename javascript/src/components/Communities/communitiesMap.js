@@ -33,7 +33,7 @@ const CommunitiesMap = ({tenantId}) => {
   const countryStatsQuery = useQuery(
     [countryStatsByVoKey, {countryId: communityId.current, params: params}],
     getCountryStatsByVo, {
-      enabled: false
+      enabled: !!communityId?.current
     }
   )
 
