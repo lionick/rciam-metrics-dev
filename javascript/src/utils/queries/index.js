@@ -72,6 +72,12 @@ export const getCommunities = async ({queryKey}) => {
   return response.data
 }
 
+export const getCommunityMembersByStatus = async ({queryKey}) => {
+  const [_, params] = queryKey
+  const response = await apiClient.get("members_bystatus", params)
+  return response.data
+}
+
 export const getCountryStatsByVo = async ({queryKey}) => {
   const [_, params] = queryKey
   const response = await apiClient.get(`country_stats_by_vo/${params.countryId}`, params)

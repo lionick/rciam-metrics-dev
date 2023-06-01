@@ -1,26 +1,21 @@
-import {useState, useEffect} from "react";
+import {useState, useRef} from "react";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Select from 'react-select';
-import {client} from '../../utils/api';
-import $ from "jquery";
 import 'jquery-mapael';
 import 'jquery-mapael/js/maps/world_countries_mercator.js';
-import {
-  calculateLegends,
-  setMapConfiguration,
-  setLegend
-} from "../Common/utils";
-import {StatusEnumeration} from "../../utils/helpers/enums";
 import {useQuery, useQueryClient} from "react-query";
-import {communitiesKey} from "../../utils/queryKeys";
-import {getCommunities} from "../../utils/queries";
+import {
+  communitiesKey,
+  countryStatsByVoKey
+} from "../../utils/queryKeys";
+import {getCommunities, getCountryStatsByVo} from "../../utils/queries";
+import EarthMap from "../Common/earthMap";
+import MemberStatusReport from "./memberStatusReport";
 
 const CommunitiesMap = ({tenantId}) => {
-  const [communities, setCommunities] = useState();
   const [selectedCommunity, setSelectedCommunity] = useState({});
-  const [membersStatus, setMembersStatus] = useState([]);
-  var communitiesArray = [];
+  const communityId = useRef(null)
 
   const queryClient = useQueryClient();
 
@@ -35,9 +30,15 @@ const CommunitiesMap = ({tenantId}) => {
     getCommunities
   )
 
-  console.log('communitiesQuery', communitiesQuery)
+  const countryStatsQuery = useQuery(
+    [countryStatsByVoKey, {countryId: communityId.current, params: params}],
+    getCountryStatsByVo, {
+      enabled: false
+    }
+  )
 
 
+  // Create the option list
   const communitiesOptionsList = !communitiesQuery.isLoading
     && communitiesQuery.isSuccess
     && communitiesQuery.isFetched
@@ -47,90 +48,27 @@ const CommunitiesMap = ({tenantId}) => {
       value: elem.id
     }))
 
-  const createMap = (id, mapData, tooltipLabel = "Users", legendLabel = 'Users per country') => {
-    var areas = {};
-    var maxSum = 0;
-    mapData[0].forEach(function (mapRow) {
+  const handleChange = (event) => {
+    communityId.current = event.value;
 
-      var contentTooltip = "<span style=\"font-weight:bold;\">" + mapRow.country + "</span><br />" + tooltipLabel + " : " + mapRow.sum + "<hr/>"
-      var other_status = 0;
-      // Get statuses per country
-      mapData[1].forEach(function (status_per_country) {
-        if (status_per_country.country === mapRow.country) {
-          if (status_per_country.status !== 'A' && status_per_country.status !== 'GP') {
-            other_status += status_per_country.sum
-          } else {
-            contentTooltip += StatusEnumeration[status_per_country.status] + ": " + status_per_country.sum + "<br/>"
-          }
-        }
+    const filteredCommunity = !communitiesQuery.isLoading
+      && communitiesQuery.isSuccess
+      && communitiesQuery.isFetched
+      && communitiesQuery.data.length > 0
+      && communitiesQuery?.data?.filter((elem) => elem.id == event.value)
 
-      })
-      if (other_status > 0) {
-        contentTooltip += StatusEnumeration['O'] + ": " + other_status
-      }
-      //contentTooltip += mapRow.additional_text !== undefined ? '<hr style="border-color:#fff; margin:5px 0px"/>' + mapRow.additional_text : '';
-      areas[mapRow.countrycode] = {
-        value: mapRow.sum,
-        tooltip: {content: contentTooltip}
-      }
-      if (mapRow.sum > maxSum) {
-        maxSum = mapRow.sum;
-      }
-    })
-    // Calculate Legends
-    var legends = calculateLegends(maxSum)
-    $(".areaLegend").show()
-    $("#" + id).mapael({
-      map: setMapConfiguration(),
-      legend: setLegend(legendLabel, legends),
-      areas: areas
-    })
+    setSelectedCommunity(filteredCommunity.pop())
 
+    try {
+      const response = queryClient.refetchQueries([countryStatsByVoKey, {
+        countryId: communityId.current,
+        params: params
+      }])
+    } catch (error) {
+      // todo: Here we can handle any authentication or authorization errors
+      console.log(error)
+    }
   }
-
-  const handleChange = event => {
-
-    var community_id = event.value;
-    client.get("members_bystatus", {
-      params: {
-        'community_id': community_id,
-        'tenant_id': parameters['tenantId']
-      }
-    }).then(response => {
-      var statuses = {'A': 0, 'GP': 0, 'O': 0}
-      response["data"].forEach(function (memberStatus, index) {
-        if (memberStatus['status'] === 'A' || memberStatus['status'] === 'GP') {
-          statuses[memberStatus['status']] = memberStatus['count']
-        } else {
-          statuses['O'] += memberStatus['count']
-        }
-      })
-      setMembersStatus(statuses)
-    })
-    client.get("communities/" + community_id,
-      {
-        params: {
-          'tenant_id': tenantId,
-        }
-      }).then(result => {
-        var community = result["data"]
-        setSelectedCommunity({"name": community[0]["name"], "description": community[0]["description"]})
-      }
-    )
-    client.get("country_stats_by_vo/" + community_id,
-      {
-        params:
-          {
-            'tenant_id': tenantId,
-          }
-      }).then(result => {
-      var stats = result["data"]
-      createMap("communitiesMap", stats)
-    })
-  }
-
-
-  console.log('communitiesOptionsList', communitiesOptionsList)
 
   return (
     <Row className="box communityMembersByCountry">
@@ -144,37 +82,20 @@ const CommunitiesMap = ({tenantId}) => {
                 options={communitiesOptionsList}
                 onChange={handleChange}/>
         {
-          selectedCommunity["name"] &&
+          !!selectedCommunity?.name &&
           <Row>
-            <Col lg={12}>{selectedCommunity["name"]}</Col>
-            <Col lg={12}>{selectedCommunity["description"]}</Col>
+            <Col lg={12}>{selectedCommunity?.name}</Col>
+            <Col lg={12}>{selectedCommunity?.description}</Col>
           </Row>
         }
       </Col>
       <Col lg={7}>
-        <div className="container_map" id="communitiesMap">
-          <div className="map"></div>
-          <div className="areaLegend"></div>
-        </div>
+        <EarthMap datasetQuery={countryStatsQuery}
+                  tooltipLabel="Users"
+                  legendLabel="User Per Country"/>
       </Col>
-
-      {
-        membersStatus["A"] !== undefined &&
-        <Col lg={2}>
-          <Row>
-            <Col lg={12}>ACTIVE USERS</Col>
-            <Col lg={12}>{membersStatus["A"]}</Col>
-          </Row>
-          <Row>
-            <Col lg={12}>GRACE PERIOD USERS</Col>
-            <Col lg={12}>{membersStatus["GP"]}</Col>
-          </Row>
-          <Row>
-            <Col lg={12}>OTHER STATUS USERS</Col>
-            <Col lg={12}>{membersStatus["O"]}</Col>
-          </Row>
-        </Col>
-      }
+      <MemberStatusReport tenantId={tenantId}
+                          communityId={communityId?.current}/>
     </Row>
   )
 }
