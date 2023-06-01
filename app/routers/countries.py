@@ -45,7 +45,6 @@ async def read_country_stats_by_vo(
         offset: int = 0,
         community_id: Union[None, int] = None
 ):
-    stats = []
     stats_country = session.exec("""
     WITH users_countries AS (
         SELECT statistics_country_hashed.hasheduserid as userid, status, country, countrycode, count(*) as sum_count
@@ -96,6 +95,8 @@ async def read_country_stats_by_vo(
     GROUP BY country,countrycode, users_countries.status
     ORDER BY country;
         """.format(community_id)).all()
-    stats.append(stats_country)
-    stats.append(status_per_country)
-    return stats
+
+    return {
+        'stats': stats_country,
+        'status': status_per_country
+    }
