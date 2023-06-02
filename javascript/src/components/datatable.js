@@ -181,7 +181,7 @@ class Datatable extends Component {
             Object.keys(item).map((key, keyIndex) =>
               (
                 <td key={key.toString()+keyIndex.toString()}
-                    className="text-xs font-weight-bold" dangerouslySetInnerHTML={{ __html: this.listNames(item[key], key) }} >    
+                    className="text-xs font-weight-bold" dangerouslySetInnerHTML={{ __html: this.listNames(item[key], key) }}>
                 </td>
               )
             )
@@ -189,7 +189,6 @@ class Datatable extends Component {
         </tr>
       );
     });
-
   };
 
   showColumns = (items) => {

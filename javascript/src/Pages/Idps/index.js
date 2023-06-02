@@ -21,6 +21,8 @@ const Idps = () => {
   const {project, environment} = useParams();
   const [tenantId, setTenantId] = useState(0);
   const [showModal, setShowModal] = useState(false);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [projectCon, setProjectCon] = useContext(projectContext);
   const [envCon, setEnvCon] = useContext(envContext)
 
@@ -80,7 +82,11 @@ const Idps = () => {
                         setShowModalHandler={setShowModal}
                         goToSpecificProviderHandler={goToSpecificProvider}/>
       <IdpsDataTable tenantId={tenantId}
-                     uniqueLogins={uniqueLogins}/>
+                     uniqueLogins={uniqueLogins}
+                     setStartDate={setStartDate}
+                     setEndDate={setEndDate}
+                     startDate={startDate}
+                     endDate={endDate}/>
       <IdpModal tenantId={tenantId}
                 showModal={showModal}
                 setShowModalHandler={setShowModal}/>

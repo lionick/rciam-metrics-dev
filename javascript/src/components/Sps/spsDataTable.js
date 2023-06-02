@@ -14,6 +14,7 @@ import {useQuery, useQueryClient} from "react-query";
 import {loginsPerSpKey} from "../../utils/queryKeys";
 import {getLoginsPerSP} from "../../utils/queries";
 import {useCookies} from "react-cookie";
+import {createAnchorElement} from "../Common/utils";
 
 const SpsDataTable = ({
                         idpId,
@@ -76,7 +77,7 @@ const SpsDataTable = ({
       && !loginsPerSp.isFetching
       && loginsPerSp.isSuccess
       && loginsPerSp?.data?.map(sp => ({
-        "Service Provider Name": cookies.userinfo == undefined ? sp.name : '<a href="/' + project + '/' + environment + '/services/' + sp.id + '">' + sp.name + '</a>',
+        "Service Provider Name": cookies.userinfo == undefined ? sp.name : createAnchorElement(sp.name, `/${project}/${environment}/identity-providers/${sp.id}`),
         "Service Provider Identifier": sp.identifier,
         "Number of Logins": sp.count
       }))

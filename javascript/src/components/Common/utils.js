@@ -155,36 +155,6 @@ export const createAnchorElement = (title, link) => {
   // return anchor;
 }
 
-export const createMap = (node,
-                          areaLegendRef,
-                          mapData,
-                          tooltipLabel = "Logins",
-                          legendLabel = 'Logins per country') => {
-  let areas = {};
-  let i = 1;
-  let maxSum = 0;
-  mapData?.forEach(function (mapRow) {
-    const contentTooltip = "<span style=\"font-weight:bold;\">" + mapRow.country + "</span><br />" + tooltipLabel + " : " + mapRow.sum
-
-    areas[mapRow.countrycode] = {
-      value: mapRow.sum,
-      tooltip: {content: contentTooltip}
-    }
-    if (mapRow.sum > maxSum) {
-      maxSum = mapRow.sum;
-    }
-    i++;
-  })
-  // Calculate Legends
-  const legends = calculateLegends(maxSum)
-  $(areaLegendRef.current).show()
-  $(node).mapael({
-    map: setMapConfiguration(),
-    legend: setLegend(legendLabel, legends),
-    areas: areas
-  })
-}
-
 export const axisChartOptions = (title, hAxisFormat, hAxisTicks) => {
   return (
     {

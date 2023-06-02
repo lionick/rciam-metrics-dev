@@ -20,6 +20,8 @@ const Sps = () => {
   const {project, environment} = useParams();
   const [tenantId, setTenantId] = useState(0);
   const [showModal, setShowModal] = useState(false);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [projectCon, setProjectCon] = useContext(projectContext);
   const [envCon, setEnvCon] = useContext(envContext)
 
@@ -34,8 +36,8 @@ const Sps = () => {
     setEnvCon(environment)
     setTenantId(tenant?.data?.[0]?.id)
   }, [!tenant.isLoading
-           && tenant.isSuccess
-           && !tenant.isFetching])
+  && tenant.isSuccess
+  && !tenant.isFetching])
 
   const handleChange = event => {
     setUniqueLogins(event.target.checked);
@@ -70,11 +72,18 @@ const Sps = () => {
           </Col>
         </Col>
       </Row>
-      <LoginTiles tenantId={tenantId} uniqueLogins={uniqueLogins}></LoginTiles>
-      <LoginSpPieChart tenantId={tenantId} uniqueLogins={uniqueLogins} setShowModalHandler={setShowModal}
-                       goToSpecificProviderHandler={goToSpecificProvider}></LoginSpPieChart>
-      <SpsDataTable tenantId={tenantId} uniqueLogins={uniqueLogins}></SpsDataTable>
-      {/* <SpModal tenantId={tenantId} showModal={showModal} setShowModalHandler={setShowModal}></SpModal> */}
+      <LoginTiles tenantId={tenantId}
+                  uniqueLogins={uniqueLogins}/>
+      <LoginSpPieChart tenantId={tenantId}
+                       uniqueLogins={uniqueLogins}
+                       setShowModalHandler={setShowModal}
+                       goToSpecificProviderHandler={goToSpecificProvider}/>
+      <SpsDataTable tenantId={tenantId}
+                    uniqueLogins={uniqueLogins}
+                    setStartDate={setStartDate}
+                    setEndDate={setEndDate}
+                    startDate={startDate}
+                    endDate={endDate}/>
     </Container>)
 
 }

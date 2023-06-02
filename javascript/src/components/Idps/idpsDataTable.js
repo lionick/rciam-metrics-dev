@@ -21,14 +21,16 @@ const IdpsDataTable = ({
                          spId,
                          dataTableId = "table-idp",
                          tenantId,
-                         uniqueLogins
+                         uniqueLogins,
+                         setStartDate,
+                         setEndDate,
+                         startDate,
+                         endDate
                        }) => {
   const [cookies, setCookie] = useCookies();
   const [idpsLogins, setIdpsLogins] = useState([]);
   const [minDate, setMinDate] = useState("");
   const [btnPressed, setBtnPressed] = useState(false);
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
   const {project, environment} = useParams();
   const queryClient = useQueryClient();
 
@@ -96,7 +98,7 @@ const IdpsDataTable = ({
       toast.warning("You have to fill both startDate and endDate")
       return
     }
-    setBtnPressed(!btnPressed)
+    setBtnPressed((prev) => !prev)
   }
 
   if (loginsPerIpd.isLoading

@@ -1,4 +1,4 @@
-import {useState, useEffect, useContext, useId} from "react";
+import {useState, useEffect, useContext} from "react";
 import {useParams} from "react-router-dom";
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import {useNavigate} from "react-router-dom";

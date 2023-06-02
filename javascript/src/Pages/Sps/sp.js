@@ -25,6 +25,8 @@ const Sp = () => {
   const {project, environment, id} = useParams();
   const [tenantId, setTenantId] = useState(0);
   const [uniqueLogins, setUniqueLogins] = useState(false);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [projectCon, setProjectCon] = useContext(projectContext);
   const [envCon, setEnvCon] = useContext(envContext)
 
@@ -95,7 +97,11 @@ const Sp = () => {
       <IdpsDataTable tenantId={tenantId}
                      spId={id}
                      dataTableId="tableSps"
-                     uniqueLogins={uniqueLogins}/>
+                     uniqueLogins={uniqueLogins}
+                     setStartDate={setStartDate}
+                     setEndDate={setEndDate}
+                     startDate={startDate}
+                     endDate={endDate}/>
       <Tabs>
         <TabList>
           <Tab>Map</Tab>
@@ -103,12 +109,16 @@ const Sp = () => {
         </TabList>
 
         <TabPanel>
-          <SpMap tenantId={tenantId}
+          <SpMap startDate={startDate}
+                 endDate={endDate}
+                 tenantId={tenantId}
                  spId={id}
                  uniqueLogins={uniqueLogins}/>
         </TabPanel>
         <TabPanel>
-          <SpMapToDataTable tenantId={tenantId}
+          <SpMapToDataTable startDate={startDate}
+                            endDate={endDate}
+                            tenantId={tenantId}
                             spId={id}
                             uniqueLogins={uniqueLogins}/>
         </TabPanel>
