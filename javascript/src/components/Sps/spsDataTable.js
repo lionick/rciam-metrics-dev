@@ -16,19 +16,19 @@ import {getLoginsPerSP} from "../../utils/queries";
 import {useCookies} from "react-cookie";
 
 const SpsDataTable = ({
-                        startDateHandler, 
-                        endDateHandler, 
-                        idpId, 
+                        idpId,
                         dataTableId = "table-sp",
-                        tenantId, 
-                        uniqueLogins
+                        tenantId,
+                        uniqueLogins,
+                        setStartDate,
+                        setEndDate,
+                        startDate,
+                        endDate
                       }) => {
-  const [cookies, setCookie] = useCookies();                      
+  const [cookies, setCookie] = useCookies();
   const [spsLogins, setSpsLogins] = useState([]);
   const [minDate, setMinDate] = useState("");
   const [btnPressed, setBtnPressed] = useState(false);
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
   const {project, environment} = useParams();
   const queryClient = useQueryClient();
 
@@ -81,15 +81,21 @@ const SpsDataTable = ({
         "Number of Logins": sp.count
       }))
 
-    // This is essential: We must destroy the datatable in order to be refreshed with the new data
-    $("#" + dataTableId).DataTable().destroy()
-    setSpsLogins(perSp)
+    if (!!loginsPerSp?.data && !!perSp) {
+      console.log('loginsPerSp', loginsPerSp)
+      // TODO: We need to set the min date here
+      // setMinDate(!!loginsPerSp?.data?.[0]?.min_date ? new Date(loginsPerSp?.data?.[0]?.min_date) : null)
+      // This is essential: We must destroy the datatable in order to be refreshed with the new data
+      $("#" + dataTableId).DataTable().destroy()
+      setSpsLogins(perSp)
+    }
   }, [!loginsPerSp.isLoading
   && !loginsPerSp.isFetching
   && loginsPerSp.isSuccess])
 
   if (loginsPerSp.isLoading
     || loginsPerSp.isFetching
+    // || minDate == undefined
     || spsLogins.length === 0) {
     return null
   }
@@ -102,10 +108,14 @@ const SpsDataTable = ({
         </div>
       </Col>
       <Col lg={12} className="range_inputs">
-        From: <DatePicker selected={startDate} minDate={minDate} dateFormat="dd/MM/yyyy"
-                          onChange={(date) => setStartDate(date)}></DatePicker>
-        To: <DatePicker selected={endDate} minDate={minDate} dateFormat="dd/MM/yyyy"
-                        onChange={(date) => setEndDate(date)}></DatePicker>
+        From: <DatePicker selected={startDate}
+                          minDate={minDate}
+                          dateFormat="dd/MM/yyyy"
+                          onChange={(date) => setStartDate(date)}/>
+        To: <DatePicker selected={endDate}
+                        minDate={minDate}
+                        dateFormat="dd/MM/yyyy"
+                        onChange={(date) => setEndDate(date)}/>
         {/* Probably add a tooltip here that both fields are required */}
         <Button variant="light"
                 disabled={startDate == undefined || endDate == undefined}
@@ -114,7 +124,8 @@ const SpsDataTable = ({
         </Button>
       </Col>
       <Col lg={12}>
-        <Datatable items={spsLogins} dataTableId={dataTableId}></Datatable>
+        <Datatable items={spsLogins}
+                   dataTableId={dataTableId}/>
       </Col>
     </Row>
   )

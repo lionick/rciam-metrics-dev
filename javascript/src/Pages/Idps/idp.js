@@ -24,6 +24,8 @@ const Idp = () => {
   const {project, environment, id} = useParams();
   const [tenantId, setTenantId] = useState(0);
   const [uniqueLogins, setUniqueLogins] = useState(false);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [projectCon, setProjectCon] = useContext(projectContext);
   const [envCon, setEnvCon] = useContext(envContext)
 
@@ -59,7 +61,7 @@ const Idp = () => {
 
   return (
     <Container>
-      <Header></Header>
+      <Header/>
       <Row>
         <Col className="title-container" md={12}>
           <Col md={6}>
@@ -89,27 +91,39 @@ const Idp = () => {
                        idpId={id}
                        uniqueLogins={uniqueLogins}
                        goToSpecificProviderHandler={goToSpecificProvider}/>
-      <SpsDataTable tenantId={tenantId}
-                    idpId={id}
-                    dataTableId="tableSps"
-                    uniqueLogins={uniqueLogins}/>
-      <Tabs>
-        <TabList>
-          <Tab>Map</Tab>
-          <Tab>Datatable</Tab>
-        </TabList>
+      {/* TODO: MOVE THE FOLLOWING SECTION TO ITS OWN ELEMENT. IT NEEDS TO RELOAD EVERY
+      TIME WE PICK A NEW DATE*/}
+      <>
+        <SpsDataTable idpId={id}
+                      dataTableId="tableSps"
+                      tenantId={tenantId}
+                      uniqueLogins={uniqueLogins}
+                      setStartDate={setStartDate}
+                      setEndDate={setEndDate}
+                      startDate={startDate}
+                      endDate={endDate}/>
+        <Tabs>
+          <TabList>
+            <Tab>Map</Tab>
+            <Tab>Datatable</Tab>
+          </TabList>
 
-        <TabPanel>
-          <IdpMap tenantId={tenantId}
-                  idpId={id}
-                  uniqueLogins={uniqueLogins}/>
-        </TabPanel>
-        <TabPanel>
-          <IdpMapToDataTable tenantId={tenantId}
-                             idpId={id}
-                             uniqueLogins={uniqueLogins}/>
-        </TabPanel>
-      </Tabs>
+          <TabPanel>
+            <IdpMap tenantId={tenantId}
+                    idpId={id}
+                    uniqueLogins={uniqueLogins}
+                    startDate={startDate}
+                    endDate={endDate}/>
+          </TabPanel>
+          <TabPanel>
+            <IdpMapToDataTable startDate={startDate}
+                               endDate={endDate}
+                               tenantId={tenantId}
+                               idpId={id}
+                               uniqueLogins={uniqueLogins}/>
+          </TabPanel>
+        </Tabs>
+      </>
     </Container>
   )
 }
