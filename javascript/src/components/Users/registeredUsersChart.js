@@ -14,7 +14,7 @@ import {
   options_group_by
 } from "../../utils/helpers/enums";
 import {useQuery, useQueryClient} from "react-query";
-import {communitiesGroupByKey, registeredUsersGroupByKey} from "../../utils/queryKeys";
+import {registeredUsersGroupByKey} from "../../utils/queryKeys";
 import {getRegisteredUsersGroupBy} from "../../utils/queries";
 
 const RegisteredUsersChart = ({
@@ -93,8 +93,8 @@ const RegisteredUsersChart = ({
 
       setRegisteredUsers(fValues.concat(charData))
       setGlobalOptions(axisChartOptions(regUsersOptions[selected]["title"],
-                                        regUsersOptions[selected]["hAxis"]["format"],
-                                        hticksArray))
+        regUsersOptions[selected]["hAxis"]["format"],
+        hticksArray))
     }
   }, [!registeredUsersGroup.isLoading
   && !registeredUsersGroup.isFetching
@@ -102,7 +102,7 @@ const RegisteredUsersChart = ({
 
   if (registeredUsersGroup.isLoading
     || registeredUsersGroup.isFetching
-    || registeredUsers?.data?.length === 0) {
+    || registeredUsers?.length === 0) {
     return null
   }
 
@@ -115,11 +115,18 @@ const RegisteredUsersChart = ({
               onChange={(event) => setSelected(event?.value)}/>
     </Col>
     <Col lg={12}>
-      <Chart chartType="ColumnChart"
-             width="100%"
-             height="400px"
-             data={registeredUsers}
-             options={global_options}/>
+      {
+        registeredUsers?.length > 1 ?
+          <Chart chartType="ColumnChart"
+                 width="100%"
+                 height="400px"
+                 data={registeredUsers}
+                 options={global_options}/>
+          :
+          <div className="box-header with-border">
+            <h3 className="box-title">No data available</h3>
+          </div>
+      }
     </Col>
   </Row>
 }

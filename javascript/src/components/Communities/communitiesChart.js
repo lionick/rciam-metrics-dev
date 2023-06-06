@@ -96,7 +96,7 @@ const CommunitiesChart = ({tenantId}) => {
 
       setCommunities(fValues.concat(charData))
       setGlobalOptions(axisChartOptions(options[selected]["title"], options[selected]["hAxis"]["format"],
-                                        hticksArray))
+        hticksArray))
     }
   }, [!communitiesGroupBy.isLoading
   && !communitiesGroupBy.isFetching
@@ -104,7 +104,7 @@ const CommunitiesChart = ({tenantId}) => {
 
   if (communitiesGroupBy.isLoading
     || communitiesGroupBy.isFetching
-    || communities?.data?.length === 0) {
+    || communities?.length === 0) {
     return null
   }
 
@@ -116,11 +116,18 @@ const CommunitiesChart = ({tenantId}) => {
         </div>
       </Col>
       <Col lg={9}>
-        <Chart chartType="ColumnChart"
-               width="100%"
-               height="400px"
-               data={communities}
-               options={global_options}/>
+        {
+          communities?.length > 1 ?
+            <Chart chartType="ColumnChart"
+                   width="100%"
+                   height="400px"
+                   data={communities}
+                   options={global_options}/>
+            :
+            <div className="box-header with-border">
+              <h3 className="box-title">No data available</h3>
+            </div>
+        }
       </Col>
       <Col lg={3}>
         <Container>
