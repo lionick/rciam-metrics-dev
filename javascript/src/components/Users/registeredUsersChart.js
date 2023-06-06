@@ -41,8 +41,6 @@ const RegisteredUsersChart = ({
     }
   )
 
-  console.log('registeredUsersGroup', registeredUsersGroup)
-
   useEffect(() => {
     params = {
       params: {
@@ -92,7 +90,6 @@ const RegisteredUsersChart = ({
           `<div style="padding:5px 5px 5px 5px;">${convertDateByGroup(new Date(element?.range_date), selected)}<br/>Communities: ${parseInt(element['count'])}</div>`
         ])
       )
-
 
       setRegisteredUsers(fValues.concat(charData))
       setGlobalOptions(axisChartOptions(regUsersOptions[selected]["title"],
