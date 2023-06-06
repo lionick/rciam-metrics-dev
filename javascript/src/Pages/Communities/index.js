@@ -37,7 +37,7 @@ const Communities = () => {
 
   return (
     <Container>
-      <Header></Header>
+      <Header/>
       <Row>
         <Col className="title-container" md={12}>
           <Col md={6}><h2>Communities</h2></Col>
@@ -46,7 +46,7 @@ const Communities = () => {
       <CommunitiesChart tenantId={tenantId}/>
       <CommunitiesDataTable tenantId={tenantId}/>
       <CommunitiesMap tenantId={tenantId}/>
-      <Footer></Footer>
+      <Footer/>
     </Container>)
 
 }

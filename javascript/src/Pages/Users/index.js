@@ -34,15 +34,15 @@ const Users = () => {
     setEnvCon(environment)
     setTenantId(tenant?.data?.[0]?.id)
   }, [!tenant.isLoading
-           && tenant.isSuccess
-           && !tenant.isFetching])
+  && tenant.isSuccess
+  && !tenant.isFetching])
 
 
   if (tenantId == undefined || tenantId == 0 || tenantId == "") return
 
   return (
     <Container>
-      <Header></Header>
+      <Header/>
       <Row>
         <Col className="title-container" md={12}>
           <Col md={6}><h2>Users</h2></Col>
@@ -51,12 +51,14 @@ const Users = () => {
       <RegisteredUsersTiles tenantId={tenantId}/>
       <RegisteredUsersChart tenantId={tenantId}/>
       <RegisteredUsersDataTable tenantId={tenantId}
-                                startDateHandler={setStartDate}
-                                endDateHandler={setEndDate}/>
+                                setStartDate={setStartDate}
+                                setEndDate={setEndDate}
+                                startDate={startDate}
+                                endDate={endDate}/>
       <RegisteredUsersMap tenantId={tenantId}
                           startDate={startDate}
                           endDate={endDate}/>
-      <Footer></Footer>
+      <Footer/>
     </Container>)
 
 }
