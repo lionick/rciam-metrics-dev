@@ -84,7 +84,9 @@ const RegisteredUsersDataTable = ({
 
     if (!!registeredUsersPerCountryGroup?.data && !!perPeriod) {
       // This is essential: We must destroy the datatable in order to be refreshed with the new data
-      setMinDate(!!registeredUsersPerCountryGroup?.data?.[0]?.min_date ? new Date(registeredUsersPerCountryGroup?.data?.[0]?.min_date) : null)
+      if (minDate == undefined || minDate == "") {
+        setMinDate(!!registeredUsersPerCountryGroup?.data?.[0]?.min_date ? new Date(registeredUsersPerCountryGroup?.data?.[0]?.min_date) : null)
+      }
       $("#table-users").DataTable().destroy()
       setUsersPerCountryPerPeriod(perPeriod)
     }
@@ -102,12 +104,11 @@ const RegisteredUsersDataTable = ({
 
   console.log('usersPerCountryPerPeriod', usersPerCountryPerPeriod)
   // todo: what should we do when there is no data
-  // if there is no dataset then there will be no minDate
+  // if there is no dataset then there will be no minDate. How to handle this?
 
   if (registeredUsersPerCountryGroup.isLoading
     || registeredUsersPerCountryGroup.isFetching
-    || minDate == undefined
-    || usersPerCountryPerPeriod.length === 0) {
+    || minDate == undefined) {
     return null
   }
 
@@ -133,9 +134,13 @@ const RegisteredUsersDataTable = ({
                   onChange={handleChange}/>
       </Col>
       <Col lg={12}>
-        <Datatable dataTableId="table-users"
-                   items={usersPerCountryPerPeriod}
-                   columnSep="Registered Users per country"/>
+        {
+          usersPerCountryPerPeriod.length !== 0 ?
+            <Datatable dataTableId="table-users"
+                       items={usersPerCountryPerPeriod}
+                       columnSep="Registered Users per country"/>
+            : null
+        }
       </Col>
     </Row>
   )

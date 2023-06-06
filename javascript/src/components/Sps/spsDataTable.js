@@ -83,9 +83,9 @@ const SpsDataTable = ({
       }))
 
     if (!!loginsPerSp?.data && !!perSp) {
-      console.log('loginsPerSp', loginsPerSp)
-      // TODO: We need to set the min date here
-      // setMinDate(!!loginsPerSp?.data?.[0]?.min_date ? new Date(loginsPerSp?.data?.[0]?.min_date) : null)
+      if(minDate == undefined || minDate == "") {
+        setMinDate(!!loginsPerSp?.data?.[0]?.min_date ? new Date(loginsPerSp?.data?.[0]?.min_date) : null)
+      }
       // This is essential: We must destroy the datatable in order to be refreshed with the new data
       $("#" + dataTableId).DataTable().destroy()
       setSpsLogins(perSp)

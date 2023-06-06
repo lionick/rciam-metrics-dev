@@ -85,7 +85,9 @@ const LoginDataTable = ({
     if (!!loginsPerCountry?.data && !!loginsPerCountryPerPeriodArray) {
       // We only keep the first date because the backend returns the dataset sorted and we only care about the
       // min of the min dates.
-      setMinDate(!!loginsPerCountry?.data?.[0]?.min_date ? new Date(loginsPerCountry?.data?.[0]?.min_date) : null)
+      if (minDate == undefined || minDate == "") {
+        setMinDate(!!loginsPerCountry?.data?.[0]?.min_date ? new Date(loginsPerCountry?.data?.[0]?.min_date) : null)
+      }
       $("#table-login").DataTable().destroy()
       setLoginsPerCountryPerPeriod(loginsPerCountryPerPeriodArray)
     }
@@ -105,8 +107,7 @@ const LoginDataTable = ({
 
   if (loginsPerCountry.isLoading
     || loginsPerCountry.isFetching
-    || minDate == undefined
-    || loginsPerCountryPerPeriod.length === 0) {
+    || minDate == undefined) {
     return null
   }
 
@@ -131,9 +132,13 @@ const LoginDataTable = ({
                   onChange={handleChange}/>
       </Col>
       <Col lg={12}>
-        <Datatable dataTableId="table-login"
-                   items={loginsPerCountryPerPeriod}
-                   columnSep="Number of Logins per Country"/>
+        {
+          loginsPerCountryPerPeriod.length !== 0 ?
+            <Datatable dataTableId="table-login"
+                       items={loginsPerCountryPerPeriod}
+                       columnSep="Number of Logins per Country"/>
+            : null
+        }
       </Col>
     </Row>
   )

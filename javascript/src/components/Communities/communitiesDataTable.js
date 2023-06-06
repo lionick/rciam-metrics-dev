@@ -72,10 +72,12 @@ const CommunitiesDataTable = ({tenantId}) => {
       }))
 
     if (!!communitiesGroupBy?.data
-        && !!communitiesGroupByPerPeriodArray) {
+      && !!communitiesGroupByPerPeriodArray) {
       // We only keep the first date because the backend returns the dataset sorted and we only care about the
       // min of the min dates.
-      setMinDate(!!communitiesGroupBy?.data?.[0]?.min_date ? new Date(communitiesGroupBy?.data?.[0]?.min_date) : null)
+      if (minDate == undefined || minDate == "") {
+        setMinDate(!!communitiesGroupBy?.data?.[0]?.min_date ? new Date(communitiesGroupBy?.data?.[0]?.min_date) : null)
+      }
       $("#table-community").DataTable().destroy()
       setCommunitiesPerPeriod(communitiesGroupByPerPeriodArray)
     }
@@ -93,8 +95,7 @@ const CommunitiesDataTable = ({tenantId}) => {
 
   if (communitiesGroupBy.isLoading
     || communitiesGroupBy.isFetching
-    || minDate == undefined
-    || communitiesPerPeriod.length === 0) {
+    || minDate == undefined) {
     return null
   }
 
@@ -119,9 +120,12 @@ const CommunitiesDataTable = ({tenantId}) => {
                 onChange={handleChange}/>
     </Col>
     <Col lg={12}>
-      <Datatable dataTableId="table-community"
-                 items={communitiesPerPeriod}
-                 columnSep="Names"/>
+      {
+        communitiesPerPeriod.length !== 0 ?
+          <Datatable dataTableId="table-community"
+                     items={communitiesPerPeriod}
+                     columnSep="Names"/> : null
+      }
     </Col>
   </Row>
 
