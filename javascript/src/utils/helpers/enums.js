@@ -40,3 +40,27 @@ export const options = {
     count_interval: 24
   }
 }
+
+export const regUsersOptions = {
+  year: {
+    title: "Number of Registered Users per year",
+    hAxis: {
+      format: 'Y',
+    },
+    count_interval: 8
+  },
+  month: {
+    title: "Number of Registered Users per month",
+    hAxis: {
+      format: 'YYYY-MM',
+    },
+    count_interval: 8
+  },
+  week: {
+    title: "Number of Registered Users per week",
+    hAxis: {
+      format: '',
+    },
+    count_interval: 8
+  }
+};

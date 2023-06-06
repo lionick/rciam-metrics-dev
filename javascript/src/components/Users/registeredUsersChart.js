@@ -1,128 +1,130 @@
-import { useState, useEffect } from "react";
-import { Chart } from "react-google-charts";
-import { client } from '../../utils/api';
-import { convertDateByGroup, getWeekNumber } from "../Common/utils";
+import {useState, useEffect} from "react";
+import {Chart} from "react-google-charts";
+import {
+  axisChartOptions,
+  convertDateByGroup,
+  getWeekNumber
+} from "../Common/utils";
 import Select from 'react-select';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import {
+  regUsersOptions,
+  options_group_by
+} from "../../utils/helpers/enums";
+import {useQuery, useQueryClient} from "react-query";
+import {communitiesGroupByKey, registeredUsersGroupByKey} from "../../utils/queryKeys";
+import {getRegisteredUsersGroupBy} from "../../utils/queries";
 
-const options = {
-    year: {
-        title: "Number of Registered Users per year",
-        hAxis: {
-            format: 'Y',
-        }
-    },
-    month: {
-        title: "Number of Registered Users per month",
-        hAxis: {
-            format: 'YYYY-MM',
-        }
-    },
-    week: {
-        title: "Number of Registered Users per week",
-        hAxis: {
-            format: '',
-        }
+const RegisteredUsersChart = ({
+                                tenantId
+                              }) => {
+  const [selected, setSelected] = useState(options_group_by[0].value);
+  const [registeredUsers, setRegisteredUsers] = useState([]);
+  const [global_options, setGlobalOptions] = useState();
+  const queryClient = useQueryClient();
+
+  let params = {
+    params: {
+      'interval': selected,
+      'count_interval': regUsersOptions[selected]["count_interval"],
+      'tenant_id': tenantId
     }
-};
+  }
 
-const options_group_by = [
-    { value: 'year', label: 'yearly' },
-    { value: 'month', label: 'monthly' },
-    { value: 'week', label: 'weekly' },
-];
+  const registeredUsersGroup = useQuery(
+    [registeredUsersGroupByKey, {groupBy: selected, params: params}],
+    getRegisteredUsersGroupBy,
+    {
+      enabled: false
+    }
+  )
 
-const RegisteredUsersChart = (parameters) => {
-    const [selected, setSelected] = useState(options_group_by[0].value);
-    const [registeredUsers, setRegisteredUsers] = useState();
-    var registeredUsersArray = [["Date", "Registered Users"]];
-    const [global_options, setGlobalOptions] = useState();
+  console.log('registeredUsersGroup', registeredUsersGroup)
 
-    useEffect(() => {
+  useEffect(() => {
+    params = {
+      params: {
+        'interval': selected,
+        'count_interval': regUsersOptions[selected]["count_interval"],
+        'tenant_id': tenantId,
+      }
+    }
 
-        var hticksArray = [];
-        var fValues = [['Date', 'Count', { 'type': 'string', 'role': 'tooltip', 'p': { 'html': true } }]]
-        // Get data for the last 4 years
-        // TODO: change it to last 1 year
-        client.get("registered_users_groupby/" + selected,
-            {
-                params: {
-                    'interval': 'year',
-                    'count_interval': '8',
-                    'tenant_id': parameters['tenantId']
-                }
-            }).then(response => {
+    try {
+      const response = queryClient.refetchQueries([registeredUsersGroupByKey, {groupBy: selected, params: params}])
+    } catch (error) {
+      // todo: Here we can handle any authentication or authorization errors
+      console.log(error)
+    }
 
-                response["data"].forEach(element => {
-                    //var community = {"created":element.created, "name":element.community_info.name}
-                    var range_date = new Date(element.range_date);
-                    var usersByRange = [range_date, element.count]
-                    registeredUsersArray.push(usersByRange)
+  }, [selected, tenantId])
 
-                    if (selected === "week") {
-                        hticksArray.push({ v: range_date, f: getWeekNumber(range_date) })
-                    }
-                    else {
-                        hticksArray.push({ v: range_date, f: range_date })
-                    }
 
-                    // Construct element & tooltip
-                    var temp = [];
-                    temp.push(range_date);
-                    temp.push(parseInt(element['count']));
-                    temp.push('<div style="padding:5px 5px 5px 5px;">'
-                        + convertDateByGroup(range_date, selected)
-                        + '<br/>Registered Users'
-                        + ": " + parseInt(element['count']) + '</div>');
-                    fValues.push(temp);
-                });
+  // Construct the data required for the datatable
+  useEffect(() => {
+    if (!registeredUsersGroup.isLoading
+      && !registeredUsersGroup.isFetching
+      && registeredUsersGroup.isSuccess
+      && !!registeredUsersGroup.data) {
 
-                setRegisteredUsers(fValues)
+      const hticksArray = registeredUsersGroup?.data?.map(element => ({
+          v: new Date(element?.range_date),
+          f: selected === "week" ? getWeekNumber(new Date(element?.range_date)) : new Date(element?.range_date)
+        })
+      )
 
-                setGlobalOptions({
-                    title: options[selected]["title"],
-                    backgroundColor: { fill: 'transparent' },
-                    vAxis: {
-                        //title: vAxisTitle[tab],
-                        format: '0'
-                    },
-                    hAxis: {
-                        format: options[selected]["hAxis"]["format"],
-                        maxTextLines: 2,
-                        //title: registeredUsersBy[type], // globar variable found at index.ctp
-                        textStyle: { fontSize: 15 },
-                        ticks: hticksArray,
-                        //showTextEvery: 5
-                    },
-                    tooltip: { isHtml: true },
-                    width: '100%',
-                    height: '350',
-                    bar: { groupWidth: "92%" },
-                    legend: { position: "none" },
-                })
+      let fValues = [
+        ['Date',
+          'Count',
+          {
+            'type': 'string',
+            'role': 'tooltip',
+            'p': {'html': true}
+          }
+        ]
+      ]
 
-            })
+      const charData = registeredUsersGroup?.data?.map(element => ([
+          new Date(element?.range_date),
+          parseInt(element['count']),
+          `<div style="padding:5px 5px 5px 5px;">${convertDateByGroup(new Date(element?.range_date), selected)}<br/>Communities: ${parseInt(element['count'])}</div>`
+        ])
+      )
 
-    }, [selected])
 
-    const handleChange = event => {
-        setSelected(event.value);
-    };
+      setRegisteredUsers(fValues.concat(charData))
+      setGlobalOptions(axisChartOptions(regUsersOptions[selected]["title"],
+                                        regUsersOptions[selected]["hAxis"]["format"],
+                                        hticksArray))
+    }
+  }, [!registeredUsersGroup.isLoading
+  && !registeredUsersGroup.isFetching
+  && registeredUsersGroup.isSuccess])
 
-    return <Row className="box">
-        <div className="box-header with-border">
-            <h3 className="box-title">Number of Registered Users</h3>
-        </div>
-        <Col lg={12}>Select Period:
-            <Select options={options_group_by} onChange={handleChange} ></Select>
-        </Col>
-        <Col lg={12}>
-            <Chart chartType="ColumnChart" width="100%" height="400px" data={registeredUsers}
-                options={global_options} />
-        </Col>
-    </Row>
+  if (registeredUsersGroup.isLoading
+    || registeredUsersGroup.isFetching
+    || registeredUsers?.data?.length === 0) {
+    return null
+  }
+
+  return <Row className="box">
+    <div className="box-header with-border">
+      <h3 className="box-title">Number of Registered Users</h3>
+    </div>
+    <Col lg={12}>Select Period:
+      <Select options={options_group_by}
+              onChange={(event) => setSelected(event?.value)}/>
+    </Col>
+    <Col lg={12}>
+      <Chart chartType="ColumnChart"
+             width="100%"
+             height="400px"
+             data={registeredUsers}
+             options={global_options}/>
+    </Col>
+  </Row>
 }
 
 export default RegisteredUsersChart

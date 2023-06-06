@@ -99,3 +99,11 @@ export const getRegisteredUsersPerCountryGroupBy = async ({queryKey}) => {
     , params.params)
   return response.data
 }
+
+export const getRegisteredUsersGroupBy = async ({queryKey}) => {
+  const [_, params] = queryKey
+  const response = await apiClient.get(
+    `registered_users_groupby${(params.groupBy != undefined && params.groupBy != "") ? "/" + params.groupBy : ""}`
+    , params.params)
+  return response.data
+}

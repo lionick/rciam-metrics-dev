@@ -102,10 +102,6 @@ const RegisteredUsersDataTable = ({
     setGroupBy(event.value)
   };
 
-  console.log('usersPerCountryPerPeriod', usersPerCountryPerPeriod)
-  // todo: what should we do when there is no data
-  // if there is no dataset then there will be no minDate. How to handle this?
-
   if (registeredUsersPerCountryGroup.isLoading
     || registeredUsersPerCountryGroup.isFetching
     || minDate == undefined) {
