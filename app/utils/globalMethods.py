@@ -28,6 +28,8 @@ class AuthNZCheck:
         self.tag = tag
 
     async def __call__(self, request: Request, response: Response):
+        response.headers["Access-Control-Expose-Headers"] = "X-Permissions, X-Authenticated"
+
         # For now we skip logins and dashboard routes
         if self.tag == 'logins' or 'dashboard':
             permissions = permissionsCalculation()
@@ -46,12 +48,14 @@ class AuthNZCheck:
 
         # Authentication
         if resp.status_code == 401:
-            HTTPException(status_code=401)
-            # If we have views enabled for the anonymous user then allow
-            # the user to continue
-            # TODO: Enable in the future
-            # if not anonymous_config.get(self.tag):
-            #     HTTPException(status_code=401)
+            raise HTTPException(
+                status_code=401,
+                detail="Authentication failed",
+                headers={
+                    "X-Authenticated": "false",
+                    "Access-Control-Expose-Headers": "X-Permissions, X-Authenticated"
+                }
+            )
         else:
             try:
                 resp.raise_for_status()
@@ -70,6 +74,7 @@ class AuthNZCheck:
 
         # Add the permission to a custom header field
         response.headers["X-Permissions"] = permissions_json
+        response.headers["X-Authenticated"] = "true"
 
 
 def permissionsCalculation(user_info = None):

@@ -83,7 +83,7 @@ const SpsDataTable = ({
       }))
 
     if (!!loginsPerSp?.data && !!perSp) {
-      if(minDate == undefined || minDate == "") {
+      if (minDate == undefined || minDate == "") {
         setMinDate(!!loginsPerSp?.data?.[0]?.min_date ? new Date(loginsPerSp?.data?.[0]?.min_date) : null)
       }
       // This is essential: We must destroy the datatable in order to be refreshed with the new data

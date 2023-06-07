@@ -25,6 +25,7 @@ import {ToastContainer} from "react-toastify";
 import ErrorPage from "./Pages/Error";
 import {useCookies} from 'react-cookie';
 import {toast} from 'react-toastify';
+import Middleware from "./components/Common/middleware"
 
 
 function App() {
@@ -75,15 +76,15 @@ function App() {
 function AppRoutes() {
   return (
     <Routes>
-      <Route path="/:tenant/:environment" element={<Dashboard/>}/>
-      <Route path="/:tenant/:environment/communities" element={<Communities/>}/>
-      <Route path="/:tenant/:environment/users" element={<Users/>}/>
-      <Route path="/:tenant/:environment/identity-providers" element={<Idps/>}/>
-      <Route path="/:tenant/:environment/services" element={<Sps/>}/>
-      <Route path="/:tenant/:environment/identity-providers/:id" element={<Idp/>}/>
-      <Route path="/:tenant/:environment/services/:id" element={<Sp/>}/>
-      <Route path="/login" element={<Login/>}/>
-      <Route path="*" element={<ErrorPage/>}/>
+      <Route path="/:tenant/:environment" element={<Middleware elementName={Dashboard}/>}/>
+      <Route path="/:tenant/:environment/communities" element={<Middleware elementName={Communities}/>}/>
+      <Route path="/:tenant/:environment/users" element={<Middleware elementName={Users}/>}/>
+      <Route path="/:tenant/:environment/identity-providers" element={<Middleware elementName={Idps}/>}/>
+      <Route path="/:tenant/:environment/services" element={<Middleware elementName={Sps}/>}/>
+      <Route path="/:tenant/:environment/identity-providers/:id" element={<Middleware elementName={Idp}/>}/>
+      <Route path="/:tenant/:environment/services/:id" element={<Middleware elementName={Sp}/>}/>
+      <Route path="/login" element={<Middleware elementName={Login}/>}/>
+      <Route path="*" element={<Middleware elementName={ErrorPage}/>}/>
     </Routes>
   )
 }
