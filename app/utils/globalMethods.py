@@ -72,7 +72,12 @@ class AuthNZCheck:
         response.headers["X-Permissions"] = permissions_json
 
 
-def permissionsCalculation(user_info = None):
+def getUserInfo(metadata, access_token):
+    headers = {'Authorization': f'Bearer {access_token}'}
+    return reqs.get(metadata['userinfo_endpoint'], headers=headers)
+
+
+def permissionsCalculation(user_info=None):
     user_entitlements = {}
     if user_info is not None:
         user_entitlements = user_info.get('eduperson_entitlement')

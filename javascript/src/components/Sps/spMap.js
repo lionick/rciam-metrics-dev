@@ -24,6 +24,7 @@ const SpMap = ({
       'spId': spId
     }
   }
+
   const loginsPerCountry = useQuery(
     [loginsPerCountryKey, params],
     getLoginsPerCountry

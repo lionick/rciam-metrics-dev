@@ -1,5 +1,5 @@
 ARG PYTHON_IMAGE_REPO=python
-FROM ${PYTHON_IMAGE_REPO}:3.8.15-bullseye
+FROM ${PYTHON_IMAGE_REPO}:3.9.16-bullseye
 RUN curl -sL https://deb.nodesource.com/setup_18.x | sed "s/exec_cmd 'apt-get update'/exec_cmd 'apt-get --allow-releaseinfo-change update'/" | bash -
 RUN echo "deb https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 RUN curl https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -

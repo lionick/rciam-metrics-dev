@@ -33,11 +33,15 @@ const Dashboard = () => {
     getTenant, {
       retry: 0,
     })
-
+   
   useEffect(() => {
-    setProjectCon(project)
-    setEnvCon(environment)
-    setTenantId(tenant?.data?.[0]?.id)
+
+    if (tenant["data"] != undefined && tenant["data"][0] != undefined && tenant["data"][0]["id"] != undefined) {
+      setProjectCon(project)
+      setEnvCon(environment)
+      setTenantId(tenant?.data?.[0]?.id)
+      console.log("test here?"+tenant["data"][0]["id"])
+    }
   }, [!tenant.isLoading
   && tenant.isSuccess
   && !tenant.isFetching])
@@ -54,8 +58,8 @@ const Dashboard = () => {
   }
 
   if (tenantId == undefined || tenantId == 0 || tenantId == "") return
-
   return (
+   
     <Container>
       <Header></Header>
       <Row>
@@ -95,6 +99,5 @@ const Dashboard = () => {
       <Footer></Footer>
     </Container>
   )
-
 }
 export default Dashboard;
