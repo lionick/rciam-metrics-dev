@@ -28,6 +28,15 @@ class AuthNZCheck:
         self.tag = tag
 
     async def __call__(self, request: Request, response: Response):
+        # For now we skip logins and dashboard routes
+        if self.tag == 'logins' or 'dashboard':
+            permissions = permissionsCalculation()
+            permissions_json = json.dumps(permissions).replace(" ", "").replace("\n", "")
+            pprint(permissions_json)
+            response.headers["X-Permissions"] = permissions_json
+            return
+
+        # permissions calculation
         access_token = request.headers.get('x-access-token')
         rciam = oauth.create_client('rciam')
         metadata = await rciam.load_server_metadata()
@@ -38,13 +47,18 @@ class AuthNZCheck:
         # Authentication
         if resp.status_code == 401:
             HTTPException(status_code=401)
+            # If we have views enabled for the anonymous user then allow
+            # the user to continue
+            # TODO: Enable in the future
+            # if not anonymous_config.get(self.tag):
+            #     HTTPException(status_code=401)
         else:
             try:
                 resp.raise_for_status()
+                data = resp.json()
             except Exception as er:
                 # TODO: Log here
                 raise HTTPException(status_code=500)
-        data = resp.json()
 
         # Authorization
         permissions = permissionsCalculation(data)
@@ -58,17 +72,21 @@ class AuthNZCheck:
         response.headers["X-Permissions"] = permissions_json
 
 
-def permissionsCalculation(user_info):
-    user_entitlements = user_info.get('eduperson_entitlement')
+def permissionsCalculation(user_info = None):
+    user_entitlements = {}
+    if user_info is not None:
+        user_entitlements = user_info.get('eduperson_entitlement')
 
     roles = {
-        'anonymous': False,
+        'anonymous': True,
         'authenticated': False,
         'administrator': False
     }
 
     for ent, role in entitlements_config.items():
         if user_entitlements is not None and ent in user_entitlements:
+            # Reset the default anonymous role
+            roles['anonymous'] = False
             # The role might be a csv list. So we need to
             # explode and act accordingly
             for item_role in role.split(","):

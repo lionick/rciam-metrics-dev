@@ -6,14 +6,11 @@ from xmlrpc.client import boolean
 from app.database import get_session
 from app.utils.globalMethods import AuthNZCheck
 
-# from ..dependencies import get_token_header
-
 # LOGINS ROUTES ARE OPEN
 
 router = APIRouter(
     tags=["logins"],
-    # dependencies=[Depends(get_token_header)],
-    # responses={404: {"description": "Not found"}},
+    dependencies=[Depends(AuthNZCheck("logins"))]
 )
 
 

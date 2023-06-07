@@ -19,8 +19,7 @@ from app.models.country_model import *
 from app.models.idp_model import *
 from app.models.country_hashed_user_model import *
 
-from .routers import authenticate, communities, countries, logins, users
-from app.utils.globalMethods import AuthNZCheck
+from .routers import authenticate, communities, countries, logins, users, dashboard
 from app.utils import configParser
 
 
@@ -59,77 +58,6 @@ app.include_router(users.router)
 app.include_router(communities.router)
 app.include_router(countries.router)
 app.include_router(logins.router)
+app.include_router(dashboard.router)
 
 
-@app.get("/tenant/{project_name}/{environment_name}")
-async def read_tenant_byname(
-        *,
-        session: Session = Depends(get_session),
-        offset: int = 0,
-        project_name: str,
-        environment_name: str
-):
-    tenant = None
-    if project_name and environment_name:
-        tenant = session.exec("""
-            SELECT * FROM tenant_info 
-            JOIN project_info ON project_info.id=project_id
-                AND LOWER(project_info.name)=LOWER('{0}')
-            JOIN environment_info ON environment_info.id=env_id
-                AND LOWER(environment_info.name)=LOWER('{1}')
-        """.format(project_name, environment_name)).all()
-    return tenant
-
-
-@app.get("/environment_byname/{environment_name}")
-async def read_environment_byname(
-        *,
-        session: Session = Depends(get_session),
-        offset: int = 0,
-        environment_name: str
-):
-    environment = None
-    if environment_name:
-        environment = session.exec("""
-            SELECT * FROM environment_info 
-            WHERE name='{0}' LIMIT 1
-        """.format(environment_name)).all()
-    return environment
-
-
-@app.get("/idps")
-async def read_idps(
-        *,
-        session: Session = Depends(get_session),
-        tenant_id: int,
-        idpId: int = None
-):
-    idpId_subquery = ""
-    if idpId:
-        idpId_subquery = """
-            AND id = {0}
-        """.format(idpId)
-    idps = session.exec("""
-            SELECT * FROM identityprovidersmap 
-            WHERE tenant_id='{0}' {1}
-        """.format(tenant_id, idpId_subquery)).all()
-    return idps
-
-
-@app.get("/sps")
-async def read_sps(
-        *,
-        session: Session = Depends(get_session),
-        tenant_id: int,
-        spId: int = None
-):
-    spId_subquery = ""
-    if spId:
-        spId_subquery = """
-            AND id = {0}
-        """.format(spId)
-    sps = session.exec("""
-            SELECT * FROM serviceprovidersmap 
-            WHERE tenant_id='{0}' {1}
-        """.format(tenant_id, spId_subquery)).all()
-    return sps
