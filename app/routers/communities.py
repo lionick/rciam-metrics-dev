@@ -37,7 +37,7 @@ async def read_members_bystatus(
         session: Session = Depends(get_session),
         offset: int = 0,
         community_id: Union[None, int] = None,
-        tenant_id: int,
+        tenenv_id: int,
 ):
     if not community_id:
         members = session.exec(select(Members).offset(offset)).all()
@@ -45,9 +45,9 @@ async def read_members_bystatus(
         # members = session.exec(select(Members).offset(offset)).all()
         members = session.exec("""
              SELECT count(*) as count, community_id, status FROM members 
-             WHERE community_id={0} AND tenant_id={1}
+             WHERE community_id={0} AND tenenv_id={1}
              GROUP BY community_id, status
-          """.format(community_id, tenant_id)).all()
+          """.format(community_id, tenenv_id)).all()
         # members = session.exec(""" SELECT community_id FROM members """)
     return members
 
@@ -58,7 +58,7 @@ async def read_communities(
         session: Session = Depends(get_session),
         offset: int = 0,
         group_by: str,
-        tenant_id: int,
+        tenenv_id: int,
         interval: Union[str, None] = None,
         count_interval: int = None,
         startDate: str = None,
@@ -75,11 +75,11 @@ async def read_communities(
             """.format(startDate, endDate)
         if interval_subquery == "":
             interval_subquery = """
-                WHERE community.tenant_id={0}
-            """.format(tenant_id)
+                WHERE community.tenenv_id={0}
+            """.format(tenenv_id)
         else:
-            interval_subquery += """ AND community.tenant_id={0} 
-            """.format(tenant_id)
+            interval_subquery += """ AND community.tenenv_id={0} 
+            """.format(tenenv_id)
 
         communities = session.exec("""
         select count(*) as count, date_trunc( '{0}', created ) as range_date, 
@@ -100,13 +100,13 @@ async def read_community(
         *,
         session: Session = Depends(get_session),
         community_id: Union[None, int] = None,
-        tenant_id: int):
+        tenenv_id: int):
     sql_subquery = ''
     if community_id:
         sql_subquery = 'id={0} and'.format(community_id)
     community = session.exec("""
-        SELECT * FROM community_info WHERE {0} tenant_id={1}
-    """.format(sql_subquery, tenant_id)).all()
+        SELECT * FROM community_info WHERE {0} tenenv_id={1}
+    """.format(sql_subquery, tenenv_id)).all()
     # statement = select(Community).options(selectinload(Community.community_info))
     # result = session.exec(statement)
     # community = result.one()

@@ -14,7 +14,7 @@ export const options = {
 };
 
 
-const LoginLineChart = ({ type, id, tenantId, uniqueLogins }) => {
+const LoginLineChart = ({ type, id, tenenvId, uniqueLogins }) => {
 
   const [managed, setManaged] = useState(false);
   let lineDataArray = [["Date", "Logins"]];
@@ -22,7 +22,7 @@ const LoginLineChart = ({ type, id, tenantId, uniqueLogins }) => {
 
   let params = {
     params: {
-      tenant_id: tenantId,
+      tenenv_id: tenenvId,
       unique_logins: uniqueLogins
     }
   }
@@ -38,7 +38,7 @@ const LoginLineChart = ({ type, id, tenantId, uniqueLogins }) => {
   useEffect(() => {
     params = {
       params: {
-        tenant_id: tenantId,
+        tenenv_id: tenenvId,
         unique_logins: uniqueLogins
       }
     }

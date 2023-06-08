@@ -15,22 +15,22 @@ const RegisteredUsersTiles = (parameters) => {
   };
 
   const { refetch: getAllRegisteredUsersCount } = useQuery(
-    generateQueryKey({ tenant_id: parameters['tenantId'] }),
+    generateQueryKey({ tenenv_id: parameters['tenenvId'] }),
     getRegisteredUsersCountby,
     { enabled: false, refetchOnWindowFocus: false }
   );
   const { refetch: getLastYearRegisteredUsersCount } = useQuery(
-    generateQueryKey({ interval: 'year', count_interval: '1', tenant_id: parameters['tenantId'] }),
+    generateQueryKey({ interval: 'year', count_interval: '1', tenenv_id: parameters['tenenvId'] }),
     getRegisteredUsersCountby,
     { enabled: false, refetchOnWindowFocus: false }
   );
   const { refetch: getLastMonthRegisteredUsersCount } = useQuery(
-    generateQueryKey({ interval: 'days', count_interval: '30', tenant_id: parameters['tenantId'] }),
+    generateQueryKey({ interval: 'days', count_interval: '30', tenenv_id: parameters['tenenvId'] }),
     getRegisteredUsersCountby,
     { enabled: false, refetchOnWindowFocus: false }
   );
   const { refetch: getLastWeekRegisteredUsersCount } = useQuery(
-    generateQueryKey({ interval: 'days', count_interval: '7', tenant_id: parameters['tenantId'] }),
+    generateQueryKey({ interval: 'days', count_interval: '7', tenenv_id: parameters['tenenvId'] }),
     getRegisteredUsersCountby,
     { enabled: false, refetchOnWindowFocus: false }
   );
@@ -41,16 +41,16 @@ const RegisteredUsersTiles = (parameters) => {
       const results = await Promise.all([
         getAllRegisteredUsersCount()
           .then((response) => 
-            ({ response, params: { tenant_id: parameters['tenantId'] } })),
+            ({ response, params: { tenenv_id: parameters['tenenvId'] } })),
         getLastYearRegisteredUsersCount()
           .then((response) => 
-            ({ response, params: { interval: 'year', count_interval: '1', tenant_id: parameters['tenantId'] } })),
+            ({ response, params: { interval: 'year', count_interval: '1', tenenv_id: parameters['tenenvId'] } })),
         getLastMonthRegisteredUsersCount()
           .then((response) => 
-            ({ response, params: { interval: 'days', count_interval: '30', tenant_id: parameters['tenantId'] } })),
+            ({ response, params: { interval: 'days', count_interval: '30', tenenv_id: parameters['tenenvId'] } })),
         getLastWeekRegisteredUsersCount()
           .then((response) => 
-            ({ response, params: { interval: 'days', count_interval: '7', tenant_id: parameters['tenantId'] } })),
+            ({ response, params: { interval: 'days', count_interval: '7', tenenv_id: parameters['tenenvId'] } })),
       ])
 
       var tilesArray = {}

@@ -31,7 +31,7 @@ var idpsArray = [];
 const LoginIdpPieChart = ({
                             setShowModalHandler,
                             spId,
-                            tenantId,
+                            tenenvId,
                             uniqueLogins,
                             goToSpecificProviderHandler
                           }) => {
@@ -40,7 +40,7 @@ const LoginIdpPieChart = ({
 
   const params = {
     params: {
-      'tenant_id': tenantId,
+      'tenenv_id': tenenvId,
       'unique_logins': uniqueLogins,
       'sp': spId
     }

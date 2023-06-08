@@ -13,7 +13,7 @@ import {getCommunities, getCountryStatsByVo} from "../../utils/queries";
 import EarthMap from "../Common/earthMap";
 import MemberStatusReport from "./memberStatusReport";
 
-const CommunitiesMap = ({tenantId}) => {
+const CommunitiesMap = ({tenenvId}) => {
   const [selectedCommunity, setSelectedCommunity] = useState({});
   const communityId = useRef(null)
 
@@ -21,7 +21,7 @@ const CommunitiesMap = ({tenantId}) => {
 
   let params = {
     params: {
-      'tenant_id': tenantId
+      'tenenv_id': tenenvId
     }
   }
 
@@ -94,7 +94,7 @@ const CommunitiesMap = ({tenantId}) => {
                   tooltipLabel="Users"
                   legendLabel="User Per Country"/>
       </Col>
-      <MemberStatusReport tenantId={tenantId}
+      <MemberStatusReport tenenvId={tenenvId}
                           communityId={communityId?.current}/>
     </Row>
   )

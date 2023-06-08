@@ -15,8 +15,8 @@ const NavbarTop = (props) => {
   const [userInfo, setUserInfo] = useContext(userinfoContext);
   // eslint-disable-next-line
   const {t, i18n} = useTranslation();
-  const {project, environment} = useParams();
-  const getConfig = key => config[project][environment][key]
+  const {tenant, environment} = useParams();
+  const getConfig = key => config[tenant][environment][key]
 
   if (!getConfig("config") || !getConfig("config")["theme_color"]) {
     return null

@@ -14,7 +14,7 @@ import {getLoginsPerCountry} from "../../utils/queries";
 const IdpMapToDataTable = ({
                              startDate,
                              endDate,
-                             tenantId,
+                             tenenvId,
                              uniqueLogins,
                              idpId
                            }) => {
@@ -26,7 +26,7 @@ const IdpMapToDataTable = ({
     params: {
       'startDate': startDate,
       'endDate': endDate,
-      'tenant_id': tenantId,
+      'tenenv_id': tenenvId,
       'unique_logins': uniqueLogins,
       'idpId': idpId
     }
@@ -46,7 +46,7 @@ const IdpMapToDataTable = ({
       params: {
         'startDate': startDate,
         'endDate': endDate,
-        'tenant_id': tenantId,
+        'tenenv_id': tenenvId,
         'unique_logins': uniqueLogins,
         'idpId': idpId
       }

@@ -10,7 +10,7 @@ import EarthMap from "../Common/earthMap";
 
 
 const IdpMap = ({
-                  tenantId,
+                  tenenvId,
                   idpId,
                   uniqueLogins,
                   startDate,
@@ -19,7 +19,7 @@ const IdpMap = ({
 
   let params = {
     params: {
-      'tenant_id': tenantId,
+      'tenenv_id': tenenvId,
       'unique_logins': uniqueLogins,
       'idpId': idpId,
       'startDate': startDate,

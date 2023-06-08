@@ -6,7 +6,7 @@ import LoginSpPieChart from "../../components/Dashboard/loginSpPieChart";
 import LoginTiles from "../../components/Dashboard/loginTiles";
 import SpsDataTable from "../../components/Sps/spsDataTable";
 
-const IdpModal = ({showModal, setShowModalHandler, tenantId}) => {
+const IdpModal = ({showModal, setShowModalHandler, tenenvId}) => {
   const handleClose = () => setShowModalHandler(false);
 
   return (
@@ -15,10 +15,10 @@ const IdpModal = ({showModal, setShowModalHandler, tenantId}) => {
         <Modal.Title>Modal heading</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <LoginTiles tenantId={tenantId}></LoginTiles>
-        <LoginLineChart tenantId={tenantId} type="idp" identifier="https://www.egi.eu/idp/shibboleth"></LoginLineChart>
-        <LoginSpPieChart tenantId={tenantId} idpEntityId="https://www.egi.eu/idp/shibboleth"></LoginSpPieChart>
-        <SpsDataTable tenantId={tenantId}
+        <LoginTiles tenenvId={tenenvId}></LoginTiles>
+        <LoginLineChart tenenvId={tenenvId} type="idp" identifier="https://www.egi.eu/idp/shibboleth"></LoginLineChart>
+        <LoginSpPieChart tenenvId={tenenvId} idpEntityId="https://www.egi.eu/idp/shibboleth"></LoginSpPieChart>
+        <SpsDataTable tenenvId={tenenvId}
                       idpEntityId="https://www.egi.eu/idp/shibboleth"
                       dataTableId="tableSps">
         </SpsDataTable>

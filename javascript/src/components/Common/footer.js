@@ -14,8 +14,8 @@ import {useTranslation} from 'react-i18next';
 
 const Footer = (props) => {
   const [language, setLanguage] = useContext(languageContext)
-  const {project, environment} = useParams();
-  const getConfig = key => config[project][environment][key]
+  const {tenant, environment} = useParams();
+  const getConfig = key => config[tenant][environment][key]
   const {t, i18n} = useTranslation();
   return (
     <footer>

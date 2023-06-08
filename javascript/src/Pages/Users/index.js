@@ -1,7 +1,7 @@
 import {useState, useContext, useEffect} from "react";
 import {useParams} from "react-router-dom";
 import {client} from '../../utils/api';
-import {envContext, projectContext} from "../../Context/context";
+import {envContext, tenantContext} from "../../Context/context";
 import Container from "react-bootstrap/Container";
 import RegisteredUsersChart from "../../components/Users/registeredUsersChart";
 import RegisteredUsersDataTable from "../../components/Users/registeredUsersDataTable";
@@ -12,33 +12,33 @@ import Footer from "../../components/Common/footer";
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import {useQuery} from "react-query";
-import {tenantKey} from "../../utils/queryKeys";
-import {getTenant} from "../../utils/queries";
+import {tenenvKey} from "../../utils/queryKeys";
+import {getTenenv} from "../../utils/queries";
 
 const Users = () => {
-  const {project, environment} = useParams();
-  const [tenantId, setTenantId] = useState(0);
+  const {tenant, environment} = useParams();
+  const [tenenvId, setTenenvId] = useState(0);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [projectCon, setProjectCon] = useContext(projectContext);
+  const [tenantCon, setTenantCon] = useContext(tenantContext);
   const [envCon, setEnvCon] = useContext(envContext)
 
-  const tenant = useQuery(
-    [tenantKey, {projectId: project, environment: environment}],
-    getTenant, {
+  const tenenv = useQuery(
+    [tenenvKey, {tenantId: tenant, environment: environment}],
+    getTenenv, {
       retry: 0,
     })
 
   useEffect(() => {
-    setProjectCon(project)
+    setTenantCon(tenant)
     setEnvCon(environment)
-    setTenantId(tenant?.data?.[0]?.id)
-  }, [!tenant.isLoading
-  && tenant.isSuccess
-  && !tenant.isFetching])
+    setTenenvId(tenenv?.data?.[0]?.id)
+  }, [!tenenv.isLoading
+  && tenenv.isSuccess
+  && !tenenv.isFetching])
 
 
-  if (tenantId == undefined || tenantId == 0 || tenantId == "") return
+  if (tenenvId == undefined || tenenvId == 0 || tenenvId == "") return
 
   return (
     <Container>
@@ -48,14 +48,14 @@ const Users = () => {
           <Col md={6}><h2>Users</h2></Col>
         </Col>
       </Row>
-      <RegisteredUsersTiles tenantId={tenantId}/>
-      <RegisteredUsersChart tenantId={tenantId}/>
-      <RegisteredUsersDataTable tenantId={tenantId}
+      <RegisteredUsersTiles tenenvId={tenenvId}/>
+      <RegisteredUsersChart tenenvId={tenenvId}/>
+      <RegisteredUsersDataTable tenenvId={tenenvId}
                                 setStartDate={setStartDate}
                                 setEndDate={setEndDate}
                                 startDate={startDate}
                                 endDate={endDate}/>
-      <RegisteredUsersMap tenantId={tenantId}
+      <RegisteredUsersMap tenenvId={tenenvId}
                           startDate={startDate}
                           endDate={endDate}/>
       <Footer/>

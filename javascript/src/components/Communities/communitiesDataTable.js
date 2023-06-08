@@ -16,7 +16,7 @@ import {useQuery, useQueryClient} from "react-query";
 import {communitiesGroupByKey} from "../../utils/queryKeys";
 import {getCommunitiesGroupBy} from "../../utils/queries";
 
-const CommunitiesDataTable = ({tenantId}) => {
+const CommunitiesDataTable = ({tenenvId}) => {
   const [communitiesPerPeriod, setCommunitiesPerPeriod] = useState([]);
   const [minDate, setMinDate] = useState(null);
   const [startDate, setStartDate] = useState(null);
@@ -29,7 +29,7 @@ const CommunitiesDataTable = ({tenantId}) => {
     params: {
       'startDate': startDate,
       'endDate': endDate,
-      'tenant_id': tenantId
+      'tenenv_id': tenenvId
     }
   }
 
@@ -46,7 +46,7 @@ const CommunitiesDataTable = ({tenantId}) => {
       params: {
         'startDate': startDate,
         'endDate': endDate,
-        'tenant_id': tenantId
+        'tenenv_id': tenenvId
       }
     }
 

@@ -20,7 +20,7 @@ import {getRegisteredUsersPerCountryGroupBy} from "../../utils/queries";
 import {useCookies} from "react-cookie";
 
 const RegisteredUsersDataTable = ({
-                                    tenantId,
+                                    tenenvId,
                                     setStartDate,
                                     setEndDate,
                                     startDate,
@@ -37,7 +37,7 @@ const RegisteredUsersDataTable = ({
     params: {
       'startDate': startDate,
       'endDate': endDate,
-      'tenant_id': tenantId
+      'tenenv_id': tenenvId
     }
   }
 
@@ -54,7 +54,7 @@ const RegisteredUsersDataTable = ({
       params: {
         'startDate': startDate,
         'endDate': endDate,
-        'tenant_id': tenantId
+        'tenenv_id': tenenvId
       }
     }
 

@@ -16,24 +16,24 @@ body .nav-header {
     font-weight: 300;
 }
 
-.tenant_logo_container, .ssp-footer {
+.tenenv_logo_container, .ssp-footer {
     flex: none;
 }
 
-.tenant_logo_container .ssp-logo {
+.tenenv_logo_container .ssp-logo {
     margin-top: 10px;
 }
 
-.tenant_logo_container .ssp-logo a {
+.tenenv_logo_container .ssp-logo a {
     display: inline-block;
     padding: 10px;
 }
 
-.tenant_logo_container .ssp-logo img {
+.tenenv_logo_container .ssp-logo img {
     max-height: 60px;
 }
 
-.tenant_logo_container h1 {
+.tenenv_logo_container h1 {
     font-family: 'Open Sans', sans-serif;
     font-weight: 300;
     font-size: 26px;

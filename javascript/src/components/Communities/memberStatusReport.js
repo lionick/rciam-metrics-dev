@@ -5,14 +5,14 @@ import {communityMembersByStatusKey} from "../../utils/queryKeys";
 import {getCommunityMembersByStatus} from "../../utils/queries";
 
 const MemberStatusReport = ({
-                              tenantId,
+                              tenenvId,
                               communityId
                             }) => {
 
 
   let params = {
     params: {
-      'tenant_id': tenantId,
+      'tenenv_id': tenenvId,
       'community_id': communityId,
     }
   }
@@ -20,7 +20,7 @@ const MemberStatusReport = ({
   const communityMembersByStatusQuery = useQuery(
     [communityMembersByStatusKey, params],
     getCommunityMembersByStatus, {
-      enabled: (tenantId != undefined && communityId != undefined)
+      enabled: (tenenvId != undefined && communityId != undefined)
     }
   )
 
@@ -40,7 +40,7 @@ const MemberStatusReport = ({
     return acc
   }, {activeUsers: 0, graceUsers: 0, otherUsers: 0})
 
-  if (tenantId == undefined
+  if (tenenvId == undefined
     || communityId == undefined) {
     return null
   }

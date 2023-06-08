@@ -7,9 +7,9 @@ import {useCookies} from 'react-cookie';
 
 function Login() {
   const {t, i18n} = useTranslation();
-  const {project, environment} = useParams();
+  const {tenant, environment} = useParams();
   const [cookies, setCookie] = useCookies(['login_start']);
-  const getConfig = key => config[project][environment][key]
+  const getConfig = key => config[tenant][environment][key]
 
   const handleLoginClick = () => {
     // Set a cookie with the current location so the backend knows where to go

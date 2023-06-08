@@ -10,7 +10,7 @@ import EarthMap from "../Common/earthMap";
 const LoginsMap = ({
                      startDate,
                      endDate,
-                     tenantId,
+                     tenenvId,
                      uniqueLogins
                    }) => {
 
@@ -18,7 +18,7 @@ const LoginsMap = ({
     params: {
       'startDate': startDate,
       'endDate': endDate,
-      'tenant_id': tenantId,
+      'tenenv_id': tenenvId,
       'unique_logins': uniqueLogins
     }
   }

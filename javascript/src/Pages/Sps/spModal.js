@@ -6,7 +6,7 @@ import LoginTiles from "../../components/Dashboard/loginTiles";
 import IdpsDataTable from "../../components/Idps/idpsDataTable";
 import LoginIdpPieChart from "../../components/Dashboard/loginIdpPieChart";
 
-const SpModal = ({showModal, setShowModalHandler, tenantId}) => {
+const SpModal = ({showModal, setShowModalHandler, tenenvId}) => {
 
 
   const handleClose = () => setShowModalHandler(false);
@@ -17,13 +17,13 @@ const SpModal = ({showModal, setShowModalHandler, tenantId}) => {
         <Modal.Title>Modal heading</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <LoginTiles tenantId={tenantId}/>
-        <LoginLineChart tenantId={tenantId}
+        <LoginTiles tenenvId={tenenvId}/>
+        <LoginLineChart tenenvId={tenenvId}
                         type="sp"
                         identifier="77bb2e22-6a97-4c92-8aec-a3c99284b4ae"/>
-        <LoginIdpPieChart tenantId={tenantId}
+        <LoginIdpPieChart tenenvId={tenenvId}
                           spIdentifier="77bb2e22-6a97-4c92-8aec-a3c99284b4ae"/>
-        <IdpsDataTable tenantId={tenantId}
+        <IdpsDataTable tenenvId={tenenvId}
                        identifier="77bb2e22-6a97-4c92-8aec-a3c99284b4ae"
                        dataTableId="tableIdps"/>
         Woohoo, you're reading this text in a modal!</Modal.Body>

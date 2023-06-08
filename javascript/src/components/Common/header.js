@@ -11,8 +11,8 @@ import NavbarTop from './navbarTop';
 const Header = (props) => {
 
   const [bannerAlertInfo, setBannerAlertInfo] = useState([]);
-  const {project, environment} = useParams();
-  const getConfig = key => config[project][environment][key]
+  const {tenant, environment} = useParams();
+  const getConfig = key => config[tenant][environment][key]
 
   useEffect(() => {
     setBannerAlertInfo(props.bannerAlertInfo);
@@ -20,7 +20,7 @@ const Header = (props) => {
 
   return (
     <div className="header">
-        <div className="tenant_logo_container">
+        <div className="tenenv_logo_container">
         {bannerAlertInfo && bannerAlertInfo[0] &&
           <div id="noty-info-bar" className={"noty-top-" + bannerAlertInfo[0].type + " noty-top-global"}>
             <div>

@@ -3,14 +3,14 @@ import {idpsKey, spsKey} from "../../utils/queryKeys";
 import {useQuery} from "react-query";
 
 const EntityInfoIdp = ({
-                         tenantId,
+                         tenenvId,
                          idpId
                        }) => {
   const idpEntities =
     useQuery(
       [idpsKey, {
         params: {
-          'tenant_id': tenantId,
+          'tenenv_id': tenenvId,
           'idpId': idpId
         }
       }],

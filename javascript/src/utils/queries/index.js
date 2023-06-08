@@ -1,10 +1,10 @@
 import {client as apiClient} from '../api';
 import axios from "axios";
 
-// Tenant
-export const getTenant = async ({queryKey}) => {
+// Tenenv
+export const getTenenv = async ({queryKey}) => {
   const [_, params] = queryKey
-  const response = await apiClient.get("tenant/" + params.projectId + "/" + params.environment)
+  const response = await apiClient.get("tenenv/" + params.tenantId + "/" + params.environment)
   return response.data
 }
 

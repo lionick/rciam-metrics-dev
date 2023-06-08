@@ -19,7 +19,7 @@ import {useQuery, useQueryClient} from "react-query";
 import {communitiesGroupByKey} from "../../utils/queryKeys";
 import {getCommunitiesGroupBy} from "../../utils/queries";
 
-const CommunitiesChart = ({tenantId}) => {
+const CommunitiesChart = ({tenenvId}) => {
 
   const [selected, setSelected] = useState(options_group_by[0].value);
   const [communities, setCommunities] = useState();
@@ -31,7 +31,7 @@ const CommunitiesChart = ({tenantId}) => {
     params: {
       'interval': selected,
       'count_interval': options[selected]["count_interval"],
-      'tenant_id': tenantId,
+      'tenenv_id': tenenvId,
     }
   }
 
@@ -48,7 +48,7 @@ const CommunitiesChart = ({tenantId}) => {
       params: {
         'interval': selected,
         'count_interval': options[selected]["count_interval"],
-        'tenant_id': tenantId,
+        'tenenv_id': tenenvId,
       }
     }
 
@@ -59,7 +59,7 @@ const CommunitiesChart = ({tenantId}) => {
       console.log(error)
     }
 
-  }, [selected, tenantId])
+  }, [selected, tenenvId])
 
 
   // Construct the data required for the datatable

@@ -14,7 +14,7 @@ import {getLoginsPerCountry} from "../../utils/queries";
 const SpMapToDataTable = ({
                             startDate,
                             endDate,
-                            tenantId,
+                            tenenvId,
                             uniqueLogins,
                             spId
                           }) => {
@@ -23,7 +23,7 @@ const SpMapToDataTable = ({
     params: {
       'startDate': startDate,
       'endDate': endDate,
-      'tenant_id': tenantId,
+      'tenenv_id': tenenvId,
       'unique_logins': uniqueLogins,
       'spId': spId
     }

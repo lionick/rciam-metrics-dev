@@ -14,7 +14,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import jwt_decode from "jwt-decode";
 import {
   languageContext,
-  projectContext,
+  tenantContext,
   envContext,
   userinfoContext
 } from "./Context/context";
@@ -29,7 +29,7 @@ import {toast} from 'react-toastify';
 
 function App() {
   const [language, setLanguage] = useState('en')
-  const [projectCon, setProjectCon] = useState(null)
+  const [tenantCon, setTenantCon] = useState(null)
   const [envCon, setEnvCon] = useState(null)
   const [userInfo, setUserInfo] = useState(null)
   const [cookies, setCookie] = useCookies();
@@ -49,7 +49,7 @@ function App() {
 
   return (
     <languageContext.Provider value={[language, setLanguage]}>
-      <projectContext.Provider value={[projectCon, setProjectCon]}>
+      <tenantContext.Provider value={[tenantCon, setTenantCon]}>
         <envContext.Provider value={[envCon, setEnvCon]}>
           <userinfoContext.Provider value={[userInfo, setUserInfo]}>
             <Layout>
@@ -67,7 +67,7 @@ function App() {
             </Layout>
           </userinfoContext.Provider>
         </envContext.Provider>
-      </projectContext.Provider>
+      </tenantContext.Provider>
     </languageContext.Provider>
   );
 }
@@ -75,13 +75,13 @@ function App() {
 function AppRoutes() {
   return (
     <Routes>
-      <Route path="/:project/:environment" element={<Dashboard/>}/>
-      <Route path="/:project/:environment/communities" element={<Communities/>}/>
-      <Route path="/:project/:environment/users" element={<Users/>}/>
-      <Route path="/:project/:environment/identity-providers" element={<Idps/>}/>
-      <Route path="/:project/:environment/services" element={<Sps/>}/>
-      <Route path="/:project/:environment/identity-providers/:id" element={<Idp/>}/>
-      <Route path="/:project/:environment/services/:id" element={<Sp/>}/>
+      <Route path="/:tenant/:environment" element={<Dashboard/>}/>
+      <Route path="/:tenant/:environment/communities" element={<Communities/>}/>
+      <Route path="/:tenant/:environment/users" element={<Users/>}/>
+      <Route path="/:tenant/:environment/identity-providers" element={<Idps/>}/>
+      <Route path="/:tenant/:environment/services" element={<Sps/>}/>
+      <Route path="/:tenant/:environment/identity-providers/:id" element={<Idp/>}/>
+      <Route path="/:tenant/:environment/services/:id" element={<Sp/>}/>
       <Route path="/login" element={<Login/>}/>
       <Route path="*" element={<ErrorPage/>}/>
     </Routes>

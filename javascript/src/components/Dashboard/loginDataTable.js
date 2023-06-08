@@ -19,7 +19,7 @@ import {toast} from "react-toastify";
 const LoginDataTable = ({
                           startDateHandler,
                           endDateHandler,
-                          tenantId,
+                          tenenvId,
                           uniqueLogins
                         }) => {
   const [loginsPerCountryPerPeriod, setLoginsPerCountryPerPeriod] = useState([]);
@@ -37,7 +37,7 @@ const LoginDataTable = ({
       'group_by': groupBy,
       'startDate': startDate,
       'endDate': endDate,
-      'tenant_id': tenantId,
+      'tenenv_id': tenenvId,
       'unique_logins': uniqueLogins
     }
   }
@@ -57,7 +57,7 @@ const LoginDataTable = ({
         'group_by': groupBy,
         'startDate': startDate,
         'endDate': endDate,
-        'tenant_id': tenantId,
+        'tenenv_id': tenenvId,
         'unique_logins': uniqueLogins
       }
     }

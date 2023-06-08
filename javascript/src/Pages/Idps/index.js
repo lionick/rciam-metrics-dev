@@ -1,7 +1,7 @@
 import {useState, useContext, useEffect} from "react";
 import {useParams} from "react-router-dom";
 import {useNavigate} from "react-router-dom";
-import {envContext, projectContext} from "../../Context/context";
+import {envContext, tenantContext} from "../../Context/context";
 import Container from "react-bootstrap/Container";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -12,33 +12,33 @@ import IdpsDataTable from "../../components/Idps/idpsDataTable";
 import IdpModal from "./idpModal";
 import Header from "../../components/Common/header";
 import {useQuery} from "react-query";
-import {tenantKey} from "../../utils/queryKeys";
-import {getTenant} from "../../utils/queries";
+import {tenenvKey} from "../../utils/queryKeys";
+import {getTenenv} from "../../utils/queries";
 
 const Idps = () => {
 
   const [uniqueLogins, setUniqueLogins] = useState(false);
-  const {project, environment} = useParams();
-  const [tenantId, setTenantId] = useState(0);
+  const {tenant, environment} = useParams();
+  const [tenenvId, setTenenvId] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [projectCon, setProjectCon] = useContext(projectContext);
+  const [tenantCon, setTenantCon] = useContext(tenantContext);
   const [envCon, setEnvCon] = useContext(envContext)
 
-  const tenant = useQuery(
-    [tenantKey, {projectId: project, environment: environment}],
-    getTenant, {
+  const tenenv = useQuery(
+    [tenenvKey, {tenantId: tenant, environment: environment}],
+    getTenenv, {
       retry: 0,
     })
 
   useEffect(() => {
-    setProjectCon(project)
+    setTenantCon(tenant)
     setEnvCon(environment)
-    setTenantId(tenant?.data?.[0]?.id)
-  }, [!tenant.isLoading
-  && tenant.isSuccess
-  && !tenant.isFetching])
+    setTenenvId(tenenv?.data?.[0]?.id)
+  }, [!tenenv.isLoading
+  && tenenv.isSuccess
+  && !tenenv.isFetching])
 
   const handleChange = event => {
     setUniqueLogins(event.target.checked);
@@ -47,14 +47,14 @@ const Idps = () => {
   const goToSpecificProvider = (id, provider) => {
     var path = ""
     if (provider === "sp") {
-      path = "/" + project + "/" + environment + "/services/" + id;
+      path = "/" + tenant + "/" + environment + "/services/" + id;
     } else {
-      path = "/" + project + "/" + environment + "/identity-providers/" + id;
+      path = "/" + tenant + "/" + environment + "/identity-providers/" + id;
     }
     navigate(path);
   }
 
-  if (tenantId == undefined || tenantId == 0 || tenantId == "") return
+  if (tenenvId == undefined || tenenvId == 0 || tenenvId == "") return
 
   return (
     <Container>
@@ -75,19 +75,19 @@ const Idps = () => {
         </Col>
       </Row>
 
-      <LoginTiles tenantId={tenantId}
+      <LoginTiles tenenvId={tenenvId}
                   uniqueLogins={uniqueLogins}/>
-      <LoginIdpPieChart tenantId={tenantId}
+      <LoginIdpPieChart tenenvId={tenenvId}
                         uniqueLogins={uniqueLogins}
                         setShowModalHandler={setShowModal}
                         goToSpecificProviderHandler={goToSpecificProvider}/>
-      <IdpsDataTable tenantId={tenantId}
+      <IdpsDataTable tenenvId={tenenvId}
                      uniqueLogins={uniqueLogins}
                      setStartDate={setStartDate}
                      setEndDate={setEndDate}
                      startDate={startDate}
                      endDate={endDate}/>
-      <IdpModal tenantId={tenantId}
+      <IdpModal tenenvId={tenenvId}
                 showModal={showModal}
                 setShowModalHandler={setShowModal}/>
     </Container>)

@@ -11,7 +11,7 @@ import EarthMap from "../Common/earthMap";
 const RegisteredUsersMap = ({
                               startDate,
                               endDate,
-                              tenantId
+                              tenenvId
                             }) => {
   const queryClient = useQueryClient();
 
@@ -19,7 +19,7 @@ const RegisteredUsersMap = ({
     params: {
       'startDate': startDate,
       'endDate': endDate,
-      'tenant_id': tenantId,
+      'tenenv_id': tenenvId,
     }
   }
 
@@ -37,7 +37,7 @@ const RegisteredUsersMap = ({
     } catch (error) {
       console.log(error)
     }
-  }, [startDate, endDate, tenantId])
+  }, [startDate, endDate, tenenvId])
 
   if(registeredUsersByCountry.isIdle
      || registeredUsersByCountry.isLoading

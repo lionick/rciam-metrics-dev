@@ -1,7 +1,7 @@
 import {useState, useEffect, useContext} from "react";
 import {useParams} from "react-router-dom";
 import {useNavigate} from "react-router-dom";
-import {envContext, projectContext} from "../../Context/context";
+import {envContext, tenantContext} from "../../Context/context";
 import Form from 'react-bootstrap/Form';
 import LoginDataTable from "../../components/Dashboard/loginDataTable";
 import LoginIdpPieChart from "../../components/Dashboard/loginIdpPieChart";
@@ -15,32 +15,32 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import {Container} from "react-bootstrap";
 import {useQuery} from "react-query";
-import {tenantKey} from "../../utils/queryKeys";
-import {getTenant} from "../../utils/queries";
+import {tenenvKey} from "../../utils/queryKeys";
+import {getTenenv} from "../../utils/queries";
 
 const Dashboard = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [uniqueLogins, setUniqueLogins] = useState(false);
-  const [tenantId, setTenantId] = useState(0);
+  const [tenenvId, setTenenvId] = useState(0);
   const [showModal, setShowModal] = useState(false);
-  const {project, environment} = useParams();
-  const [projectCon, setProjectCon] = useContext(projectContext);
+  const {tenant, environment} = useParams();
+  const [tenantCon, setTenantCon] = useContext(tenantContext);
   const [envCon, setEnvCon] = useContext(envContext)
 
-  const tenant = useQuery(
-    [tenantKey, {projectId: project, environment: environment}],
-    getTenant, {
+  const tenenv = useQuery(
+    [tenenvKey, {tenantId: tenant, environment: environment}],
+    getTenenv, {
       retry: 0,
     })
 
   useEffect(() => {
-    setProjectCon(project)
+    setTenantCon(tenant)
     setEnvCon(environment)
-    setTenantId(tenant?.data?.[0]?.id)
-  }, [!tenant.isLoading
-  && tenant.isSuccess
-  && !tenant.isFetching])
+    setTenenvId(tenenv?.data?.[0]?.id)
+  }, [!tenenv.isLoading
+    && tenenv.isSuccess
+    && !tenenv.isFetching])
 
   const handleChange = event => {
     setUniqueLogins(event.target.checked);
@@ -48,13 +48,12 @@ const Dashboard = () => {
   let navigate = useNavigate();
   const goToSpecificProvider = (id, provider) => {
     const path = provider === "sp" ?
-      `/${project}/${environment}/services/${id}` :
-      `/${project}/${environment}/identity-providers/${id}`
+      `/${tenant}/${environment}/services/${id}` :
+      `/${tenant}/${environment}/identity-providers/${id}`
     navigate(path);
   }
 
-  if (tenantId == undefined || tenantId == 0 || tenantId == "") return
-
+  if (tenenvId == undefined || tenenvId == 0 || tenenvId == "") return
   return (
     <Container>
       <Header></Header>
@@ -72,25 +71,25 @@ const Dashboard = () => {
           </Col>
         </Col>
       </Row>
-      <LoginTiles tenantId={tenantId}
+      <LoginTiles tenenvId={tenenvId}
                   uniqueLogins={uniqueLogins}/>
-      <LoginLineChart tenantId={tenantId}
+      <LoginLineChart tenenvId={tenenvId}
                       uniqueLogins={uniqueLogins}/>
-      <LoginIdpPieChart tenantId={tenantId}
+      <LoginIdpPieChart tenenvId={tenenvId}
                         setShowModalHandler={setShowModal}
                         uniqueLogins={uniqueLogins}
                         goToSpecificProviderHandler={goToSpecificProvider}/>
-      <LoginSpPieChart tenantId={tenantId}
+      <LoginSpPieChart tenenvId={tenenvId}
                        setShowModalHandler={setShowModal}
                        uniqueLogins={uniqueLogins}
                        goToSpecificProviderHandler={goToSpecificProvider}/>
       <LoginDataTable startDateHandler={setStartDate}
                       endDateHandler={setEndDate}
-                      tenantId={tenantId}
+                      tenenvId={tenenvId}
                       uniqueLogins={uniqueLogins}/>
       <LoginsMap startDate={startDate}
                  endDate={endDate}
-                 tenantId={tenantId}
+                 tenenvId={tenenvId}
                  uniqueLogins={uniqueLogins}/>
       <Footer></Footer>
     </Container>

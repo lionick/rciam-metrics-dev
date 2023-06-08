@@ -19,7 +19,7 @@ import {createAnchorElement} from "../Common/utils";
 const SpsDataTable = ({
                         idpId,
                         dataTableId = "table-sp",
-                        tenantId,
+                        tenenvId,
                         uniqueLogins,
                         setStartDate,
                         setEndDate,
@@ -30,7 +30,7 @@ const SpsDataTable = ({
   const [spsLogins, setSpsLogins] = useState([]);
   const [minDate, setMinDate] = useState("");
   const [btnPressed, setBtnPressed] = useState(false);
-  const {project, environment} = useParams();
+  const {tenant, environment} = useParams();
   const queryClient = useQueryClient();
 
   let params = {
@@ -38,7 +38,7 @@ const SpsDataTable = ({
       'startDate': startDate,
       'endDate': endDate,
       'idp': idpId,
-      'tenant_id': tenantId,
+      'tenenv_id': tenenvId,
       'unique_logins': uniqueLogins
     }
   }
@@ -57,7 +57,7 @@ const SpsDataTable = ({
         'startDate': startDate,
         'endDate': endDate,
         'idp': idpId,
-        'tenant_id': tenantId,
+        'tenenv_id': tenenvId,
         'unique_logins': uniqueLogins
       }
     }
@@ -77,7 +77,7 @@ const SpsDataTable = ({
       && !loginsPerSp.isFetching
       && loginsPerSp.isSuccess
       && loginsPerSp?.data?.map(sp => ({
-        "Service Provider Name": cookies.userinfo == undefined ? sp.name : createAnchorElement(sp.name, `/${project}/${environment}/identity-providers/${sp.id}`),
+        "Service Provider Name": cookies.userinfo == undefined ? sp.name : createAnchorElement(sp.name, `/${tenant}/${environment}/identity-providers/${sp.id}`),
         "Service Provider Identifier": sp.identifier,
         "Number of Logins": sp.count
       }))

@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom'
 import Sidebar from "react-bootstrap-sidebar-menu";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faDoorOpen, faHome, faUser, faUsers, faWarehouse} from '@fortawesome/free-solid-svg-icons';
-import {envContext, projectContext} from '../../Context/context';
+import {envContext, tenantContext} from '../../Context/context';
 import {useCookies} from 'react-cookie';
 
 
@@ -12,7 +12,7 @@ const SideNav = (props) => {
 
 
   // const { t, i18n } = useTranslation();
-  const [project] = useContext(projectContext);
+  const [tenant] = useContext(tenantContext);
   const [environment] = useContext(envContext);
   return (
 
@@ -26,19 +26,19 @@ const SideNav = (props) => {
           <Sidebar.Nav>
             {/* Home */}
             <Link className="sidebar-menu-nav-link"
-                  to={"/" + project + "/" + environment}>
+                  to={"/" + tenant + "/" + environment}>
               <Sidebar.Nav.Icon><FontAwesomeIcon icon={faHome}/></Sidebar.Nav.Icon>
               <Sidebar.Nav.Title>Home</Sidebar.Nav.Title>
             </Link>
             {/* Identity Providers */}
             <Link className="sidebar-menu-nav-link"
-                  to={"/" + project + "/" + environment + "/identity-providers"}>
+                  to={"/" + tenant + "/" + environment + "/identity-providers"}>
               <Sidebar.Nav.Icon><FontAwesomeIcon icon={faWarehouse}/></Sidebar.Nav.Icon>
               <Sidebar.Nav.Title>Identity Providers</Sidebar.Nav.Title>
             </Link>
             {/* Services */}
             <Link className="sidebar-menu-nav-link"
-                  to={"/" + project + "/" + environment + "/services"}>
+                  to={"/" + tenant + "/" + environment + "/services"}>
               <Sidebar.Nav.Icon><FontAwesomeIcon icon={faDoorOpen}/></Sidebar.Nav.Icon>
               <Sidebar.Nav.Title>Services</Sidebar.Nav.Title>
             </Link>
@@ -47,13 +47,13 @@ const SideNav = (props) => {
                 <>
                   {/* Users */}
                   <Link className="sidebar-menu-nav-link"
-                        to={"/" + project + "/" + environment + "/users"}>
+                        to={"/" + tenant + "/" + environment + "/users"}>
                     <Sidebar.Nav.Icon><FontAwesomeIcon icon={faUser}/></Sidebar.Nav.Icon>
                     <Sidebar.Nav.Title>Users</Sidebar.Nav.Title>
                   </Link>
                   {/* Communities */}
                   <Link className="sidebar-menu-nav-link"
-                        to={"/" + project + "/" + environment + "/communities"}>
+                        to={"/" + tenant + "/" + environment + "/communities"}>
                     <Sidebar.Nav.Icon><FontAwesomeIcon icon={faUsers}/></Sidebar.Nav.Icon>
                     <Sidebar.Nav.Title>Communities</Sidebar.Nav.Title>
                   </Link>

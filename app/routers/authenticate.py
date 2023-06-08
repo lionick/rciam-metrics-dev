@@ -15,7 +15,7 @@ router = APIRouter(
     # responses={404: {"description": "Not found"}},
 )
 
-# TODO: Tenant hardcoded for now
+# TODO: Tenenv hardcoded for now
 OIDC_config = configParser.getConfig('oidc_client_egi')
 SERVER_config = configParser.getConfig('server_config')
 oauth = OAuth()
@@ -74,7 +74,7 @@ async def authorize_rciam(request: Request):
         # print("user info data:")
         # pprint(user_info_data)
         # Encode the data to jwt
-        # todo: the key could become configurable and per tenant
+        # todo: the key could become configurable and per tenenv
         jwt_user = jwt.encode(payload=user_info_data,
                               key="a custom key",
                               algorithm="HS256")

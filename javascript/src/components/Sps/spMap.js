@@ -11,7 +11,7 @@ import EarthMap from "../Common/earthMap";
 const SpMap = ({
                  startDate,
                  endDate,
-                 tenantId,
+                 tenenvId,
                  uniqueLogins,
                  spId
                }) => {
@@ -19,7 +19,7 @@ const SpMap = ({
     params: {
       'startDate': startDate,
       'endDate': endDate,
-      'tenant_id': tenantId,
+      'tenenv_id': tenenvId,
       'unique_logins': uniqueLogins,
       'spId': spId
     }

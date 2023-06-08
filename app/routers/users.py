@@ -22,7 +22,7 @@ async def read_users_country(
         offset: int = 0,
         startDate: str = None,
         endDate: str = None,
-        tenant_id: int
+        tenenv_id: int
 ):
     interval_subquery = ""
     if startDate and endDate:
@@ -34,7 +34,7 @@ async def read_users_country(
         SELECT statistics_country_hashed.hasheduserid as userid, country, countrycode, count(*) as sum_count
         FROM statistics_country_hashed
         JOIN country_codes ON countryid=country_codes.id
-        WHERE tenant_id = {1}
+        WHERE tenenv_id = {1}
         GROUP BY userid, country, countrycode
         ),
         max_count_users_countries AS (
@@ -54,7 +54,7 @@ async def read_users_country(
             {0}
             GROUP BY country,countrycode
             ORDER BY country,countrycode
-        """.format(interval_subquery, tenant_id)).all()
+        """.format(interval_subquery, tenenv_id)).all()
     return users_countries
 
 
@@ -66,7 +66,7 @@ async def read_users_country_groupby(
         group_by: str,
         startDate: str = None,
         endDate: str = None,
-        tenant_id: int
+        tenenv_id: int
 ):
     if group_by:
         interval_subquery = ""
@@ -79,7 +79,7 @@ async def read_users_country_groupby(
         SELECT statistics_country_hashed.hasheduserid as userid, country, countrycode, count(*) as sum_count
         FROM statistics_country_hashed
         JOIN country_codes ON countryid=country_codes.id
-        WHERE tenant_id = {2}
+        WHERE tenenv_id = {2}
         GROUP BY userid, country, countrycode
         ),
         max_count_users_countries AS (
@@ -103,7 +103,7 @@ async def read_users_country_groupby(
                 GROUP BY range_date, country,countrycode
                 ORDER BY range_date, country
             ) user_country_group_by
-        GROUP BY range_date""".format(group_by, interval_subquery, tenant_id)).all()
+        GROUP BY range_date""".format(group_by, interval_subquery, tenenv_id)).all()
         return users
 
 
@@ -117,7 +117,7 @@ async def read_users_groupby(
         count_interval: int = None,
         startDate: str = None,
         endDate: str = None,
-        tenant_id: int
+        tenenv_id: int
 ):
     interval_subquery = ""
     if group_by:
@@ -132,11 +132,11 @@ async def read_users_groupby(
         select count(*) as count, date_trunc( '{0}', created ) as range_date, 
             min(created) as min_date
         from users
-        WHERE status = 'A' AND tenant_id = {1}
+        WHERE status = 'A' AND tenenv_id = {1}
         {2}
         group by range_date
         ORDER BY range_date ASC
-        """.format(group_by, tenant_id, interval_subquery)).all()
+        """.format(group_by, tenenv_id, interval_subquery)).all()
     return users
 
 
@@ -147,7 +147,7 @@ async def read_users_countby(
         offset: int = 0,
         interval: Union[str, None] = None,
         count_interval: int = None,
-        tenant_id: int
+        tenenv_id: int
 ):
     interval_subquery = ""
     if interval and count_interval:
@@ -157,6 +157,6 @@ async def read_users_countby(
     users = session.exec("""
     select count(*) as count
     from users
-    WHERE status = 'A' AND tenant_id = {1}
-    {0}""".format(interval_subquery, tenant_id)).all()
+    WHERE status = 'A' AND tenenv_id = {1}
+    {0}""".format(interval_subquery, tenenv_id)).all()
     return users

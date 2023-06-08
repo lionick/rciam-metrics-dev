@@ -18,7 +18,7 @@ import {registeredUsersGroupByKey} from "../../utils/queryKeys";
 import {getRegisteredUsersGroupBy} from "../../utils/queries";
 
 const RegisteredUsersChart = ({
-                                tenantId
+                                tenenvId
                               }) => {
   const [selected, setSelected] = useState(options_group_by[0].value);
   const [registeredUsers, setRegisteredUsers] = useState([]);
@@ -29,7 +29,7 @@ const RegisteredUsersChart = ({
     params: {
       'interval': selected,
       'count_interval': regUsersOptions[selected]["count_interval"],
-      'tenant_id': tenantId
+      'tenenv_id': tenenvId
     }
   }
 
@@ -46,7 +46,7 @@ const RegisteredUsersChart = ({
       params: {
         'interval': selected,
         'count_interval': regUsersOptions[selected]["count_interval"],
-        'tenant_id': tenantId,
+        'tenenv_id': tenenvId,
       }
     }
 
@@ -57,7 +57,7 @@ const RegisteredUsersChart = ({
       console.log(error)
     }
 
-  }, [selected, tenantId])
+  }, [selected, tenenvId])
 
 
   // Construct the data required for the datatable

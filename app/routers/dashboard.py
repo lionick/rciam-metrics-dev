@@ -11,24 +11,24 @@ router = APIRouter(
     dependencies=[Depends(AuthNZCheck("dashboard"))]
 )
 
-@router.get("/tenant/{project_name}/{environment_name}")
-async def read_tenant_byname(
+@router.get("/tenenv/{tenant_name}/{environment_name}")
+async def read_tenenv_byname(
         *,
         session: Session = Depends(get_session),
         offset: int = 0,
-        project_name: str,
+        tenant_name: str,
         environment_name: str
 ):
-    tenant = None
-    if project_name and environment_name:
-        tenant = session.exec("""
-            SELECT * FROM tenant_info 
-            JOIN project_info ON project_info.id=project_id
-                AND LOWER(project_info.name)=LOWER('{0}')
+    tenenv = None
+    if tenant_name and environment_name:
+        tenenv = session.exec("""
+            SELECT * FROM tenenv_info 
+            JOIN tenant_info ON tenant_info.id=tenant_id
+                AND LOWER(tenant_info.name)=LOWER('{0}')
             JOIN environment_info ON environment_info.id=env_id
                 AND LOWER(environment_info.name)=LOWER('{1}')
-        """.format(project_name, environment_name)).all()
-    return tenant
+        """.format(tenant_name, environment_name)).all()
+    return tenenv
 
 
 @router.get("/environment_byname/{environment_name}")
@@ -51,7 +51,7 @@ async def read_environment_byname(
 async def read_idps(
         *,
         session: Session = Depends(get_session),
-        tenant_id: int,
+        tenenv_id: int,
         idpId: int = None
 ):
     idpId_subquery = ""
@@ -61,8 +61,8 @@ async def read_idps(
         """.format(idpId)
     idps = session.exec("""
             SELECT * FROM identityprovidersmap 
-            WHERE tenant_id='{0}' {1}
-        """.format(tenant_id, idpId_subquery)).all()
+            WHERE tenenv_id='{0}' {1}
+        """.format(tenenv_id, idpId_subquery)).all()
     return idps
 
 
@@ -70,7 +70,7 @@ async def read_idps(
 async def read_sps(
         *,
         session: Session = Depends(get_session),
-        tenant_id: int,
+        tenenv_id: int,
         spId: int = None
 ):
     spId_subquery = ""
@@ -80,6 +80,6 @@ async def read_sps(
         """.format(spId)
     sps = session.exec("""
             SELECT * FROM serviceprovidersmap 
-            WHERE tenant_id='{0}' {1}
-        """.format(tenant_id, spId_subquery)).all()
+            WHERE tenenv_id='{0}' {1}
+        """.format(tenenv_id, spId_subquery)).all()
     return sps

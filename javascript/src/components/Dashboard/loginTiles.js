@@ -15,7 +15,7 @@ const LoginTiles = (parameters) => {
 
   const { refetch: getAllLoginsCount } = useQuery(
     generateQueryKey({
-      'tenant_id': parameters['tenantId'],
+      'tenenv_id': parameters['tenenvId'],
       'unique_logins': parameters['uniqueLogins'],
       'idpId': parameters['idpId'] !== undefined ? parameters['idpId'] : null,
       'spId': parameters['spId'] !== undefined ? parameters['spId'] : null
@@ -28,7 +28,7 @@ const LoginTiles = (parameters) => {
     generateQueryKey({ 
       'interval': 'year',
       'count_interval': '1',
-      'tenant_id': parameters['tenantId'],
+      'tenenv_id': parameters['tenenvId'],
       'unique_logins': parameters['uniqueLogins'],
       'idpId': parameters['idpId'] !== undefined ? parameters['idpId'] : null,
       'spId': parameters['spId'] !== undefined ? parameters['spId'] : null
@@ -41,7 +41,7 @@ const LoginTiles = (parameters) => {
     generateQueryKey({
       'interval': 'days',
       'count_interval': '30',
-      'tenant_id': parameters['tenantId'],
+      'tenenv_id': parameters['tenenvId'],
       'unique_logins': parameters['uniqueLogins'],
       'idpId': parameters['idpId'] !== undefined ? parameters['idpId'] : null,
       'spId': parameters['spId'] !== undefined ? parameters['spId'] : null
@@ -54,7 +54,7 @@ const LoginTiles = (parameters) => {
     generateQueryKey({
       'interval': 'days',
       'count_interval': '7',
-      'tenant_id': parameters['tenantId'],
+      'tenenv_id': parameters['tenenvId'],
       'unique_logins': parameters['uniqueLogins'],
       'idpId': parameters['idpId'] !== undefined ? parameters['idpId'] : null,
       'spId': parameters['spId'] !== undefined ? parameters['spId'] : null
@@ -72,7 +72,7 @@ const LoginTiles = (parameters) => {
           ({
             response, params:
             {
-              'tenant_id': parameters['tenantId'],
+              'tenenv_id': parameters['tenenvId'],
               'unique_logins': parameters['uniqueLogins'],
               'idpId': parameters['idpId'] !== undefined ? parameters['idpId'] : null,
               'spId': parameters['spId'] !== undefined ? parameters['spId'] : null
@@ -86,7 +86,7 @@ const LoginTiles = (parameters) => {
             {
               'interval': 'year',
               'count_interval': '1',
-              'tenant_id': parameters['tenantId'],
+              'tenenv_id': parameters['tenenvId'],
               'unique_logins': parameters['uniqueLogins'],
               'idpId': parameters['idpId'] !== undefined ? parameters['idpId'] : null,
               'spId': parameters['spId'] !== undefined ? parameters['spId'] : null
@@ -100,7 +100,7 @@ const LoginTiles = (parameters) => {
             {
               'interval': 'days',
               'count_interval': '30',
-              'tenant_id': parameters['tenantId'],
+              'tenenv_id': parameters['tenenvId'],
               'unique_logins': parameters['uniqueLogins'],
               'idpId': parameters['idpId'] !== undefined ? parameters['idpId'] : null,
               'spId': parameters['spId'] !== undefined ? parameters['spId'] : null
@@ -114,7 +114,7 @@ const LoginTiles = (parameters) => {
             {
               'interval': 'days',
               'count_interval': '7',
-              'tenant_id': parameters['tenantId'],
+              'tenenv_id': parameters['tenenvId'],
               'unique_logins': parameters['uniqueLogins'],
               'idpId': parameters['idpId'] !== undefined ? parameters['idpId'] : null,
               'spId': parameters['spId'] !== undefined ? parameters['spId'] : null

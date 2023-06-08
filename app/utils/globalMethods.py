@@ -6,7 +6,7 @@ import json, jwt
 from app.utils import configParser
 from authlib.integrations.starlette_client import OAuth, OAuthError
 
-# TODO: Tenant hardcoded for now
+# TODO: Tenenv hardcoded for now
 OIDC_config = configParser.getConfig('oidc_client_egi')
 SERVER_config = configParser.getConfig('server_config')
 entitlements_config = configParser.getConfig('entitlements', 'authorize.py')
@@ -115,6 +115,10 @@ def permissionsCalculation(user_info = None):
             'view': False,
             'write': False
         },
+        'statistics_raw': {
+            'views': False,
+            'write': False,
+        }
     }
 
     for role in roles.keys():
@@ -128,3 +132,9 @@ def permissionsCalculation(user_info = None):
         'roles': roles,
         'actions': actions
     }
+
+
+def hasAction(user_actions, category, action):
+    if (user_actions[category][action] is True):
+        return True
+    return False

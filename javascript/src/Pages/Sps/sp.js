@@ -2,7 +2,7 @@ import {useState, useEffect, useContext} from "react";
 import {useParams} from "react-router-dom";
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import {useNavigate} from "react-router-dom";
-import {envContext, projectContext} from "../../Context/context";
+import {envContext, tenantContext} from "../../Context/context";
 import LoginLineChart from "../../components/Dashboard/loginLineChart";
 import LoginTiles from "../../components/Dashboard/loginTiles";
 import Form from 'react-bootstrap/Form';
@@ -17,35 +17,35 @@ import SpMapToDataTable from "../../components/Sps/spMapToDataTable";
 import Header from "../../components/Common/header";
 import 'react-tabs/style/react-tabs.css';
 import {useQuery} from "react-query";
-import {tenantKey} from "../../utils/queryKeys";
-import {getTenant} from "../../utils/queries";
+import {tenenvKey} from "../../utils/queryKeys";
+import {getTenenv} from "../../utils/queries";
 
 
 const Sp = () => {
-  const {project, environment, id} = useParams();
-  const [tenantId, setTenantId] = useState(0);
+  const {tenant, environment, id} = useParams();
+  const [tenenvId, setTenenvId] = useState(0);
   const [uniqueLogins, setUniqueLogins] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [projectCon, setProjectCon] = useContext(projectContext);
+  const [tenantCon, setTenantCon] = useContext(tenantContext);
   const [envCon, setEnvCon] = useContext(envContext)
 
-  const tenant = useQuery(
-    [tenantKey, {projectId: project, environment: environment}],
-    getTenant, {
+  const tenenv = useQuery(
+    [tenenvKey, {tenantId: tenant, environment: environment}],
+    getTenenv, {
       retry: 0,
     })
 
 
   useEffect(() => {
-    if (!!tenant?.data?.[0]?.id) {
-      setProjectCon(project)
+    if (!!tenenv?.data?.[0]?.id) {
+      setTenantCon(tenant)
       setEnvCon(environment)
-      setTenantId(tenant?.data?.[0]?.id)
+      setTenenvId(tenenv?.data?.[0]?.id)
     }
-  }, [!tenant.isLoading
-  && tenant.isSuccess
-  && !tenant.isFetching])
+  }, [!tenenv.isLoading
+  && tenenv.isSuccess
+  && !tenenv.isFetching])
 
   const handleChange = event => {
     setUniqueLogins(event.target.checked);
@@ -53,13 +53,13 @@ const Sp = () => {
   let navigate = useNavigate();
   const goToSpecificProvider = (id, provider) => {
     const path = provider === "sp" ?
-      `/${project}/${environment}/services/${id}` :
-      `/${project}/${environment}/identity-providers/${id}`
+      `/${tenant}/${environment}/services/${id}` :
+      `/${tenant}/${environment}/identity-providers/${id}`
     navigate(path);
   }
 
 
-  if (tenantId == undefined || tenantId == 0 || tenantId == "") return;
+  if (tenenvId == undefined || tenenvId == 0 || tenenvId == "") return;
 
 
   return (
@@ -68,7 +68,7 @@ const Sp = () => {
       <Row>
         <Col className="title-container" md={12}>
           <Col md={6}>
-            <EntityInfoSp tenantId={tenantId}
+            <EntityInfoSp tenenvId={tenenvId}
                           spId={id}/>
           </Col>
           <Col md={6} className="unique-logins">
@@ -83,18 +83,18 @@ const Sp = () => {
           </Col>
         </Col>
       </Row>
-      <LoginTiles tenantId={tenantId}
+      <LoginTiles tenenvId={tenenvId}
                   uniqueLogins={uniqueLogins}
                   spId={id}/>
-      <LoginLineChart tenantId={tenantId}
+      <LoginLineChart tenenvId={tenenvId}
                       type="sp"
                       id={id}
                       uniqueLogins={uniqueLogins}/>
-      <LoginIdpPieChart tenantId={tenantId}
+      <LoginIdpPieChart tenenvId={tenenvId}
                         spId={id}
                         uniqueLogins={uniqueLogins}
                         goToSpecificProviderHandler={goToSpecificProvider}/>
-      <IdpsDataTable tenantId={tenantId}
+      <IdpsDataTable tenenvId={tenenvId}
                      spId={id}
                      dataTableId="tableSps"
                      uniqueLogins={uniqueLogins}
@@ -111,14 +111,14 @@ const Sp = () => {
         <TabPanel>
           <SpMap startDate={startDate}
                  endDate={endDate}
-                 tenantId={tenantId}
+                 tenenvId={tenenvId}
                  spId={id}
                  uniqueLogins={uniqueLogins}/>
         </TabPanel>
         <TabPanel>
           <SpMapToDataTable startDate={startDate}
                             endDate={endDate}
-                            tenantId={tenantId}
+                            tenenvId={tenenvId}
                             spId={id}
                             uniqueLogins={uniqueLogins}/>
         </TabPanel>

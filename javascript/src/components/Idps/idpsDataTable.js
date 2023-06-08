@@ -20,7 +20,7 @@ import {toast} from "react-toastify";
 const IdpsDataTable = ({
                          spId,
                          dataTableId = "table-idp",
-                         tenantId,
+                         tenenvId,
                          uniqueLogins,
                          setStartDate,
                          setEndDate,
@@ -31,7 +31,7 @@ const IdpsDataTable = ({
   const [idpsLogins, setIdpsLogins] = useState([]);
   const [minDate, setMinDate] = useState("");
   const [btnPressed, setBtnPressed] = useState(false);
-  const {project, environment} = useParams();
+  const {tenant, environment} = useParams();
   const queryClient = useQueryClient();
 
   let params = {
@@ -39,7 +39,7 @@ const IdpsDataTable = ({
       'startDate': startDate,
       'endDate': endDate,
       'sp': spId,
-      'tenant_id': tenantId,
+      'tenenv_id': tenenvId,
       'unique_logins': uniqueLogins
     }
   }
@@ -58,7 +58,7 @@ const IdpsDataTable = ({
         'startDate': startDate,
         'endDate': endDate,
         'sp': spId,
-        'tenant_id': tenantId,
+        'tenenv_id': tenenvId,
         'unique_logins': uniqueLogins
       }
     }
@@ -79,7 +79,7 @@ const IdpsDataTable = ({
       && loginsPerIpd.isFetched
       && loginsPerIpd.isSuccess
       && loginsPerIpd?.data?.map(idp => ({
-        "Identity Provider Name": cookies.userinfo == undefined ? idp.name : createAnchorElement(idp.name, `/${project}/${environment}/identity-providers/${idp.id}`),
+        "Identity Provider Name": cookies.userinfo == undefined ? idp.name : createAnchorElement(idp.name, `/${tenant}/${environment}/identity-providers/${idp.id}`),
         "Identity Provider Identifier": idp.entityid,
         "Number of Logins": idp.count
       }))
