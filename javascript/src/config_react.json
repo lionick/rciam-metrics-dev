@@ -11,7 +11,7 @@
         "logo_url": "https://aai-dev.egi.eu/proxy/module.php/themeegi/resources/images/logo.svg",
         "home_page_title": "EGI Metrics (Development)",
         "contact": "faai@grnet.gr",
-        "footer_description": "Copyright ©2016-2022 | Check-in is an EGI service provided by GRNET, receiving funding from the <a href='https://www.egi.eu/egi-foundation/' target='_blank' rel='noopener noreferrer'>EGI Foundation (EGI.eu)</a> and the <a href='https://www.egi.eu/tenant/egi-ace/' target='_blank' rel='noopener noreferrer'>EGI-ACE project</a> (Horizon 2020) under Grant number 101017567",
+        "footer_description": "Copyright ©2016-2022 | Check-in is an EGI service provided by GRNET, receiving funding from the <a href='https://www.egi.eu/egi-foundation/' target='_blank' rel='noopener noreferrer'>EGI Foundation (EGI.eu)</a> and the <a href='https://www.egi.eu/project/egi-ace/' target='_blank' rel='noopener noreferrer'>EGI-ACE project</a> (Horizon 2020) under Grant number 101017567",
         "theme_color": "#0A559C"
       }
     }
