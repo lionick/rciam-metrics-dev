@@ -8,19 +8,14 @@ import {
 // Tenenv
 export const getTenenv = async ({queryKey}) => {
   const [_, params] = queryKey
-<<<<<<< HEAD
-  const response = await apiClient.get("tenenv/" + params.tenantId + "/" + params.environment)
-  return response.data
-=======
   try {
-    const response = await apiClient.get("tenant/" + params.projectId + "/" + params.environment)
+    const response = await apiClient.get("tenenv/" + params.tenantId + "/" + params.environment)
     return response.data
   } catch (error) {
     console.log('error', error)
     handleError(error)
     return error.response
   }
->>>>>>> c9d7344... delete cookies
 }
 
 // Logins

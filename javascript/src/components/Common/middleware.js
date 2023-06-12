@@ -11,10 +11,10 @@ import ErrorPage from "../../Pages/Error";
 import {useParams} from "react-router-dom";
 
 const Middleware = ({elementName}) => {
-  const {project, environment} = useParams();
-    // XXX We set the environment and project globally
+  const {tenant, environment} = useParams();
+    // XXX We set the environment and tenant globally
   window.environment = environment
-  window.project = project
+  window.tenant = tenant
 
   const Component = elementName
   return (
