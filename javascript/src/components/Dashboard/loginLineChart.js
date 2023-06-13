@@ -1,11 +1,11 @@
-import { useState, useContext, useEffect } from "react";
-import { Chart } from "react-google-charts";
+import {useState, useEffect} from "react";
+import {Chart} from "react-google-charts";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { getLoginsGroupByDay } from "../../utils/queries";
-import { useQuery } from "react-query";
-import { loginsGroupByDayKey } from "../../utils/queryKeys";
+import {getLoginsGroupByDay} from "../../utils/queries";
+import {useQuery, useQueryClient} from "react-query";
+import {loginsGroupByDayKey} from "../../utils/queryKeys";
 
 export const options = {
   // title: "Overall number of logins per day",
@@ -14,11 +14,15 @@ export const options = {
 };
 
 
-const LoginLineChart = ({ type, id, tenenvId, uniqueLogins }) => {
-
+const LoginLineChart = ({
+                          type,
+                          id,
+                          tenenvId,
+                          uniqueLogins
+                        }) => {
+  const queryClient = useQueryClient();
   const [managed, setManaged] = useState(false);
-  let lineDataArray = [["Date", "Logins"]];
-  const [lineData, setLineData] = useState(lineDataArray)
+  const [lineData, setLineData] = useState([["Date", "Logins"]])
 
   let params = {
     params: {
@@ -42,24 +46,35 @@ const LoginLineChart = ({ type, id, tenenvId, uniqueLogins }) => {
         unique_logins: uniqueLogins
       }
     }
+
     if (type) {
-      params["params"][[type]] = id
+      params["params"][type] = id
     }
+
+
     try {
-      loginsGroupByDay.refetch()
-        .then(response => {
-          
-          response?.data.forEach(element => {
-            lineDataArray.push([new Date(element.date), element.count])
-          })
-          setLineData(lineDataArray)
-          setManaged(false);
-        })
+      const response = queryClient.refetchQueries([loginsGroupByDayKey, params])
     } catch (error) {
       // todo: Here we can handle any authentication or authorization errors
       console.log(error)
     }
   }, [uniqueLogins])
+
+  // Construct the data required for the datatable
+  useEffect(() => {
+    const lineDataArray = !loginsGroupByDay.isLoading
+      && !loginsGroupByDay.isFetching
+      && loginsGroupByDay.isSuccess
+      && loginsGroupByDay?.data?.map(element => ([new Date(element.date), element.count]))
+
+    if (!!loginsGroupByDay?.data && !!lineDataArray) {
+      lineDataArray.unshift(["Date", "Logins"])
+      setLineData(lineDataArray)
+      setManaged(false);
+    }
+  }, [!loginsGroupByDay.isLoading
+  && !loginsGroupByDay.isFetching
+  && loginsGroupByDay.isSuccess])
 
 
   // This is for Dates with no logins, we have to set 0 for these dates
@@ -103,10 +118,10 @@ const LoginLineChart = ({ type, id, tenenvId, uniqueLogins }) => {
     return dataTable;
   }
 
-  if (lineData.length === 1
-      && (loginsGroupByDay.isLoading
-          || loginsGroupByDay.isFetching)
-     ) {
+  if (lineData?.length <= 1
+      || loginsGroupByDay.isLoading
+      || loginsGroupByDay.isFetching
+  ) {
     return null
   }
 
@@ -124,7 +139,7 @@ const LoginLineChart = ({ type, id, tenenvId, uniqueLogins }) => {
           chartEvents={[
             {
               eventName: "ready",
-              callback: ({ chartWrapper, google }) => {
+              callback: ({chartWrapper, google}) => {
                 const chart = chartWrapper.getChart();
                 if (!managed) {
                   setZerosIfNoDate(chartWrapper.getDataTable(), google)
@@ -136,20 +151,18 @@ const LoginLineChart = ({ type, id, tenenvId, uniqueLogins }) => {
           ]}
           controls={[
             {
-
               controlType: "ChartRangeFilter",
               options: {
                 filterColumnIndex: 0,
                 ui: {
                   chartType: "LineChart",
                   chartOptions: {
-                    chartArea: { width: "80%", height: "100%" },
-                    hAxis: { baselineColor: "none" },
+                    chartArea: {width: "80%", height: "100%"},
+                    hAxis: {baselineColor: "none"},
                   },
                 },
               },
               controlPosition: "bottom",
-
             },
           ]}
         />
