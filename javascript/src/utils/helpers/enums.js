@@ -64,3 +64,17 @@ export const regUsersOptions = {
     count_interval: 8
   }
 };
+
+export const optionsPieChart = {
+  pieSliceText: 'value',
+  width: '100%',
+  height: '350',
+  chartArea: {
+    left: "3%",
+    top: "3%",
+    height: "94%",
+    width: "94%"
+  },
+  sliceVisibilityThreshold: .005,
+  tooltip: {isHtml: true, trigger: "selection"}
+};

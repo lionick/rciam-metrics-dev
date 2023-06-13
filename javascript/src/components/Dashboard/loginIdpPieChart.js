@@ -1,32 +1,16 @@
-import {useState, useContext, useEffect} from "react";
+import {useState, useEffect} from "react";
 import {Chart} from "react-google-charts";
-import {client} from '../../utils/api';
 import {useCookies} from "react-cookie";
-import Select from 'react-select';
-import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "jquery/dist/jquery.min.js";
 import $ from "jquery";
-import {convertDateByGroup, getWeekNumber} from "../Common/utils";
 import {useQuery} from "react-query";
 import {loginsPerIdpKey} from "../../utils/queryKeys";
 import {getLoginsPerIdp} from "../../utils/queries";
+import {optionsPieChart} from "../../utils/helpers/enums";
 
-export const options = {
-  pieSliceText: 'value',
-  width: '100%',
-  height: '350',
-  chartArea: {
-    left: "3%",
-    top: "3%",
-    height: "94%",
-    width: "94%"
-  },
-  sliceVisibilityThreshold: .005,
-  tooltip: {isHtml: true, trigger: "selection"}
-};
 var idpsArray = [];
 const LoginIdpPieChart = ({
                             setShowModalHandler,
@@ -68,9 +52,10 @@ const LoginIdpPieChart = ({
 
   }, [uniqueLogins])
 
-  if (loginsPerIpd.isLoading
-    || loginsPerIpd.isFetching
-    || idps.length === 1 ) {
+  if (idps.length === 1
+      && (loginsPerIpd.isLoading
+          || loginsPerIpd.isFetching)
+      ) {
     return null
   }
 
@@ -83,7 +68,7 @@ const LoginIdpPieChart = ({
         <Chart
           chartType="PieChart"
           data={idps ?? []}
-          options={options}
+          options={optionsPieChart}
           width={"100%"}
           height={"400px"}
           className="pieChart"

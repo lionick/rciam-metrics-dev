@@ -23,6 +23,7 @@ const deleteCookie = (name, path, domain) => {
 }
 
 const handleError = (error) => {
+  console.log('errror', error)
   if (error.response.status == 401
       && error.response.headers['x-authenticated'] == "false") {
       deleteCookie('idtoken', '/', window.location.hostname)

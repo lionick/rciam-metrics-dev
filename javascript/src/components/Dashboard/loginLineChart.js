@@ -59,7 +59,7 @@ const LoginLineChart = ({ type, id, tenenvId, uniqueLogins }) => {
       // todo: Here we can handle any authentication or authorization errors
       console.log(error)
     }
-  }, [!loginsGroupByDay.isLoading && loginsGroupByDay.isSuccess && loginsGroupByDay?.data, uniqueLogins])
+  }, [uniqueLogins])
 
 
   // This is for Dates with no logins, we have to set 0 for these dates
@@ -103,9 +103,10 @@ const LoginLineChart = ({ type, id, tenenvId, uniqueLogins }) => {
     return dataTable;
   }
 
-  if (loginsGroupByDay.isLoading
-    || loginsGroupByDay.isFetching
-    || lineData.length === 1) {
+  if (lineData.length === 1
+      && (loginsGroupByDay.isLoading
+          || loginsGroupByDay.isFetching)
+     ) {
     return null
   }
 

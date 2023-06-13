@@ -9,20 +9,7 @@ import $ from "jquery";
 import {loginsPerSpKey} from "../../utils/queryKeys";
 import {getLoginsPerSP} from "../../utils/queries";
 import {useQuery} from "react-query";
-
-export const options = {
-  pieSliceText: 'value',
-  width: '100%',
-  height: '350',
-  chartArea: {
-    left: "3%",
-    top: "3%",
-    height: "94%",
-    width: "94%"
-  },
-  sliceVisibilityThreshold: .005,
-  tooltip: {isHtml: true, trigger: "selection"}
-};
+import {optionsPieChart} from "../../utils/helpers/enums";
 
 var spsArray = [];
 
@@ -67,9 +54,10 @@ const LoginSpPieChart = ({
       })
   }, [uniqueLogins])
 
-  if (loginsPerSp.isLoading
-      || loginsPerSp.isFetching
-      || sps.length === 1) {
+  if (sps.length === 1
+      && (loginsPerSp.isLoading
+          || loginsPerSp.isFetching)
+     ) {
     return null
   }
 
@@ -82,7 +70,7 @@ const LoginSpPieChart = ({
         <Chart
           chartType="PieChart"
           data={sps ?? []}
-          options={options}
+          options={optionsPieChart}
           width={"100%"}
           height={"400px"}
           className="pieChart"
