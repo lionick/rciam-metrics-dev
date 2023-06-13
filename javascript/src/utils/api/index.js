@@ -30,7 +30,7 @@ const handleError = (error) => {
       deleteCookie('userinfo', '/', window.location.hostname)
       // XXX it would be better if the root was / and not a path
       //     Find a way to redirect to dashboard/root
-      window.location.href = `${window.tenant}/${window.environment}`
+      window.location.href = `/${window.tenant}/${window.environment}`
     }
 }
 

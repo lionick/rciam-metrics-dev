@@ -30,14 +30,6 @@ class AuthNZCheck:
     async def __call__(self, request: Request, response: Response):
         response.headers["Access-Control-Expose-Headers"] = "X-Permissions, X-Authenticated"
 
-        # For now we skip logins and dashboard routes
-        if self.tag == 'logins' or self.tag == 'dashboard':
-            permissions = permissionsCalculation()
-            permissions_json = json.dumps(permissions).replace(" ", "").replace("\n", "")
-            pprint(permissions_json)
-            response.headers["X-Permissions"] = permissions_json
-            return
-
         # permissions calculation
         access_token = request.headers.get('x-access-token')
         rciam = oauth.create_client('rciam')
@@ -48,6 +40,15 @@ class AuthNZCheck:
 
         # Authentication
         if resp.status_code == 401:
+            # For now we skip logins and dashboard routes
+            if self.tag == 'logins' or self.tag == 'dashboard':
+                permissions = permissionsCalculation()
+                permissions_json = json.dumps(permissions).replace(" ", "").replace("\n", "")
+                pprint(permissions_json)
+                response.headers["X-Permissions"] = permissions_json
+                response.headers["X-Authenticated"] = "false"
+                return
+
             raise HTTPException(
                 status_code=401,
                 detail="Authentication failed",
@@ -67,14 +68,15 @@ class AuthNZCheck:
         # Authorization
         permissions = permissionsCalculation(data)
         permissions_json = json.dumps(permissions).replace(" ", "").replace("\n", "")
-        if bool(self.tag):
-            # Currently we only care about view
-            if permissions['actions'][self.tag]['view'] == False:
-                HTTPException(status_code=403)
 
         # Add the permission to a custom header field
         response.headers["X-Permissions"] = permissions_json
         response.headers["X-Authenticated"] = "true"
+
+        if bool(self.tag):
+            # Currently we only care about view
+            if permissions['actions'][self.tag]['view'] == False:
+                HTTPException(status_code=403)
 
 
 def permissionsCalculation(user_info = None):
