@@ -31,7 +31,7 @@ class AuthNZCheck:
         response.headers["Access-Control-Expose-Headers"] = "X-Permissions, X-Authenticated"
 
         # For now we skip logins and dashboard routes
-        if self.tag == 'logins' or 'dashboard':
+        if self.tag == 'logins' or self.tag == 'dashboard':
             permissions = permissionsCalculation()
             permissions_json = json.dumps(permissions).replace(" ", "").replace("\n", "")
             pprint(permissions_json)
