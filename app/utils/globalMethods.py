@@ -114,6 +114,10 @@ def permissionsCalculation(user_info = None):
             'view': False,
             'write': False
         },
+        'logins': {
+            'view': True,
+            'write': True
+        },
         'registered_users': {
             'view': False,
             'write': False

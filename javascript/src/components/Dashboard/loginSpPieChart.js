@@ -46,7 +46,7 @@ const LoginSpPieChart = ({
   useEffect(() => {
     loginsPerSp.refetch()
       .then(response => {
-        response?.data.forEach(element => {
+        response?.data?.forEach(element => {
           spsChartArray.push([element.name, element.count])
           spsArray.push([element.id, element.name, element.identifier])
         })

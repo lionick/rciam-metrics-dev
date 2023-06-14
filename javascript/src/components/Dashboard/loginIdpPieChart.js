@@ -43,7 +43,7 @@ const LoginIdpPieChart = ({
   useEffect(() => {
     loginsPerIpd.refetch()
       .then(response => {
-        response?.data.forEach(element => {
+        response?.data?.forEach(element => {
           idpsChartArray.push([element.name, element.count])
           idpsArray.push([element.id, element.name, element.identifier])
         })
