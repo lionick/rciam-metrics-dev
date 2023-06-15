@@ -1,11 +1,11 @@
-import {useState, useEffect} from "react";
-import {Chart} from "react-google-charts";
+import {useState, useEffect, useCallback} from "react";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {getLoginsGroupByDay} from "../../utils/queries";
 import {useQuery, useQueryClient} from "react-query";
 import {loginsGroupByDayKey} from "../../utils/queryKeys";
+import {Chart} from "react-google-charts";
 
 const LoginLineChart = ({
                           type,
@@ -14,7 +14,8 @@ const LoginLineChart = ({
                           uniqueLogins
                         }) => {
   const queryClient = useQueryClient();
-  const [lineData, setLineData] = useState([["Date", "Logins"]])
+  const [lineData, setLineData] = useState([["Date", "Logins"], ['', 0]]
+  )
 
   let params = {
     params: {
@@ -67,12 +68,18 @@ const LoginLineChart = ({
   && !loginsGroupByDay.isFetching
   && loginsGroupByDay.isSuccess])
 
-  if (loginsGroupByDay.isLoading
-      || loginsGroupByDay.isFetching
-      || lineData?.length <= 1
-  ) {
-    return null
-  }
+    const lineChartRef = useCallback(chart => {
+    // console.log('chart', chart)
+  }, [lineData.length > 2])
+
+    // XXX Google Chart will not work if we return empty and then
+    //     try to reload
+    // if (loginsGroupByDay.isLoading
+    //   || loginsGroupByDay.isFetching
+    //   || lineData?.length <= 2
+    // ) {
+    //   return (<></>)
+    // }
 
   return (
     <Row>
@@ -81,9 +88,11 @@ const LoginLineChart = ({
           <h3 className="box-title">Overall number of logins per day</h3>
         </div>
         <Chart
+          ref={lineChartRef}
           chartType="LineChart"
           width="100%"
           data={lineData}
+          loader={<div>Data loading</div>}
           options={{
             legend: 'none'
           }}

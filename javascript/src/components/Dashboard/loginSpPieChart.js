@@ -53,12 +53,14 @@ const LoginSpPieChart = ({
       })
   }, [uniqueLogins])
 
-  if (sps.length === 1
-      && (loginsPerSp.isLoading
-          || loginsPerSp.isFetching)
-     ) {
-    return null
-  }
+  // XXX Google Chart will not work if we return empty and then
+  //     try to reload
+  // if (sps.length === 1
+  //     && (loginsPerSp.isLoading
+  //         || loginsPerSp.isFetching)
+  //    ) {
+  //   return null
+  // }
 
   return (
     <Row>

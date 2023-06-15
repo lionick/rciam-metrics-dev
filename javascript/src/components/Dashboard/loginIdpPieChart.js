@@ -18,7 +18,7 @@ const LoginIdpPieChart = ({
                             uniqueLogins,
                             goToSpecificProviderHandler
                           }) => {
-  let idpsChartArray = [["Identity Provider", "Logins"]];
+  let idpsChartArray = [["Identity Provider", "Logins"], ['', 0]];
   const [idps, setIdps] = useState(idpsChartArray);
 
   const params = {
@@ -51,12 +51,14 @@ const LoginIdpPieChart = ({
 
   }, [uniqueLogins])
 
-  if (loginsPerIpd.isLoading
-    || loginsPerIpd.isFetching
-    || idps.length <= 1
-  ) {
-    return null
-  }
+  // XXX Google Chart will not work if we return empty and then
+  //     try to reload
+  // if (loginsPerIpd.isLoading
+  //   || loginsPerIpd.isFetching
+  //   || idps.length <= 1
+  // ) {
+  //   return null
+  // }
 
   return (
     <Row>
@@ -66,7 +68,7 @@ const LoginIdpPieChart = ({
         </div>
         <Chart
           chartType="PieChart"
-          data={idps ?? []}
+          data={idps}
           options={optionsPieChart}
           width={"100%"}
           height={"400px"}

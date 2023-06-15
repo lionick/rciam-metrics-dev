@@ -102,11 +102,13 @@ const CommunitiesChart = ({tenenvId}) => {
   && !communitiesGroupBy.isFetching
   && communitiesGroupBy.isSuccess])
 
-  if (communitiesGroupBy.isLoading
-    || communitiesGroupBy.isFetching
-    || communities?.length === 0) {
-    return null
-  }
+  // XXX Google Chart will not work if we return empty and then
+  //     try to reload
+  // if (communitiesGroupBy.isLoading
+  //   || communitiesGroupBy.isFetching
+  //   || communities?.length === 0) {
+  //   return null
+  // }
 
   return (
     <Row className="box">
@@ -116,18 +118,11 @@ const CommunitiesChart = ({tenenvId}) => {
         </div>
       </Col>
       <Col lg={9}>
-        {
-          communities?.length > 1 ?
-            <Chart chartType="ColumnChart"
-                   width="100%"
-                   height="400px"
-                   data={communities}
-                   options={global_options}/>
-            :
-            <div className="box-header with-border">
-              <h3 className="box-title">No data available</h3>
-            </div>
-        }
+        <Chart chartType="ColumnChart"
+               width="100%"
+               height="400px"
+               data={communities}
+               options={global_options}/>
       </Col>
       <Col lg={3}>
         <Container>
