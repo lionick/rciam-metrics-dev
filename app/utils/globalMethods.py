@@ -24,11 +24,12 @@ oauth.register(
 
 # https://www.fastapitutorial.com/blog/class-based-dependency-injection/
 class AuthNZCheck:
-    def __init__(self, tag: str = ""):
+    def __init__(self, tag: str = "", skip: bool = False):
+        self.skip = skip
         self.tag = tag
 
     async def __call__(self, request: Request, response: Response):
-        response.headers["Access-Control-Expose-Headers"] = "X-Permissions, X-Authenticated"
+        response.headers["Access-Control-Expose-Headers"] = "X-Permissions, X-Authenticated, X-Redirect"
 
         # permissions calculation
         access_token = request.headers.get('x-access-token')
@@ -41,12 +42,13 @@ class AuthNZCheck:
         # Authentication
         if resp.status_code == 401:
             # For now we skip logins and dashboard routes
-            if self.tag == 'logins' or self.tag == 'dashboard':
+            if (self.tag == 'logins' or self.tag == 'dashboard') and self.skip:
                 permissions = permissionsCalculation()
                 permissions_json = json.dumps(permissions).replace(" ", "").replace("\n", "")
                 pprint(permissions_json)
                 response.headers["X-Permissions"] = permissions_json
                 response.headers["X-Authenticated"] = "false"
+                response.headers["X-Redirect"] = "false"
                 return
 
             raise HTTPException(
@@ -54,7 +56,8 @@ class AuthNZCheck:
                 detail="Authentication failed",
                 headers={
                     "X-Authenticated": "false",
-                    "Access-Control-Expose-Headers": "X-Permissions, X-Authenticated"
+                    "X-Redirect": "true",
+                    "Access-Control-Expose-Headers": "X-Permissions, X-Authenticated, , X-Redirect"
                 }
             )
         else:

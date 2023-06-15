@@ -83,7 +83,7 @@ async def authorize_rciam(request: Request):
         # XXX The max_age of the cookie is the same as the
         # access token max age which we extract from the token
         # itself
-        response.headers["Access-Control-Expose-Headers"] = "X-Permissions, X-Authenticated"
+        response.headers["Access-Control-Expose-Headers"] = "X-Permissions, X-Authenticated, , X-Redirect"
         response.set_cookie(key="userinfo",
                             value=jwt_user,
                             secure=None,

@@ -8,7 +8,7 @@ from app.utils.globalMethods import AuthNZCheck
 
 router = APIRouter(
     tags=["dashboard"],
-    dependencies=[Depends(AuthNZCheck("dashboard"))]
+    dependencies=[Depends(AuthNZCheck("dashboard", True))]
 )
 
 @router.get("/tenenv/{tenant_name}/{environment_name}")

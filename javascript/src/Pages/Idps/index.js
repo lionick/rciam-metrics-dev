@@ -9,7 +9,6 @@ import Form from 'react-bootstrap/Form';
 import LoginIdpPieChart from "../../components/Dashboard/loginIdpPieChart";
 import LoginTiles from "../../components/Dashboard/loginTiles";
 import IdpsDataTable from "../../components/Idps/idpsDataTable";
-import IdpModal from "./idpModal";
 import Header from "../../components/Common/header";
 import {useQuery} from "react-query";
 import {tenenvKey} from "../../utils/queryKeys";
@@ -87,9 +86,6 @@ const Idps = () => {
                      setEndDate={setEndDate}
                      startDate={startDate}
                      endDate={endDate}/>
-      <IdpModal tenenvId={tenenvId}
-                showModal={showModal}
-                setShowModalHandler={setShowModal}/>
     </Container>)
 
 }

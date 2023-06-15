@@ -24,8 +24,11 @@ const deleteCookie = (name, path, domain) => {
 
 const handleError = (error) => {
   console.log('errror', error)
+  // debugger
   if (error.response.status == 401
-      && error.response.headers['x-authenticated'] == "false") {
+      && error.response.headers['x-authenticated'] == "false"
+      && error.response.headers['x-redirect'] == "true"
+     ) {
       deleteCookie('idtoken', '/', window.location.hostname)
       deleteCookie('atoken', '/', window.location.hostname)
       deleteCookie('userinfo', '/', window.location.hostname)
