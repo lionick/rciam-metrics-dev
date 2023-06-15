@@ -14,7 +14,6 @@ import {optionsPieChart} from "../../utils/helpers/enums";
 var spsArray = [];
 
 const LoginSpPieChart = ({
-                           setShowModalHandler,
                            idpId,
                            tenenvId,
                            uniqueLogins,

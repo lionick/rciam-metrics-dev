@@ -13,7 +13,6 @@ import {optionsPieChart} from "../../utils/helpers/enums";
 
 var idpsArray = [];
 const LoginIdpPieChart = ({
-                            setShowModalHandler,
                             spId,
                             tenenvId,
                             uniqueLogins,
@@ -52,10 +51,10 @@ const LoginIdpPieChart = ({
 
   }, [uniqueLogins])
 
-  if (idps.length === 1
-      && (loginsPerIpd.isLoading
-          || loginsPerIpd.isFetching)
-      ) {
+  if (loginsPerIpd.isLoading
+    || loginsPerIpd.isFetching
+    || idps.length <= 1
+  ) {
     return null
   }
 

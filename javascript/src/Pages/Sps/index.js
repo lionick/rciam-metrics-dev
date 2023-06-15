@@ -19,7 +19,6 @@ const Sps = () => {
   const [uniqueLogins, setUniqueLogins] = useState(false);
   const {tenant, environment} = useParams();
   const [tenenvId, setTenenvId] = useState(0);
-  const [showModal, setShowModal] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [tenantCon, setTenantCon] = useContext(tenantContext);
@@ -76,7 +75,6 @@ const Sps = () => {
                   uniqueLogins={uniqueLogins}/>
       <LoginSpPieChart tenenvId={tenenvId}
                        uniqueLogins={uniqueLogins}
-                       setShowModalHandler={setShowModal}
                        goToSpecificProviderHandler={goToSpecificProvider}/>
       <SpsDataTable tenenvId={tenenvId}
                     uniqueLogins={uniqueLogins}

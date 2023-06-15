@@ -23,7 +23,6 @@ const Dashboard = () => {
   const [endDate, setEndDate] = useState("");
   const [uniqueLogins, setUniqueLogins] = useState(false);
   const [tenenvId, setTenenvId] = useState(0);
-  const [showModal, setShowModal] = useState(false);
   const {tenant, environment} = useParams();
   const [tenantCon, setTenantCon] = useContext(tenantContext);
   const [envCon, setEnvCon] = useContext(envContext)
@@ -53,10 +52,15 @@ const Dashboard = () => {
     navigate(path);
   }
 
-  if (tenenvId == undefined || tenenvId == 0 || tenenvId == "") return
+  if (tenenvId == undefined
+      || tenenvId == 0
+      || tenenvId == "") {
+    return
+  }
+
   return (
     <Container>
-      <Header></Header>
+      <Header/>
       <Row>
         <Col className="title-container" md={12}>
           <Col md={6}><h2>Dashboard</h2></Col>
@@ -76,11 +80,9 @@ const Dashboard = () => {
       <LoginLineChart tenenvId={tenenvId}
                       uniqueLogins={uniqueLogins}/>
       <LoginIdpPieChart tenenvId={tenenvId}
-                        setShowModalHandler={setShowModal}
                         uniqueLogins={uniqueLogins}
                         goToSpecificProviderHandler={goToSpecificProvider}/>
       <LoginSpPieChart tenenvId={tenenvId}
-                       setShowModalHandler={setShowModal}
                        uniqueLogins={uniqueLogins}
                        goToSpecificProviderHandler={goToSpecificProvider}/>
       <LoginDataTable startDateHandler={setStartDate}
@@ -91,7 +93,7 @@ const Dashboard = () => {
                  endDate={endDate}
                  tenenvId={tenenvId}
                  uniqueLogins={uniqueLogins}/>
-      <Footer></Footer>
+      <Footer/>
     </Container>
   )
 

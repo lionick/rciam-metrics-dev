@@ -14,7 +14,6 @@ const LoginLineChart = ({
                           uniqueLogins
                         }) => {
   const queryClient = useQueryClient();
-  const [managed, setManaged] = useState(false);
   const [lineData, setLineData] = useState([["Date", "Logins"]])
 
   let params = {
@@ -63,15 +62,14 @@ const LoginLineChart = ({
     if (!!loginsGroupByDay?.data && !!lineDataArray) {
       lineDataArray.unshift(["Date", "Logins"])
       setLineData(lineDataArray)
-      setManaged(false);
     }
   }, [!loginsGroupByDay.isLoading
   && !loginsGroupByDay.isFetching
   && loginsGroupByDay.isSuccess])
 
-  if (lineData?.length <= 1
-    || loginsGroupByDay.isLoading
-    || loginsGroupByDay.isFetching
+  if (loginsGroupByDay.isLoading
+      || loginsGroupByDay.isFetching
+      || lineData?.length <= 1
   ) {
     return null
   }

@@ -27,7 +27,7 @@ const handleError = (error) => {
   // debugger
   if (error.response.status == 401
       && error.response.headers['x-authenticated'] == "false"
-      && error.response.headers['x-redirect'] == "true"
+      && error.response.headers?.['x-redirect'] == "true"
      ) {
       deleteCookie('idtoken', '/', window.location.hostname)
       deleteCookie('atoken', '/', window.location.hostname)

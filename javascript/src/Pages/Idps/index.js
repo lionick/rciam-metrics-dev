@@ -19,7 +19,6 @@ const Idps = () => {
   const [uniqueLogins, setUniqueLogins] = useState(false);
   const {tenant, environment} = useParams();
   const [tenenvId, setTenenvId] = useState(0);
-  const [showModal, setShowModal] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [tenantCon, setTenantCon] = useContext(tenantContext);
@@ -78,7 +77,6 @@ const Idps = () => {
                   uniqueLogins={uniqueLogins}/>
       <LoginIdpPieChart tenenvId={tenenvId}
                         uniqueLogins={uniqueLogins}
-                        setShowModalHandler={setShowModal}
                         goToSpecificProviderHandler={goToSpecificProvider}/>
       <IdpsDataTable tenenvId={tenenvId}
                      uniqueLogins={uniqueLogins}
