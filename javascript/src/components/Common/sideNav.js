@@ -9,7 +9,7 @@ import {useCookies} from 'react-cookie';
 
 const SideNav = (props) => {
   const [cookies, setCookie] = useCookies();
-
+  const permissions = cookies.permissions
 
   // const { t, i18n } = useTranslation();
   const [tenant] = useContext(tenantContext);
@@ -44,21 +44,24 @@ const SideNav = (props) => {
               <Sidebar.Nav.Title>Services</Sidebar.Nav.Title>
             </Link>
             {
-              cookies.userinfo != undefined ?
-                <>
-                  {/* Users */}
-                  <Link className="sidebar-menu-nav-link"
-                        to={"/" + tenant + "/" + environment + "/users"}>
-                    <Sidebar.Nav.Icon><FontAwesomeIcon icon={faUser}/></Sidebar.Nav.Icon>
-                    <Sidebar.Nav.Title>Users</Sidebar.Nav.Title>
-                  </Link>
-                  {/* Communities */}
-                  <Link className="sidebar-menu-nav-link"
-                        to={"/" + tenant + "/" + environment + "/communities"}>
-                    <Sidebar.Nav.Icon><FontAwesomeIcon icon={faUsers}/></Sidebar.Nav.Icon>
-                    <Sidebar.Nav.Title>Communities</Sidebar.Nav.Title>
-                  </Link>
-                </> : null
+              cookies.userinfo != undefined
+              && !!permissions?.actions?.registered_users?.['view'] ?
+                // Users
+                (<Link className="sidebar-menu-nav-link"
+                       to={"/" + tenant + "/" + environment + "/users"}>
+                  <Sidebar.Nav.Icon><FontAwesomeIcon icon={faUser}/></Sidebar.Nav.Icon>
+                  <Sidebar.Nav.Title>Users</Sidebar.Nav.Title>
+                </Link>) : null
+            }
+            {
+              cookies.userinfo != undefined
+              && !!permissions?.actions?.communities?.['view'] ?
+                // Communities
+                (<Link className="sidebar-menu-nav-link"
+                       to={"/" + tenant + "/" + environment + "/communities"}>
+                  <Sidebar.Nav.Icon><FontAwesomeIcon icon={faUsers}/></Sidebar.Nav.Icon>
+                  <Sidebar.Nav.Title>Communities</Sidebar.Nav.Title>
+                </Link>) : null
             }
           </Sidebar.Nav>
         </Sidebar.Body>

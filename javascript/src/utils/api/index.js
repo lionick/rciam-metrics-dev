@@ -13,6 +13,17 @@ const getCookie = (name) => {
   return false
 }
 
+const addCookie = (name, path, domain, payload = "") => {
+  const today = new Date();
+  today.setHours(today.getHours() + 1);
+  const permissionsCookie = name + "=" + payload.toString() +
+    ((path) ? "; path=" + path : "") +
+    ((domain) ? "; domain=" + domain : "") +
+    "; expires=" + (new Date(today).toUTCString())
+
+  document.cookie = permissionsCookie
+}
+
 const deleteCookie = (name, path, domain) => {
   if (getCookie(name)) {
     document.cookie = name + "=" +
@@ -23,19 +34,19 @@ const deleteCookie = (name, path, domain) => {
 }
 
 const handleError = (error) => {
-  console.log('errror', error)
+  console.log('error', error)
   // debugger
-  if (error.response.status == 401
-      && error.response.headers['x-authenticated'] == "false"
-      && error.response.headers?.['x-redirect'] == "true"
-     ) {
-      deleteCookie('idtoken', '/', window.location.hostname)
-      deleteCookie('atoken', '/', window.location.hostname)
-      deleteCookie('userinfo', '/', window.location.hostname)
-      // XXX it would be better if the root was / and not a path
-      //     Find a way to redirect to dashboard/root
-      window.location.href = `/${window.tenant}/${window.environment}`
-    }
+  if (error?.response?.status == 401
+    && error?.response?.headers?.['x-authenticated'] == "false"
+    && error?.response?.headers?.['x-redirect'] == "true"
+  ) {
+    deleteCookie('idtoken', '/', window.location.hostname)
+    deleteCookie('atoken', '/', window.location.hostname)
+    deleteCookie('userinfo', '/', window.location.hostname)
+    // XXX it would be better if the root was / and not a path
+    //     Find a way to redirect to dashboard/root
+    window.location.href = `/${window.tenant}/${window.environment}`
+  }
 }
 
 const client = axios.create({
@@ -60,6 +71,10 @@ const client = axios.create({
 client.interceptors.response.use(function (response) {
   // Any status code that lie within the range of 2xx cause this function to trigger
   // Do something with response data
+  // Set cookie here
+
+  // Parse the headers and set the permissions cookie
+  addCookie('permissions', '/', window.location.hostname, response.headers['x-permissions'])
   return response;
 }, function (error) {
   // Any status codes that falls outside the range of 2xx cause this function to trigger
