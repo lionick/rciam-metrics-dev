@@ -34,6 +34,7 @@ const IdpsDataTable = ({
   const {tenant, environment} = useParams();
   const queryClient = useQueryClient();
 
+  const permissions = cookies.permissions
   let params = {
     params: {
       'startDate': startDate,
@@ -79,7 +80,7 @@ const IdpsDataTable = ({
       && loginsPerIpd.isFetched
       && loginsPerIpd.isSuccess
       && loginsPerIpd?.data?.map(idp => ({
-        "Identity Provider Name": cookies.userinfo == undefined ? idp.name : createAnchorElement(idp.name, `/${tenant}/${environment}/identity-providers/${idp.id}`),
+        "Identity Provider Name": (cookies.userinfo == undefined && !!permissions?.actions?.identity_providers?.['view']) ? idp.name : createAnchorElement(idp.name, `/${tenant}/${environment}/identity-providers/${idp.id}`),
         "Identity Provider Identifier": idp.entityid,
         "Number of Logins": idp.count
       }))

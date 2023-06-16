@@ -32,6 +32,7 @@ const LoginSpPieChart = ({
   }
 
   const [cookies, setCookie] = useCookies();
+  const permissions = cookies.permissions
 
   const loginsPerSp = useQuery(
     [loginsPerSpKey, params],
@@ -81,7 +82,8 @@ const LoginSpPieChart = ({
               callback: ({chartWrapper, google}) => {
                 const chart = chartWrapper.getChart();
 
-                if (cookies.userinfo != undefined) {
+                if (cookies.userinfo != undefined
+                  && !!permissions?.actions?.service_providers?.['view']) {
                   google.visualization.events.addListener(chart, 'click', selectHandler);
                 }
                 google.visualization.events.addListener(chart, 'onmouseover', showTooltip);

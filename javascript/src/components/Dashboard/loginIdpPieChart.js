@@ -30,6 +30,7 @@ const LoginIdpPieChart = ({
   }
 
   const [cookies, setCookie] = useCookies();
+  const permissions = cookies.permissions
 
   const loginsPerIpd = useQuery(
     [loginsPerIdpKey, params],
@@ -79,7 +80,8 @@ const LoginIdpPieChart = ({
               callback: ({chartWrapper, google}) => {
                 const chart = chartWrapper.getChart();
 
-                if (cookies.userinfo != undefined) {
+                if (cookies.userinfo != undefined
+                    && !!permissions?.actions?.identity_providers?.['view']) {
                   google.visualization.events.addListener(chart, 'click', selectHandler);
                 }
 

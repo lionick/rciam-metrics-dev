@@ -68,10 +68,6 @@ const LoginLineChart = ({
   && !loginsGroupByDay.isFetching
   && loginsGroupByDay.isSuccess])
 
-    const lineChartRef = useCallback(chart => {
-    // console.log('chart', chart)
-  }, [lineData.length > 2])
-
     // XXX Google Chart will not work if we return empty and then
     //     try to reload
     // if (loginsGroupByDay.isLoading
@@ -88,7 +84,6 @@ const LoginLineChart = ({
           <h3 className="box-title">Overall number of logins per day</h3>
         </div>
         <Chart
-          ref={lineChartRef}
           chartType="LineChart"
           width="100%"
           data={lineData}

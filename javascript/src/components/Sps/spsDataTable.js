@@ -77,7 +77,7 @@ const SpsDataTable = ({
       && !loginsPerSp.isFetching
       && loginsPerSp.isSuccess
       && loginsPerSp?.data?.map(sp => ({
-        "Service Provider Name": cookies.userinfo == undefined ? sp.name : createAnchorElement(sp.name, `/${tenant}/${environment}/identity-providers/${sp.id}`),
+        "Service Provider Name": (cookies.userinfo == undefined && !!permissions?.actions?.service_providers?.['view']) ? sp.name : createAnchorElement(sp.name, `/${tenant}/${environment}/identity-providers/${sp.id}`),
         "Service Provider Identifier": sp.identifier,
         "Number of Logins": sp.count
       }))
