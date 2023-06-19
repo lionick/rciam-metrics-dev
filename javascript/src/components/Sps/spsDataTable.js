@@ -27,6 +27,8 @@ const SpsDataTable = ({
                         endDate
                       }) => {
   const [cookies, setCookie] = useCookies();
+  const permissions = cookies.permissions
+
   const [spsLogins, setSpsLogins] = useState([]);
   const [minDate, setMinDate] = useState("");
   const [btnPressed, setBtnPressed] = useState(false);

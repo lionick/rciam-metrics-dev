@@ -28,13 +28,15 @@ const IdpsDataTable = ({
                          endDate
                        }) => {
   const [cookies, setCookie] = useCookies();
+  const permissions = cookies.permissions
+
+
   const [idpsLogins, setIdpsLogins] = useState([]);
   const [minDate, setMinDate] = useState("");
   const [btnPressed, setBtnPressed] = useState(false);
   const {tenant, environment} = useParams();
   const queryClient = useQueryClient();
 
-  const permissions = cookies.permissions
   let params = {
     params: {
       'startDate': startDate,
