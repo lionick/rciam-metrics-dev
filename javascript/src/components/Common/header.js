@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import {useParams} from "react-router-dom";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Image from 'react-bootstrap/Image';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
@@ -7,11 +6,10 @@ import parse from 'html-react-parser';
 import config from "./../../config_react.json";
 import NavbarTop from './navbarTop';
 
-
 const Header = (props) => {
-
   const [bannerAlertInfo, setBannerAlertInfo] = useState([]);
-  const {tenant, environment} = useParams();
+  const environment = window.environment
+  const tenant = window.tenant
   const getConfig = key => config[tenant][environment][key]
 
   useEffect(() => {
@@ -20,7 +18,7 @@ const Header = (props) => {
 
   return (
     <div className="header">
-        <div className="tenenv_logo_container">
+      <div className="tenenv_logo_container">
         {bannerAlertInfo && bannerAlertInfo[0] &&
           <div id="noty-info-bar" className={"noty-top-" + bannerAlertInfo[0].type + " noty-top-global"}>
             <div>

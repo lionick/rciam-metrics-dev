@@ -1,5 +1,4 @@
 import {useState, useEffect} from "react";
-import {useParams} from "react-router-dom";
 import "jquery/dist/jquery.min.js";
 import $ from "jquery";
 import Datatable from "../datatable";
@@ -29,12 +28,12 @@ const IdpsDataTable = ({
                        }) => {
   const [cookies, setCookie] = useCookies();
   const permissions = cookies.permissions
-
+  const tenant = window.tenant
+  const environment = window.environment
 
   const [idpsLogins, setIdpsLogins] = useState([]);
   const [minDate, setMinDate] = useState("");
   const [btnPressed, setBtnPressed] = useState(false);
-  const {tenant, environment} = useParams();
   const queryClient = useQueryClient();
 
   let params = {

@@ -1,19 +1,16 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {Link} from 'react-router-dom'
 import Sidebar from "react-bootstrap-sidebar-menu";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faDoorOpen, faHome, faUser, faUsers, faWarehouse} from '@fortawesome/free-solid-svg-icons';
-import {envContext, tenantContext} from '../../Context/context';
 import {useCookies} from 'react-cookie';
 
 
 const SideNav = (props) => {
   const [cookies, setCookie] = useCookies();
   const permissions = cookies.permissions
-
-  // const { t, i18n } = useTranslation();
-  const [tenant] = useContext(tenantContext);
-  const [environment] = useContext(envContext);
+  const environment = window.environment
+  const tenant =  window.tenant
 
   return (
 

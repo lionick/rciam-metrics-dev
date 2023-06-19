@@ -1,10 +1,7 @@
-import React, {useState, useEffect, useContext} from 'react';
-import {useParams} from "react-router-dom";
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import React, {useContext} from 'react';
 import Image from 'react-bootstrap/Image';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import parse from 'html-react-parser';
@@ -14,9 +11,11 @@ import {useTranslation} from 'react-i18next';
 
 const Footer = (props) => {
   const [language, setLanguage] = useContext(languageContext)
-  const {tenant, environment} = useParams();
+  const environment = window.environment
+  const tenant = window.tenant
   const getConfig = key => config[tenant][environment][key]
   const {t, i18n} = useTranslation();
+
   return (
     <footer>
       <div className="container ssp-footer--container">

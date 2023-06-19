@@ -4,7 +4,6 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import {userinfoContext} from '../../Context/context';
 import {useTranslation} from 'react-i18next';
-import {useParams} from "react-router-dom";
 import config from "./../../config_react.json";
 import Login from "../../Pages/Authentication/Login"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -15,7 +14,8 @@ const NavbarTop = (props) => {
   const [userInfo, setUserInfo] = useContext(userinfoContext);
   // eslint-disable-next-line
   const {t, i18n} = useTranslation();
-  const {tenant, environment} = useParams();
+  const environment = window.environment
+  const tenant =  window.tenant
   const getConfig = key => config[tenant][environment][key]
 
   if (!getConfig("config") || !getConfig("config")["theme_color"]) {

@@ -1,5 +1,4 @@
 import {useState, useContext, useEffect} from "react";
-import {useParams} from "react-router-dom";
 import {useNavigate} from "react-router-dom";
 import {envContext, tenantContext} from "../../Context/context";
 import Container from "react-bootstrap/Container";
@@ -17,12 +16,14 @@ import {getTenenv} from "../../utils/queries";
 const Sps = () => {
 
   const [uniqueLogins, setUniqueLogins] = useState(false);
-  const {tenant, environment} = useParams();
   const [tenenvId, setTenenvId] = useState(0);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [tenantCon, setTenantCon] = useContext(tenantContext);
   const [envCon, setEnvCon] = useContext(envContext)
+
+  const tenant = window.tenant
+  const environment = window.environment
 
   const tenenv = useQuery(
     [tenenvKey, {tenantId: tenant, environment: environment}],

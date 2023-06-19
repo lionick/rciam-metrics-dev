@@ -1,5 +1,4 @@
 import {useState, useEffect, useContext} from "react";
-import {useParams} from "react-router-dom";
 import {useNavigate} from "react-router-dom";
 import {envContext, tenantContext} from "../../Context/context";
 import Form from 'react-bootstrap/Form';
@@ -23,9 +22,11 @@ const Dashboard = () => {
   const [endDate, setEndDate] = useState("");
   const [uniqueLogins, setUniqueLogins] = useState(false);
   const [tenenvId, setTenenvId] = useState(0);
-  const {tenant, environment} = useParams();
   const [tenantCon, setTenantCon] = useContext(tenantContext);
   const [envCon, setEnvCon] = useContext(envContext)
+
+  const tenant = window.tenant
+  const environment = window.environment
 
   const tenenv = useQuery(
     [tenenvKey, {tenantId: tenant, environment: environment}],
@@ -38,8 +39,8 @@ const Dashboard = () => {
     setEnvCon(environment)
     setTenenvId(tenenv?.data?.[0]?.id)
   }, [!tenenv.isLoading
-    && tenenv.isSuccess
-    && !tenenv.isFetching])
+  && tenenv.isSuccess
+  && !tenenv.isFetching])
 
   const handleChange = event => {
     setUniqueLogins(event.target.checked);
@@ -53,8 +54,8 @@ const Dashboard = () => {
   }
 
   if (tenenvId == undefined
-      || tenenvId == 0
-      || tenenvId == "") {
+    || tenenvId == 0
+    || tenenvId == "") {
     return
   }
 

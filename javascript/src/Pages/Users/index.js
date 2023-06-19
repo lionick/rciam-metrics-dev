@@ -1,6 +1,4 @@
 import {useState, useContext, useEffect} from "react";
-import {useParams} from "react-router-dom";
-import {client} from '../../utils/api';
 import {envContext, tenantContext} from "../../Context/context";
 import Container from "react-bootstrap/Container";
 import RegisteredUsersChart from "../../components/Users/registeredUsersChart";
@@ -16,12 +14,15 @@ import {tenenvKey} from "../../utils/queryKeys";
 import {getTenenv} from "../../utils/queries";
 
 const Users = () => {
-  const {tenant, environment} = useParams();
   const [tenenvId, setTenenvId] = useState(0);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [tenantCon, setTenantCon] = useContext(tenantContext);
   const [envCon, setEnvCon] = useContext(envContext)
+
+  const tenant = window.tenant
+  const environment = window.environment
+
 
   const tenenv = useQuery(
     [tenenvKey, {tenantId: tenant, environment: environment}],
