@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 from starlette.responses import JSONResponse
 from sqlalchemy.exc import NoResultFound
-from .authenticate import validate_token, validate_client_credentials
+from .authenticate_client import validate_client_credentials
 from typing import Union
 from xmlrpc.client import boolean
 import hashlib
@@ -374,32 +374,34 @@ async def save_statistics_raw_data(
     token: str = Depends(validate_client_credentials),
     session: Session = Depends(get_session)
 ):
-    data = {"realm": "egi",
-            "environment": "devel",
+    data = {
             "userid": "5510ee31992ab29c9f534c765b09124e",
             "entityid": "https://aai-dev.egi.eu/google/saml2/idp/metadata.php",
             "identifier": "https://aai-dev.egi.eu/oidc2",
             "spName": "EGI AAI OpenID Connect Provider Proxy (DEV)2",
             "idpName": "Google",
             "ipAddress": "2a02:586:2421:da84:983b:22ac:739:9920",
-            "date": "2023-05-24",
+            "date": "2023-05-24 00:12:12",
             "failedLogin": False,
             "type": "login",
             "source": "keycloak_egi",
-            "eventIdentifier": 101
+            "eventIdentifier": 101,
+            "tenenvId": 1
             }
 
     session.exec(
         """
-        INSERT INTO statistics_raw(date, type, event_identifier, source, jsondata)
-        VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')
-        ON CONFLICT (event_identifier, source)
+        INSERT INTO statistics_raw(date, type, event_identifier, source,
+        tenenv_id, jsondata)
+        VALUES ('{0}', '{1}', '{2}', '{3}', '{4}','{5}')
+        ON CONFLICT (event_identifier, source, tenenv_id)
         DO NOTHING
         """.format(
             data["date"],
             data["type"],
             data['eventIdentifier'],
             data['source'],
+            data['tenenvId'],
             json.dumps(data)
         )
     )
@@ -428,13 +430,13 @@ async def post_logins_data(
             }
     # Process the data
     # ...
-    # Check if tenant_id exists
+    # Check if tenenv_id exists
     try:
-        tenantId = session.exec(
+        tenenvId = session.exec(
             """
-            SELECT tenant_info.id FROM tenant_info
-            JOIN project_info ON project_info.id=project_id
-              AND LOWER(project_info.name)=LOWER('{0}')
+            SELECT tenenv_info.id FROM tenenv_info
+            JOIN tenant_info ON tenant_info.id=tenant_id
+              AND LOWER(tenant_info.name)=LOWER('{0}')
             JOIN environment_info ON environment_info.id=env_id
               AND LOWER(environment_info.name)=LOWER('{1}')
             """.format(
@@ -442,24 +444,24 @@ async def post_logins_data(
             )
         ).one()
     except NoResultFound:
-        # if tenant_id doesn't exist return a relevant message
+        # if tenenv_id doesn't exist return a relevant message
         return JSONResponse(
             {
-                "message": "Tenant {0}/{1} doesn't exist at metrics".format(
+                "message": "Tenenv {0}/{1} doesn't exist at metrics".format(
                     data["realm"], data["environment"]
                 )
             }
         )
-    print(tenantId[0])
+    print(tenenvId[0])
 
     # Check if userid exists
     try:
         hasheduserid = session.exec(
             """
-              SELECT hasheduserid FROM users WHERE hasheduserid='{0}' AND tenant_id={1}
+              SELECT hasheduserid FROM users WHERE hasheduserid='{0}' AND tenenv_id={1}
             """.format(
                   # hashlib.md5(data["userid"]).hexdigest() #TypeError: Strings must be encoded before hashing
-                  data["userid"], tenantId[0]
+                  data["userid"], tenenvId[0]
                 )
         ).one()
     except NoResultFound:
@@ -476,19 +478,19 @@ async def post_logins_data(
         idpId = session.exec(
           """
           SELECT id FROM identityprovidersmap
-          WHERE entityid = '{0}' AND tenant_id={1}
+          WHERE entityid = '{0}' AND tenenv_id={1}
           """.format(
-              data["entityid"], tenantId[0]
+              data["entityid"], tenenvId[0]
           )
         ).one()
     except NoResultFound:
         idpId = session.exec(
             """
-            INSERT INTO identityprovidersmap (entityid, name, tenant_id)
+            INSERT INTO identityprovidersmap (entityid, name, tenenv_id)
             VALUES  ('{0}', '{1}', {2})
             RETURNING id;
             """.format(
-                data["entityid"], data["idpName"], tenantId[0]
+                data["entityid"], data["idpName"], tenenvId[0]
             )
         ).one()
     print(idpId)
@@ -497,23 +499,23 @@ async def post_logins_data(
         spId = session.exec(
             """
             SELECT * FROM serviceprovidersmap
-            WHERE identifier = '{0}' AND tenant_id={1}
+            WHERE identifier = '{0}' AND tenenv_id={1}
             """.format(
-                  data["identifier"], tenantId[0]
+                  data["identifier"], tenenvId[0]
             )
         ).one()
     except NoResultFound:
         # If Sp not exists then add it to database
         spId = session.exec(
             """
-            INSERT INTO serviceprovidersmap (identifier, name, tenant_id)
+            INSERT INTO serviceprovidersmap (identifier, name, tenenv_id)
             SELECT '{0}', '{1}', {2}
             WHERE NOT EXISTS (
                 SELECT 1 FROM serviceprovidersmap
                 WHERE identifier = '{0}'
             )
             RETURNING id;
-            """.format(data["identifier"], data["spName"], tenantId[0])
+            """.format(data["identifier"], data["spName"], tenenvId[0])
             ).one()
 
     # handler for ip databases
@@ -550,12 +552,12 @@ async def post_logins_data(
     if data["failedLogin"] is False:
         session.exec(
             """
-            INSERT INTO statistics_country_hashed(date, hasheduserid, sourceidpid, serviceid, countryid, count, tenant_id) 
+            INSERT INTO statistics_country_hashed(date, hasheduserid, sourceidpid, serviceid, countryid, count, tenenv_id) 
             VALUES ('{0}', '{1}', {2}, {3}, {4}, {5}, {6})
-            ON CONFLICT (date, hasheduserid, sourceidpid, serviceid, countryid, tenant_id)
+            ON CONFLICT (date, hasheduserid, sourceidpid, serviceid, countryid, tenenv_id)
             DO UPDATE SET count = statistics_country_hashed.count + 1
             """.format(
-                data["date"], hasheduserid[0], idpId[0], spId[0], countryId[0], 1, tenantId[0]
+                data["date"], hasheduserid[0], idpId[0], spId[0], countryId[0], 1, tenenvId[0]
             )
         )
         session.commit()
