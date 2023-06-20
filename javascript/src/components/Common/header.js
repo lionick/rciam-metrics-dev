@@ -3,14 +3,12 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Image from 'react-bootstrap/Image';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
 import parse from 'html-react-parser';
-import config from "./../../config_react.json";
 import NavbarTop from './navbarTop';
+import {constructConfiFilename} from "./utils";
 
 const Header = (props) => {
+  const config = require(`../../${constructConfiFilename()}`)
   const [bannerAlertInfo, setBannerAlertInfo] = useState([]);
-  const environment = window.environment
-  const tenant = window.tenant
-  const getConfig = key => config[tenant][environment][key]
 
   useEffect(() => {
     setBannerAlertInfo(props.bannerAlertInfo);
@@ -34,12 +32,12 @@ const Header = (props) => {
         <NavbarTop alertBar={bannerAlertInfo && bannerAlertInfo.length > 0}/>
 
         <div className="text-center ssp-logo">
-          <a href={getConfig("config")["website_url"]}>
-            <Image src={getConfig("config")["logo_url"]} fluid/>
+          <a href={config?.website_url}>
+            <Image src={config?.logo_url} fluid/>
           </a>
         </div>
         <h1 className="text-center">
-          {getConfig("config")["home_page_title"]}
+          {config?.home_page_title}
         </h1>
       </div>
     </div>

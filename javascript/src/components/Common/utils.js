@@ -190,3 +190,8 @@ export function sortByNamePropertyCallback(a, b) {
   // names must be equal
   return 0;
 }
+
+export const constructConfiFilename = () => {
+  const domain = window.location.hostname
+  return domain.replace('.', '_') + '.json'
+}

@@ -4,27 +4,26 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import {userinfoContext} from '../../Context/context';
 import {useTranslation} from 'react-i18next';
-import config from "./../../config_react.json";
 import Login from "../../Pages/Authentication/Login"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSignOutAlt} from "@fortawesome/free-solid-svg-icons";
+import {constructConfiFilename} from "./utils";
 
 const NavbarTop = (props) => {
+  const config = require(`../../${constructConfiFilename()}`)
+
   // eslint-disable-next-line
   const [userInfo, setUserInfo] = useContext(userinfoContext);
   // eslint-disable-next-line
   const {t, i18n} = useTranslation();
-  const environment = window.environment
-  const tenant =  window.tenant
-  const getConfig = key => config[tenant][environment][key]
 
-  if (!getConfig("config") || !getConfig("config")["theme_color"]) {
+  if (!config || !config?.theme_color) {
     return null
   }
 
   const handleLogoutClick = () => {
     // Redirect to the logout endpoint
-    window.location.href = getConfig("config")["logout_url"]
+    window.location.href = config?.logout_url
   }
 
   return (
@@ -37,7 +36,7 @@ const NavbarTop = (props) => {
               className='drop-menu drop-container-header'
               title={
                 <>
-                  <span style={getConfig("theme_color")}>
+                  <span style={{color: config?.theme_color}}>
                     {userInfo ? userInfo.name : 'login'}
                     <span>{userInfo && ' (' + userInfo.email + ')'}</span>
                   </span>

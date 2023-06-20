@@ -1,7 +1,5 @@
 import axios from "axios"
-import config from "./../../config_react.json";
-
-const getConfig = key => config["configReact"][key]
+import {constructConfiFilename} from "../../components/Common/utils";
 
 const getCookie = (name) => {
   var pattern = RegExp(name + "=.[^;]*")
@@ -49,8 +47,13 @@ const handleError = (error) => {
   }
 }
 
+const calculateBaseUrl = () => {
+  const config = require(`../../${constructConfiFilename()}`)
+  return config?.apiUrl
+}
+
 const client = axios.create({
-  baseURL: getConfig('apiUrl'),
+  baseURL: calculateBaseUrl() ,
   headers: {
     "Access-Control-Allow-Origin": "*",
     "Content-type": "application/json",
