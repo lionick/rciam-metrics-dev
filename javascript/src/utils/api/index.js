@@ -1,6 +1,5 @@
 import axios from "axios"
 import {constructConfiFilename} from "../../components/Common/utils";
-
 const getCookie = (name) => {
   var pattern = RegExp(name + "=.[^;]*")
   var matched = document.cookie.match(pattern)

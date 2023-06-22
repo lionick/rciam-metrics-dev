@@ -7,8 +7,10 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import parse from 'html-react-parser';
 import {useTranslation} from 'react-i18next';
 import {constructConfiFilename} from "./utils";
+import {languageContext} from '../../Context/context';
 
 const Footer = (props) => {
+  const [language, setLanguage] = useContext(languageContext)
   const config = require(`../../${constructConfiFilename()}`)
   const {t, i18n} = useTranslation();
 
