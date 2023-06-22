@@ -1,3 +1,4 @@
-export default function Layout({ children }) {
-    return <div className="main-wrapper">{children}</div>;
-  }
+import React from 'react'
+export default function Layout({children}) {
+  return <div className="main-wrapper">{children}</div>;
+}

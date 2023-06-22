@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import Image from 'react-bootstrap/Image';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
@@ -6,12 +6,12 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import parse from 'html-react-parser';
 import {useTranslation} from 'react-i18next';
-import {constructConfiFilename} from "./utils";
+import {getConfigFile} from "./utils";
 import {languageContext} from '../../Context/context';
 
 const Footer = (props) => {
   const [language, setLanguage] = useContext(languageContext)
-  const config = require(`../../${constructConfiFilename()}`)
+  const config = getConfigFile
   const {t, i18n} = useTranslation();
 
   return (

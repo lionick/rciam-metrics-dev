@@ -4,10 +4,10 @@ import Image from 'react-bootstrap/Image';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
 import parse from 'html-react-parser';
 import NavbarTop from './navbarTop';
-import {constructConfiFilename} from "./utils";
+import {getConfigfile} from "./utils";
 
 const Header = (props) => {
-  const config = require(`../../${constructConfiFilename()}`)
+  const config = getConfigFile
   const [bannerAlertInfo, setBannerAlertInfo] = useState([]);
 
   useEffect(() => {

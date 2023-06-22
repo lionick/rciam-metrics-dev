@@ -1,3 +1,4 @@
+import React from 'react'
 import {getIdps, getSps} from "../../utils/queries";
 import {idpsKey, spsKey} from "../../utils/queryKeys";
 import {useQuery} from "react-query";

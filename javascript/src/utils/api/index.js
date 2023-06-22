@@ -1,5 +1,5 @@
 import axios from "axios"
-import {constructConfiFilename} from "../../components/Common/utils";
+import {getConfigFile} from "../../components/Common/utils";
 const getCookie = (name) => {
   var pattern = RegExp(name + "=.[^;]*")
   var matched = document.cookie.match(pattern)
@@ -47,7 +47,7 @@ const handleError = (error) => {
 }
 
 const calculateBaseUrl = () => {
-  const config = require(`../../${constructConfiFilename()}`)
+  const config = getConfigFile
   return config?.apiUrl
 }
 

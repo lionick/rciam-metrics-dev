@@ -7,10 +7,10 @@ import {useTranslation} from 'react-i18next';
 import Login from "../../Pages/Authentication/Login"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSignOutAlt} from "@fortawesome/free-solid-svg-icons";
-import {constructConfiFilename} from "./utils";
+import {getConfigfile} from "./utils";
 
 const NavbarTop = (props) => {
-  const config = require(`../../${constructConfiFilename()}`)
+  const config = getConfigFile
 
   // eslint-disable-next-line
   const [userInfo, setUserInfo] = useContext(userinfoContext);
