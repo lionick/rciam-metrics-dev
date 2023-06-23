@@ -12,6 +12,7 @@ module.exports = () => {
     prev[next] = JSON.stringify(env[next]);
     return prev;
   }, {});
+  const deferPath = '/' + env['ENV_TENANT'] + '/' + env['ENV_ENVIRONMENT']
 
   console.log('envKeys', envKeys)
 
@@ -21,7 +22,7 @@ module.exports = () => {
     },
     output: {
       path: path.resolve(__dirname, 'dist'),
-      publicPath: '/egi/devel/',
+      publicPath: deferPath,
       filename: "[name].js",
       sourceMapFilename: "[name].[contenthash].js.map",
       clean: true
