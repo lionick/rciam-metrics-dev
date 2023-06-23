@@ -7,23 +7,17 @@ import {useTranslation} from 'react-i18next';
 import Login from "../../Pages/Authentication/Login"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSignOutAlt} from "@fortawesome/free-solid-svg-icons";
-import {getConfigfile} from "./utils";
 
 const NavbarTop = (props) => {
-  const config = getConfigFile
 
   // eslint-disable-next-line
   const [userInfo, setUserInfo] = useContext(userinfoContext);
   // eslint-disable-next-line
   const {t, i18n} = useTranslation();
 
-  if (!config || !config?.theme_color) {
-    return null
-  }
-
   const handleLogoutClick = () => {
     // Redirect to the logout endpoint
-    window.location.href = config?.logout_url
+    window.location.href = ENV_LOGOUT_URL
   }
 
   return (
@@ -36,7 +30,7 @@ const NavbarTop = (props) => {
               className='drop-menu drop-container-header'
               title={
                 <>
-                  <span style={{color: config?.theme_color}}>
+                  <span style={{color: ENV_THEME_COLOR ?? 'gray'}}>
                     {userInfo ? userInfo.name : 'login'}
                     <span>{userInfo && ' (' + userInfo.email + ')'}</span>
                   </span>

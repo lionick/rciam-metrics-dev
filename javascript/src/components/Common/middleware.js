@@ -16,6 +16,8 @@ const Middleware = ({elementName}) => {
   const [cookies, setCookie] = useCookies();
 
   console.log('domain', window.location.hostname)
+  console.log('tenant', tenant)
+  console.log('environment', environment)
 
   // XXX We set the environment and tenant globally
   window.environment = environment

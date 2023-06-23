@@ -75,6 +75,7 @@
     "babel-loader": "^9.1.2",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.8.1",
+    "dotenv": "^16.3.1",
     "html-webpack-plugin": "^5.5.3",
     "json-loader": "^0.5.7",
     "raw-loader": "^4.0.2",

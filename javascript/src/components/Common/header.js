@@ -4,10 +4,8 @@ import Image from 'react-bootstrap/Image';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
 import parse from 'html-react-parser';
 import NavbarTop from './navbarTop';
-import {getConfigfile} from "./utils";
 
 const Header = (props) => {
-  const config = getConfigFile
   const [bannerAlertInfo, setBannerAlertInfo] = useState([]);
 
   useEffect(() => {
@@ -32,12 +30,12 @@ const Header = (props) => {
         <NavbarTop alertBar={bannerAlertInfo && bannerAlertInfo.length > 0}/>
 
         <div className="text-center ssp-logo">
-          <a href={config?.website_url}>
-            <Image src={config?.logo_url} fluid/>
+          <a href={ENV_WEBSITE_URL}>
+            <Image src={ENV_LOGO_URL} fluid/>
           </a>
         </div>
         <h1 className="text-center">
-          {config?.home_page_title}
+          {ENV_HOME_PAGE_TITLE}
         </h1>
       </div>
     </div>

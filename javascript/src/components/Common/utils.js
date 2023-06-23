@@ -192,10 +192,3 @@ export function sortByNamePropertyCallback(a, b) {
   // names must be equal
   return 0;
 }
-
-export const constructConfigFilename = () => {
-  const domain = window.location.hostname
-  return domain.replace('.', '_') + '.json'
-}
-
-export const getConfigFile = async () => (await apiClient.get(`/config/${constructConfigFilename()}.json`)).data;
