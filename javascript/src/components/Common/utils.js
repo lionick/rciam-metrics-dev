@@ -1,5 +1,7 @@
-import $ from "jquery";
-import {options} from "../../utils/helpers/enums";
+import React from 'react'
+import {
+  client as apiClient,
+} from '../../utils/api';
 
 export function convertDateByGroup(jsDate, groupBy) {
   var month = (jsDate.getMonth() + 1).toString()
@@ -189,9 +191,4 @@ export function sortByNamePropertyCallback(a, b) {
   }
   // names must be equal
   return 0;
-}
-
-export const constructConfiFilename = () => {
-  const domain = window.location.hostname
-  return domain.replace('.', '_') + '.json'
 }

@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import {Chart} from "react-google-charts";
 import {useCookies} from "react-cookie";
 import Row from 'react-bootstrap/Row';
@@ -82,11 +82,11 @@ const LoginIdpPieChart = ({
 
                 if (cookies.userinfo != undefined
                     && !!permissions?.actions?.identity_providers?.['view']) {
-                  google.visualization.events.addListener(chart, 'click', selectHandler);
+                  google?.visualization?.events?.addListener(chart, 'click', selectHandler);
                 }
 
-                google.visualization.events.addListener(chart, 'onmouseover', showTooltip);
-                google.visualization.events.addListener(chart, 'onmouseout', hideTooltip);
+                google?.visualization?.events?.addListener(chart, 'onmouseover', showTooltip);
+                google?.visualization?.events?.addListener(chart, 'onmouseout', hideTooltip);
 
                 function showTooltip(entry) {
 

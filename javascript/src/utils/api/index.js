@@ -1,6 +1,4 @@
 import axios from "axios"
-import {constructConfiFilename} from "../../components/Common/utils";
-
 const getCookie = (name) => {
   var pattern = RegExp(name + "=.[^;]*")
   var matched = document.cookie.match(pattern)
@@ -47,13 +45,8 @@ const handleError = (error) => {
   }
 }
 
-const calculateBaseUrl = () => {
-  const config = require(`../../${constructConfiFilename()}`)
-  return config?.apiUrl
-}
-
 const client = axios.create({
-  baseURL: calculateBaseUrl() ,
+  baseURL: ENV_API_URL,
   headers: {
     "Access-Control-Allow-Origin": "*",
     "Content-type": "application/json",

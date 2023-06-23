@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import {client} from '../../utils/api';
 import "jquery/dist/jquery.min.js";
 import $ from "jquery";
