@@ -1,4 +1,4 @@
-import {useState, useContext, useEffect} from "react";
+import React, {useState, useContext, useEffect} from "react";
 import {useQuery} from 'react-query';
 import {envContext, tenantContext} from "../../Context/context";
 import Container from "react-bootstrap/Container";

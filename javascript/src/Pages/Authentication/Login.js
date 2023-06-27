@@ -2,10 +2,9 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 import {useTranslation} from "react-i18next";
 import {useCookies} from 'react-cookie';
-import {constructConfiFilename} from "../../components/Common/utils";
+import config from '../../config.json'
 
 function Login() {
-  const config = require(`../../${constructConfiFilename()}`)
   console.log('config', config)
 
   const {t, i18n} = useTranslation();

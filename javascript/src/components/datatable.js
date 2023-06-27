@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import { renderToString } from 'react-dom/server';
 import "jquery/dist/jquery.min.js";
 import "datatables.net-dt/js/dataTables.dataTables";

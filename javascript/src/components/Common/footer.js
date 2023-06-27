@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import Image from 'react-bootstrap/Image';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
@@ -6,10 +6,11 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import parse from 'html-react-parser';
 import {useTranslation} from 'react-i18next';
-import {constructConfiFilename} from "./utils";
+import config from '../../config.json'
+import {languageContext} from '../../Context/context';
 
 const Footer = (props) => {
-  const config = require(`../../${constructConfiFilename()}`)
+  const [language, setLanguage] = useContext(languageContext)
   const {t, i18n} = useTranslation();
 
   return (
@@ -48,17 +49,17 @@ const Footer = (props) => {
           <Col sm="3" className="ssp-footer__item">
             <div className="footer_link_container">
               <div className="ssp-footer__item__powered">
-                <a href={"mailto: " + (config && config?.contact)}>Contact us</a>
+                <a href={"mailto: " + config?.contact}>Contact us</a>
               </div>
               <div className="ssp-footer__item__powered">
-                <a href={config?.config?.apiUrl + "docs"}>API Documentation</a>
+                <a href={config?.api_url + "docs"}>API Documentation</a>
               </div>
             </div>
           </Col>
         </Row>
         <Row>
           <div className='copyright-funding-footer'>
-            {config && config?.footer_description && parse(config?.footer_description)} |
+            {config?.footer_description && parse(config?.footer_description)} |
             Powered by <a href="https://rciam.github.io/rciam-docs/" target="_blank" rel="noreferrer"> RCIAM</a>
           </div>
         </Row>

@@ -1,4 +1,4 @@
-import {useState, useEffect, useCallback} from "react";
+import React, {useState, useEffect, useCallback} from "react";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -70,12 +70,12 @@ const LoginLineChart = ({
 
     // XXX Google Chart will not work if we return empty and then
     //     try to reload
-    // if (loginsGroupByDay.isLoading
-    //   || loginsGroupByDay.isFetching
-    //   || lineData?.length <= 2
-    // ) {
-    //   return (<></>)
-    // }
+    if (loginsGroupByDay.isLoading
+      || loginsGroupByDay.isFetching
+      || lineData?.length <= 2
+    ) {
+      return (<></>)
+    }
 
   return (
     <Row>

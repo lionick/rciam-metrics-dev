@@ -1,5 +1,4 @@
-import {useState, useEffect} from "react";
-import {client} from '../../utils/api';
+import React, {useState, useEffect} from "react";
 import "jquery/dist/jquery.min.js";
 import $ from "jquery";
 import Datatable from "../datatable";
