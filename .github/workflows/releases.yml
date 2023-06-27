@@ -59,7 +59,7 @@ jobs:
       - name: List files in the repository
         run: |
           ls -la ${{ github.workspace }}/inventory/rciam-metrics-dev/files
-          cp -a ${{ github.workspace }}/inventory/rciam-metrics-dev/files/. ${{ github.workspace }}/metrics-app/javascript/src/
+          mv ${{ github.workspace }}/inventory/rciam-metrics-dev/files/config.json ${{ github.workspace }}/metrics-app/javascript/src/config.json
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v3
         with:

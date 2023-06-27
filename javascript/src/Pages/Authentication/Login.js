@@ -5,8 +5,6 @@ import {useCookies} from 'react-cookie';
 import config from '../../config.json'
 
 function Login() {
-  console.log('config', config)
-
   const {t, i18n} = useTranslation();
   const [cookies, setCookie] = useCookies(['login_start']);
 

@@ -15,15 +15,13 @@ const Middleware = ({elementName}) => {
   const {tenant, environment} = useParams();
   const [cookies, setCookie] = useCookies();
 
-  console.log('domain', window.location.hostname)
-
-    // XXX We set the environment and tenant globally
+  // XXX We set the environment and tenant globally
   window.environment = environment
   window.tenant = tenant
 
   const Component = elementName
   return (
-   <Component />
+    <Component/>
   )
 }
 
