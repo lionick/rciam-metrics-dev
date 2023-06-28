@@ -29,6 +29,7 @@ import Middleware from "./components/Common/middleware"
 function App() {
   const [language, setLanguage] = useState('en')
   const [userInfo, setUserInfo] = useState(null)
+  const [permissions, setPermissions] = useState(null)
   const [cookies, setCookie] = useCookies();
 
 
@@ -36,7 +37,16 @@ function App() {
     if (cookies.userinfo != undefined) {
       setUserInfo(jwt_decode(cookies.userinfo))
     }
-  }, [cookies])
+    if (cookies.permissions != undefined) {
+      // The backend will send an encoded permissions while
+      // the frontend adds a simple json value
+      try {
+        setPermissions(jwt_decode(cookies.permissions))
+      } catch (error) {
+        setPermissions(cookies.permissions)
+      }
+    }
+  }, [cookies.userinfo, cookies.permissions])
 
   useEffect(() => {
     if (userInfo != undefined) {
@@ -48,7 +58,8 @@ function App() {
     <languageContext.Provider value={[language, setLanguage]}>
       <userinfoContext.Provider value={[userInfo, setUserInfo]}>
         <Layout>
-          <SideNav></SideNav>
+          <SideNav userInfo={userInfo}
+                   permissions={permissions}/>
           <Main>
             <AppRoutes/>
           </Main>
