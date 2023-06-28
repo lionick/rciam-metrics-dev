@@ -13,12 +13,8 @@ const SideNav = ({
   const [reload, setReload] = useState(false)
   const environment = window.environment
   const tenant = window.tenant
-  console.log('registered view', (userInfo != undefined && !!permissions?.actions?.registered_users?.['view']).toString())
 
   useEffect(() => {
-    console.log('userInfo', userInfo)
-    console.log('permissions', permissions)
-    console.log('permissions registered', permissions?.actions?.registered_users?.['view'])
     setReload((prev) => !prev)
   }, [userInfo, permissions])
 
