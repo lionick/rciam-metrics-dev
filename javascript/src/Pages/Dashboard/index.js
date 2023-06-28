@@ -1,6 +1,5 @@
 import React, {useState, useEffect, useContext} from "react";
 import {useNavigate} from "react-router-dom";
-import {envContext, tenantContext} from "../../Context/context";
 import Form from 'react-bootstrap/Form';
 import LoginDataTable from "../../components/Dashboard/loginDataTable";
 import LoginIdpPieChart from "../../components/Dashboard/loginIdpPieChart";
@@ -22,8 +21,6 @@ const Dashboard = () => {
   const [endDate, setEndDate] = useState("");
   const [uniqueLogins, setUniqueLogins] = useState(false);
   const [tenenvId, setTenenvId] = useState(0);
-  const [tenantCon, setTenantCon] = useContext(tenantContext);
-  const [envCon, setEnvCon] = useContext(envContext)
 
   const tenant = window.tenant
   const environment = window.environment
@@ -35,8 +32,6 @@ const Dashboard = () => {
     })
 
   useEffect(() => {
-    setTenantCon(tenant)
-    setEnvCon(environment)
     setTenenvId(tenenv?.data?.[0]?.id)
   }, [!tenenv.isLoading
   && tenenv.isSuccess

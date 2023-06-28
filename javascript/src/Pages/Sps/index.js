@@ -1,6 +1,5 @@
 import React, {useState, useContext, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
-import {envContext, tenantContext} from "../../Context/context";
 import Container from "react-bootstrap/Container";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -19,8 +18,6 @@ const Sps = () => {
   const [tenenvId, setTenenvId] = useState(0);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [tenantCon, setTenantCon] = useContext(tenantContext);
-  const [envCon, setEnvCon] = useContext(envContext)
 
   const tenant = window.tenant
   const environment = window.environment
@@ -32,8 +29,6 @@ const Sps = () => {
     })
 
   useEffect(() => {
-    setTenantCon(tenant)
-    setEnvCon(environment)
     setTenenvId(tenenv?.data?.[0]?.id)
   }, [!tenenv.isLoading
   && tenenv.isSuccess

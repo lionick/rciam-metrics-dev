@@ -48,7 +48,7 @@ const handleError = (error) => {
 }
 
 const client = axios.create({
-  baseURL: config?.api_url,
+  baseURL: config.api_url,
   headers: {
     "Access-Control-Allow-Origin": "*",
     "Content-type": "application/json",

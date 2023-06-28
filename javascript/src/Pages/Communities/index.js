@@ -1,6 +1,5 @@
 import React, {useState, useContext, useEffect} from "react";
 import {useQuery} from 'react-query';
-import {envContext, tenantContext} from "../../Context/context";
 import Container from "react-bootstrap/Container";
 import CommunitiesChart from "../../components/Communities/communitiesChart";
 import CommunitiesDataTable from "../../components/Communities/communitiesDataTable";
@@ -14,8 +13,6 @@ import {getTenenv} from '../../utils/queries'
 
 const Communities = () => {
   const [tenenvId, setTenenvId] = useState(0);
-  const [tenantCon, setTenantCon] = useContext(tenantContext);
-  const [envCon, setEnvCon] = useContext(envContext)
 
   const tenant = window.tenant
   const environment = window.environment
@@ -27,8 +24,6 @@ const Communities = () => {
     })
 
   useEffect(() => {
-    setTenantCon(tenant)
-    setEnvCon(environment)
     setTenenvId(tenenv?.data?.[0]?.id)
   }, [!tenenv.isLoading
   && tenenv.isSuccess

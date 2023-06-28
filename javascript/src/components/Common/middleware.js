@@ -10,14 +10,14 @@ import Login from "../../Pages/Authentication/Login";
 import ErrorPage from "../../Pages/Error";
 import {useParams} from "react-router-dom";
 import {useCookies} from "react-cookie";
+import config from '../../config.json'
 
 const Middleware = ({elementName}) => {
-  const {tenant, environment} = useParams();
   const [cookies, setCookie] = useCookies();
 
   // XXX We set the environment and tenant globally
-  window.environment = environment
-  window.tenant = tenant
+  window.environment = config.environment
+  window.tenant = config.tenant
 
   const Component = elementName
   return (

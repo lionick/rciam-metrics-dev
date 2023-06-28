@@ -14,8 +14,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import jwt_decode from "jwt-decode";
 import {
   languageContext,
-  tenantContext,
-  envContext,
   userinfoContext
 } from "./Context/context";
 import Layout from "./components/Common/layout";
@@ -30,8 +28,6 @@ import Middleware from "./components/Common/middleware"
 
 function App() {
   const [language, setLanguage] = useState('en')
-  const [tenantCon, setTenantCon] = useState(null)
-  const [envCon, setEnvCon] = useState(null)
   const [userInfo, setUserInfo] = useState(null)
   const [cookies, setCookie] = useCookies();
 
@@ -50,25 +46,21 @@ function App() {
 
   return (
     <languageContext.Provider value={[language, setLanguage]}>
-      <tenantContext.Provider value={[tenantCon, setTenantCon]}>
-        <envContext.Provider value={[envCon, setEnvCon]}>
-          <userinfoContext.Provider value={[userInfo, setUserInfo]}>
-            <Layout>
-              <SideNav></SideNav>
-              <Main>
-                <AppRoutes/>
-              </Main>
-              <ToastContainer
-                position="bottom-left"
-                autoClose={false}
-                closeOnClick
-                rtl={false}
-                pauseOnHover
-              />
-            </Layout>
-          </userinfoContext.Provider>
-        </envContext.Provider>
-      </tenantContext.Provider>
+      <userinfoContext.Provider value={[userInfo, setUserInfo]}>
+        <Layout>
+          <SideNav></SideNav>
+          <Main>
+            <AppRoutes/>
+          </Main>
+          <ToastContainer
+            position="bottom-left"
+            autoClose={false}
+            closeOnClick
+            rtl={false}
+            pauseOnHover
+          />
+        </Layout>
+      </userinfoContext.Provider>
     </languageContext.Provider>
   );
 }

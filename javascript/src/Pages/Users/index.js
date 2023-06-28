@@ -1,5 +1,4 @@
 import React, {useState, useContext, useEffect} from "react";
-import {envContext, tenantContext} from "../../Context/context";
 import Container from "react-bootstrap/Container";
 import RegisteredUsersChart from "../../components/Users/registeredUsersChart";
 import RegisteredUsersDataTable from "../../components/Users/registeredUsersDataTable";
@@ -17,8 +16,6 @@ const Users = () => {
   const [tenenvId, setTenenvId] = useState(0);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [tenantCon, setTenantCon] = useContext(tenantContext);
-  const [envCon, setEnvCon] = useContext(envContext)
 
   const tenant = window.tenant
   const environment = window.environment
@@ -31,8 +28,6 @@ const Users = () => {
     })
 
   useEffect(() => {
-    setTenantCon(tenant)
-    setEnvCon(environment)
     setTenenvId(tenenv?.data?.[0]?.id)
   }, [!tenenv.isLoading
   && tenenv.isSuccess

@@ -2,7 +2,6 @@ import React, {useState, useEffect, useContext} from "react";
 import {useParams} from "react-router-dom";
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import {useNavigate} from "react-router-dom";
-import {envContext, tenantContext} from "../../Context/context";
 import LoginLineChart from "../../components/Dashboard/loginLineChart";
 import LoginTiles from "../../components/Dashboard/loginTiles";
 import Form from 'react-bootstrap/Form';
@@ -27,8 +26,6 @@ const Sp = () => {
   const [uniqueLogins, setUniqueLogins] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [tenantCon, setTenantCon] = useContext(tenantContext);
-  const [envCon, setEnvCon] = useContext(envContext)
 
   const tenenv = useQuery(
     [tenenvKey, {tenantId: tenant, environment: environment}],
@@ -39,8 +36,6 @@ const Sp = () => {
 
   useEffect(() => {
     if (!!tenenv?.data?.[0]?.id) {
-      setTenantCon(tenant)
-      setEnvCon(environment)
       setTenenvId(tenenv?.data?.[0]?.id)
     }
   }, [!tenenv.isLoading
