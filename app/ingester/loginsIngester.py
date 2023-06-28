@@ -14,12 +14,21 @@ class LoginDataIngester:
         try:
             idpId = session.exec(
               """
-              SELECT id FROM identityprovidersmap
+              SELECT id, name FROM identityprovidersmap
               WHERE entityid = '{0}' AND tenenv_id={1}
               """.format(
                   entityid, tenenvId
               )
             ).one()
+            # Update idpName with the latest
+            if (idpId[0] is not None and idpName is not None
+                    and idpId[1] != idpName):
+                session.exec(
+                    """
+                    UPDATE identityprovidersmap SET name = '{0}'
+                    WHERE id = {1}
+                    """.format(idpName, idpId[0])
+                )
         except NoResultFound:
             cls.logger.info("""Idp with name {0} and entityid {1}
                                will be created for
@@ -43,12 +52,21 @@ class LoginDataIngester:
         try:
             spId = session.exec(
                 """
-                SELECT * FROM serviceprovidersmap
+                SELECT id, name FROM serviceprovidersmap
                 WHERE identifier = '{0}' AND tenenv_id={1}
                 """.format(
                       identifier, tenenvId
                 )
             ).one()
+            # Update spName with the latest
+            if (spId[0] is not None and spName is not None
+                    and spId[1] != spName):
+                session.exec(
+                    """
+                    UPDATE serviceprovidersmap SET name = '{0}'
+                    WHERE id = {1}
+                    """.format(spName, spId[0])
+                )
         except NoResultFound:
             # If Sp not exists then add it to database
             cls.logger.info("""Sp with name {0} and identifier {1}
@@ -126,7 +144,8 @@ class LoginDataIngester:
             )
 
         loginsNotMapped = session.exec("""
-            SELECT jsondata FROM statistics_raw WHERE type='login' AND tenenv_id={0} {1}
+            SELECT jsondata FROM statistics_raw WHERE type='login'
+                AND tenenv_id={0} {1}
         """.format(tenenvId, between)).all()
         loginMappedItems = 0
         for login in loginsNotMapped:
@@ -135,6 +154,11 @@ class LoginDataIngester:
                 and utilsIngester.validateHashedUser(login[0]['userid'],
                                                   login[0]['tenenvId'],
                                                   session)):
+
+                # Set the to None if they don't have value
+                login[0]['idpName'] = None if not login[0].get('idpName') else login[0]['idpName']
+                login[0]['spName'] = None if not login[0].get('spName') else login[0]['spName']
+
                 # check if idp exists in our database otherwise create it
                 idpId = LoginDataIngester.getIdpId(login[0]['entityid'],
                                             login[0]['idpName'],
