@@ -10,6 +10,7 @@ from xmlrpc.client import boolean
 from app.database import get_session
 from app.utils.globalMethods import AuthNZCheck
 
+
 # LOGINS ROUTES ARE OPEN
 
 router = APIRouter(

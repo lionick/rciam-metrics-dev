@@ -52,7 +52,9 @@ const client = axios.create({
   headers: {
     "Access-Control-Allow-Origin": "*",
     "Content-type": "application/json",
-    'x-access-token': `${getCookie('atoken')}`
+    'x-access-token': `${getCookie('atoken')}`,
+    'x-tenant': `${config.tenant}`,
+    'x-environment': `${config.environment}`,
   },
   validateStatus: function (status) {
     return status >= 200 && status < 300; // default

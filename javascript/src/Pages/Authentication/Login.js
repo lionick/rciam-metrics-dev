@@ -11,6 +11,9 @@ function Login() {
   const handleLoginClick = () => {
     // Set a cookie with the current location so the backend knows where to go
     setCookie('login_start', window.location.href, {path: '/'});
+    // This is not a request but a redirect. So i will include the x-keys here
+    setCookie('x-tenant', config.tenant, {path: '/'});
+    setCookie('x-environment', config.environment, {path: '/'});
     // Redirect to the login endpoint
     window.location.href = config?.login_url
   }

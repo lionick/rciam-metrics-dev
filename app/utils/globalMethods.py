@@ -5,21 +5,7 @@ import json, jwt
 
 from app.utils import configParser
 from authlib.integrations.starlette_client import OAuth, OAuthError
-
-# TODO: Tenenv hardcoded for now
-OIDC_config = configParser.getConfig('oidc_client_egi')
-SERVER_config = configParser.getConfig('server_config')
-entitlements_config = configParser.getConfig('entitlements', 'authorize.py')
-
-oauth = OAuth()
-
-oauth.register(
-    'rciam',
-    client_id=OIDC_config['client_id'],
-    client_secret=OIDC_config['client_secret'],
-    server_metadata_url=OIDC_config['issuer'] + "/.well-known/openid-configuration",
-    client_kwargs={'scope': 'openid profile email voperson_id eduperson_entitlement'}
-)
+from app.utils.fastapiGlobals import g
 
 
 # https://www.fastapitutorial.com/blog/class-based-dependency-injection/
@@ -27,13 +13,29 @@ class AuthNZCheck:
     def __init__(self, tag: str = "", skip: bool = False):
         self.skip = skip
         self.tag = tag
+        self.oauth = OAuth()
+        self.entitlements_config = None
 
     async def __call__(self, request: Request, response: Response):
+        # config
+        authorize_file = 'authorize.' + g.tenant + '.' + g.environment + '.py'
+        self.entitlements_config = configParser.getConfig('entitlements', authorize_file)
+        config_file = 'config.' + g.tenant + '.' + g.environment + '.py'
+        oidc_config = configParser.getConfig('oidc_client_egi', config_file)
+
+        self.oauth.register(
+            'rciam',
+            client_id=oidc_config['client_id'],
+            client_secret=oidc_config['client_secret'],
+            server_metadata_url=oidc_config['issuer'] + "/.well-known/openid-configuration",
+            client_kwargs={'scope': 'openid profile email voperson_id eduperson_entitlement'}
+        )
+
         response.headers["Access-Control-Expose-Headers"] = "X-Permissions, X-Authenticated, X-Redirect"
 
         # permissions calculation
         access_token = request.headers.get('x-access-token')
-        rciam = oauth.create_client('rciam')
+        rciam = self.oauth.create_client('rciam')
         metadata = await rciam.load_server_metadata()
 
         headers = {'Authorization': f'Bearer {access_token}'}
@@ -43,9 +45,9 @@ class AuthNZCheck:
         if resp.status_code == 401:
             # For now we skip logins and dashboard routes
             if (self.tag == 'logins' or self.tag == 'dashboard') and self.skip:
-                permissions = permissionsCalculation()
+                permissions = permissionsCalculation(self.entitlements_config)
                 permissions_json = json.dumps(permissions).replace(" ", "").replace("\n", "")
-                pprint(permissions_json)
+                # pprint(permissions_json)
                 response.headers["X-Permissions"] = permissions_json
                 response.headers["X-Authenticated"] = "false"
                 response.headers["X-Redirect"] = "false"
@@ -57,7 +59,7 @@ class AuthNZCheck:
                 headers={
                     "X-Authenticated": "false",
                     "X-Redirect": "true",
-                    "Access-Control-Expose-Headers": "X-Permissions, X-Authenticated, , X-Redirect"
+                    "Access-Control-Expose-Headers": "X-Permissions, X-Authenticated, X-Redirect"
                 }
             )
         else:
@@ -69,7 +71,7 @@ class AuthNZCheck:
                 raise HTTPException(status_code=500)
 
         # Authorization
-        permissions = permissionsCalculation(data)
+        permissions = permissionsCalculation(self.entitlements_config, data)
         permissions_json = json.dumps(permissions).replace(" ", "").replace("\n", "")
 
         # Add the permission to a custom header field
@@ -82,7 +84,7 @@ class AuthNZCheck:
                 HTTPException(status_code=403)
 
 
-def permissionsCalculation(user_info = None):
+def permissionsCalculation(entitlements_config, user_info=None):
     user_entitlements = {}
     if user_info is not None:
         user_entitlements = user_info.get('eduperson_entitlement')
