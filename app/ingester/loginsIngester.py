@@ -21,7 +21,7 @@ class LoginDataIngester:
               )
             ).one()
             # Update idpName with the latest
-            if (idpId[0] is not None and idpName is not None
+            if (idpId[0] is not None and idpName is not None and idpName != ''
                     and idpId[1] != idpName):
                 session.exec(
                     """
@@ -59,7 +59,7 @@ class LoginDataIngester:
                 )
             ).one()
             # Update spName with the latest
-            if (spId[0] is not None and spName is not None
+            if (spId[0] is not None and spName is not None and spName != ''
                     and spId[1] != spName):
                 session.exec(
                     """
@@ -128,7 +128,7 @@ class LoginDataIngester:
     @classmethod
     def ingestLoginDataPerTenenv(cls, tenenvId, session):
 
-        # get dates not mapped for logins data
+        # get dates not mapped for logi5ns data
         datesNotMapped = utilsIngester.getDatesNotMapped(
             "statistics_country_hashed",
             "date",
@@ -142,7 +142,8 @@ class LoginDataIngester:
             between = " AND date <= '{0}'".format(
                 datesNotMapped[1]
             )
-
+        cls.logger.info("""
+            {0}  logins """.format(between))
         loginsNotMapped = session.exec("""
             SELECT jsondata FROM statistics_raw WHERE type='login'
                 AND tenenv_id={0} {1}
@@ -151,16 +152,16 @@ class LoginDataIngester:
         for login in loginsNotMapped:
             if (not login[0]['failedLogin']
                 and utilsIngester.validateTenenv(login[0]['tenenvId'], session)
-                and utilsIngester.validateHashedUser(login[0]['userid'],
+                and utilsIngester.validateHashedUser(login[0]['voPersonId'],
                                                   login[0]['tenenvId'],
                                                   session)):
 
                 # Set the to None if they don't have value
-                login[0]['idpName'] = None if not login[0].get('idpName') else login[0]['idpName']
-                login[0]['spName'] = None if not login[0].get('spName') else login[0]['spName']
+                login[0]['idpName'] = '' if not login[0].get('idpName') else login[0]['idpName']
+                login[0]['spName'] = '' if not login[0].get('spName') else login[0]['spName']
 
                 # check if idp exists in our database otherwise create it
-                idpId = LoginDataIngester.getIdpId(login[0]['entityid'],
+                idpId = LoginDataIngester.getIdpId(login[0]['entityId'],
                                             login[0]['idpName'],
                                             login[0]['tenenvId'],
                                             session)
@@ -174,12 +175,12 @@ class LoginDataIngester:
                 # store information at statistics_country_hashed
                 session.exec(
                     """
-                    INSERT INTO statistics_country_hashed(date, hasheduserid, sourceidpid, serviceid, countryid, count, tenenv_id) 
+                    INSERT INTO statistics_country_hashed(date, hasheduserid, sourceidpid, serviceid, countryid, count, tenenv_id)
                     VALUES ('{0}', '{1}', {2}, {3}, {4}, {5}, {6})
                     ON CONFLICT (date, hasheduserid, sourceidpid, serviceid, countryid, tenenv_id)
                     DO UPDATE SET count = statistics_country_hashed.count + 1
                     """.format(
-                        login[0]["date"], login[0]['userid'], idpId[0], spId[0], countryId[0], 1, login[0]['tenenvId']
+                        login[0]["date"], login[0]['voPersonId'], idpId[0], spId[0], countryId[0], 1, login[0]['tenenvId']
                     )
                 )
                 session.commit()

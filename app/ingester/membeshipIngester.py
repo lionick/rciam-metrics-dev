@@ -32,7 +32,7 @@ class MembershipDataIngester:
         # get dates not mapped for users data
         datesNotMapped = utilsIngester.getDatesNotMapped(
             "members",
-            "date",
+            "updated",
             tenenvId,
             session)
         between = ""
@@ -50,17 +50,21 @@ class MembershipDataIngester:
         membershipMappedItems = 0
         for membership in membershipsNotMapped:
             communityId = MembershipDataIngester.getCommunityId(
-                membership['vo'], tenenvId, session)
-            if (communityId is not None):
-                session.exec("""INSERT INTO members(community_id,
-                    hasheduserid, status, tenenv_id, date)
-                    VALUES ('{0}','{1}','{2}', {3}, '{4}')
-                    ON CONFLICT(community_id, hasheduserid, tenenv_id)
-                    DO UPDATE
-                    set status={2}""". format(
-                    communityId, membership['userid'], membership['status'],
-                    tenenvId, membership['date']))
-                membershipMappedItems += 1
+                membership[0]['voName'], tenenvId, session)
+            if (communityId is None):
+                cls.logger.error("""
+                    VO name '{0}' not found """.format(membership[0]['voName']))
+                continue
+            session.exec("""INSERT INTO members(community_id,
+                hasheduserid, status, tenenv_id, created, updated)
+                VALUES ('{0}','{1}','{2}', {3}, '{4}', '{4}')
+                ON CONFLICT(community_id, hasheduserid, tenenv_id)
+                DO UPDATE
+                set status='{2}', updated='{4}'""". format(
+                communityId[0], membership[0]['voPersonId'], membership[0]['status'],
+                tenenvId, membership[0]['date']))
+            session.commit()
+            membershipMappedItems += 1
         cls.logger.info("""{0} memberships ingested or updated""".
                         format(membershipMappedItems))
 

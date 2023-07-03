@@ -32,7 +32,7 @@ class CommunityDataIngester:
         # get dates not mapped for communities data
         datesNotMapped = utilsIngester.getDatesNotMapped(
             "community",
-            "created",
+            "updated",
             tenenvId,
             session)
         between = ""
@@ -49,19 +49,29 @@ class CommunityDataIngester:
         """.format(tenenvId, between)).all()
         communityMappedItems = 0
         for community in communitiesNotMapped:
+            print(community[0])
             communityId = session.exec("""INSERT INTO community_info(
                 name, description, source, tenenv_id)
                 VALUES ('{0}','{1}','{2}', {3})
                 ON CONFLICT(name, tenenv_id)
-                DO NOTHING
-                RETURNING id;""". format(
-                community['name'], community['description'], community['source'],
-                tenenvId))
-            if (communityId is not None):
-                session.exec("""INSERT INTO community(community_id, created,
+                DO UPDATE
+                set description='{1}'
+                RETURNING id;""".format(community[0]['voName'],
+                                        community[0]['voDescription'],
+                                        community[0]['source'],
+                                        tenenvId)).one()
+            session.commit()
+            print(communityId)
+            if (communityId[0] is not None):
+                session.exec("""INSERT INTO community(community_id, created, updated, status,
                 tenenv_id)
-                VALUES({0},'{1}',{2})""".format(communityId,
-                                                community['date'], tenenvId))
+                VALUES ({0},'{1}','{1}','{2}',{3})
+                ON CONFLICT(community_id, tenenv_id)
+                DO UPDATE
+                set status='{2}', updated='{1}'
+                """.format(communityId[0],
+                           community[0]['date'], community[0]['status'], tenenvId))
+                session.commit()
             communityMappedItems += 1
         cls.logger.info("""{0} communities ingested or updated""".
                         format(communityMappedItems))
