@@ -1,6 +1,8 @@
 import {getIdps, getSps} from "../../utils/queries";
 import {idpsKey, spsKey} from "../../utils/queryKeys";
 import {useQuery} from "react-query";
+import Spinner from "./spinner";
+import React from "react";
 
 const EntityInfoIdp = ({
                          tenenvId,
@@ -22,7 +24,7 @@ const EntityInfoIdp = ({
   if (idpEntities.isLoading
     || idpEntities.isFetching
     || idpEntities?.data?.length == 0) {
-    return null
+        return (<Spinner />)
   }
 
   return (

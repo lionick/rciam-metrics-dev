@@ -1,6 +1,7 @@
 import React, {useEffect} from "react";
 import {sortByNamePropertyCallback} from "../Common/utils"
 import ReactTooltip from "react-tooltip";
+import Spinner from "../Common/spinner";
 
 const ListCommunities = ({communities}) => {
   useEffect(() => {
@@ -11,7 +12,7 @@ const ListCommunities = ({communities}) => {
   if (communities.isLoading
     || communities.isFetching
     || communities?.data == undefined) {
-    return null
+        return (<Spinner />)
   }
 
   const communitiesList = communities?.data.map((element) => {

@@ -9,6 +9,7 @@ import 'jquery-mapael/js/maps/world_countries_mercator.js';
 import {useQuery, useQueryClient} from "react-query";
 import {loginsPerCountryKey} from "../../utils/queryKeys";
 import {getLoginsPerCountry} from "../../utils/queries";
+import Spinner from "../Common/spinner";
 
 
 const IdpMapToDataTable = ({
@@ -82,7 +83,7 @@ const IdpMapToDataTable = ({
   if (loginsPerCountry.isLoading
     || loginsPerCountry.isFetching
     || loginsPerCountryData.length === 0) {
-    return null
+        return (<Spinner />)
   }
 
   return (

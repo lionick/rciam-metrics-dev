@@ -7,8 +7,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import DatePicker from "react-datepicker";
 import Dropdown from 'react-dropdown';
-import {ToastContainer, toast} from 'react-toastify';
-import {convertDateByGroup, createAnchorElement} from "../Common/utils";
+import {toast} from 'react-toastify';
 import {dropdownOptions} from "../../utils/helpers/enums";
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-dropdown/style.css';
@@ -17,6 +16,7 @@ import {useQuery, useQueryClient} from "react-query";
 import {loginsPerIdpKey, registeredUsersPerCountryGroupByKey} from "../../utils/queryKeys";
 import {getRegisteredUsersPerCountryGroupBy} from "../../utils/queries";
 import {useCookies} from "react-cookie";
+import Spinner from "../Common/spinner";
 
 const RegisteredUsersDataTable = ({
                                     tenenvId,
@@ -104,7 +104,7 @@ const RegisteredUsersDataTable = ({
   if (registeredUsersPerCountryGroup.isLoading
     || registeredUsersPerCountryGroup.isFetching
     || minDate == undefined) {
-    return null
+        return (<Spinner />)
   }
 
 

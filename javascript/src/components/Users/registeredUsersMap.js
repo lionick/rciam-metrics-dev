@@ -7,6 +7,7 @@ import 'jquery-mapael/js/maps/world_countries_mercator.js';
 import {getRegisteredUsersByCountry} from "../../utils/queries";
 import {registeredUsersByCountryKey} from "../../utils/queryKeys";
 import EarthMap from "../Common/earthMap";
+import Spinner from "../Common/spinner";
 
 const RegisteredUsersMap = ({
                               startDate,
@@ -39,11 +40,11 @@ const RegisteredUsersMap = ({
     }
   }, [startDate, endDate, tenenvId])
 
-  if(registeredUsersByCountry.isIdle
-     || registeredUsersByCountry.isLoading
-     || registeredUsersByCountry.isFetching
-     || registeredUsersByCountry.isRefetching) {
-    return null
+  if (registeredUsersByCountry.isIdle
+      || registeredUsersByCountry.isLoading
+      || registeredUsersByCountry.isFetching
+      || registeredUsersByCountry.isRefetching) {
+    return (<Spinner/>)
   }
 
   return (

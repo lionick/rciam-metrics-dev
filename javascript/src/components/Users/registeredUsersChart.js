@@ -120,6 +120,7 @@ const RegisteredUsersChart = ({
       <Chart chartType="ColumnChart"
              width="100%"
              height="400px"
+             loader={<div>Data loading</div>}
              data={registeredUsers}
              options={global_options}/>
     </Col>

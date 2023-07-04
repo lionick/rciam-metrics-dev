@@ -6,6 +6,8 @@ import {useQuery, useQueryClient} from "react-query";
 import {loginsPerCountryKey} from "../../utils/queryKeys";
 import {getLoginsPerCountry} from "../../utils/queries";
 import EarthMap from "../Common/earthMap";
+import Spinner from "../Common/spinner";
+import React from "react";
 
 const LoginsMap = ({
                      startDate,
@@ -31,7 +33,7 @@ const LoginsMap = ({
   if (loginsPerCountry.isLoading
     || loginsPerCountry.isFetching
     || loginsPerCountry.length === 0) {
-    return null
+    return (<Spinner/>)
   }
 
   return (

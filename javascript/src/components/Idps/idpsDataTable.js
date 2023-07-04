@@ -15,6 +15,7 @@ import {getLoginsPerIdp} from "../../utils/queries";
 import {useCookies} from "react-cookie";
 import {createAnchorElement} from "../Common/utils";
 import {toast} from "react-toastify";
+import Spinner from "../Common/spinner";
 
 const IdpsDataTable = ({
                          spId,
@@ -106,7 +107,7 @@ const IdpsDataTable = ({
   if (loginsPerIpd.isLoading
     || loginsPerIpd.isFetching
     || idpsLogins.length === 0) {
-    return null
+    return (<Spinner/>)
   }
 
   return (

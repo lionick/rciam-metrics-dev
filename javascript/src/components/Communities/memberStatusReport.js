@@ -3,6 +3,8 @@ import Row from "react-bootstrap/Row";
 import {useQuery} from "react-query";
 import {communityMembersByStatusKey} from "../../utils/queryKeys";
 import {getCommunityMembersByStatus} from "../../utils/queries";
+import Spinner from "../Common/spinner";
+import React from "react";
 
 const MemberStatusReport = ({
                               tenenvId,
@@ -24,6 +26,11 @@ const MemberStatusReport = ({
     }
   )
 
+  if(communityMembersByStatusQuery.isLoading
+     || communityMembersByStatusQuery.isFetching) {
+    return (<Spinner />)
+  }
+
   // Create the option list
   const {activeUsers, graceUsers, otherUsers} = !communityMembersByStatusQuery.isLoading
   && communityMembersByStatusQuery.isSuccess
@@ -42,7 +49,7 @@ const MemberStatusReport = ({
 
   if (tenenvId == undefined
     || communityId == undefined) {
-    return null
+        return null
   }
 
   return (

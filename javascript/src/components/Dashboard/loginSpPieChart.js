@@ -73,6 +73,7 @@ const LoginSpPieChart = ({
           chartType="PieChart"
           data={sps ?? []}
           options={optionsPieChart}
+          loader={<div>Data loading</div>}
           width={"100%"}
           height={"400px"}
           className="pieChart"

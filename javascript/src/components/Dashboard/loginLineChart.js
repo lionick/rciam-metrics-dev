@@ -6,6 +6,7 @@ import {getLoginsGroupByDay} from "../../utils/queries";
 import {useQuery, useQueryClient} from "react-query";
 import {loginsGroupByDayKey} from "../../utils/queryKeys";
 import {Chart} from "react-google-charts";
+import Spinner from "../Common/spinner"
 
 const LoginLineChart = ({
                           type,
@@ -74,7 +75,7 @@ const LoginLineChart = ({
       || loginsGroupByDay.isFetching
       || lineData?.length <= 2
     ) {
-      return (<></>)
+      return (<Spinner />)
     }
 
   return (

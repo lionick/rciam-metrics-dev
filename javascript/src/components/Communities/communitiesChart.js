@@ -122,6 +122,7 @@ const CommunitiesChart = ({tenenvId}) => {
                width="100%"
                height="400px"
                data={communities}
+               loader={<div>Data loading</div>}
                options={global_options}/>
       </Col>
       <Col lg={3}>

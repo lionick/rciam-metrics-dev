@@ -15,6 +15,7 @@ import {dropdownOptions} from "../../utils/helpers/enums";
 import {useQuery, useQueryClient} from "react-query";
 import {communitiesGroupByKey} from "../../utils/queryKeys";
 import {getCommunitiesGroupBy} from "../../utils/queries";
+import Spinner from "../Common/spinner";
 
 const CommunitiesDataTable = ({tenenvId}) => {
   const [communitiesPerPeriod, setCommunitiesPerPeriod] = useState([]);
@@ -96,7 +97,7 @@ const CommunitiesDataTable = ({tenenvId}) => {
   if (communitiesGroupBy.isLoading
     || communitiesGroupBy.isFetching
     || minDate == undefined) {
-    return null
+        return (<Spinner />)
   }
 
   return <Row className="box">

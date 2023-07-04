@@ -14,6 +14,7 @@ import {loginsPerSpKey} from "../../utils/queryKeys";
 import {getLoginsPerSP} from "../../utils/queries";
 import {useCookies} from "react-cookie";
 import {createAnchorElement} from "../Common/utils";
+import Spinner from "../Common/spinner";
 
 const SpsDataTable = ({
                         idpId,
@@ -98,9 +99,8 @@ const SpsDataTable = ({
 
   if (loginsPerSp.isLoading
     || loginsPerSp.isFetching
-    // || minDate == undefined
     || spsLogins.length === 0) {
-    return null
+    return (<Spinner/>)
   }
 
   return (

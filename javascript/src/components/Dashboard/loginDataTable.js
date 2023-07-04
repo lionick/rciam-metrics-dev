@@ -15,6 +15,7 @@ import {useQuery, useQueryClient} from "react-query";
 import {loginsPerCountryKey} from "../../utils/queryKeys";
 import {getLoginsPerCountry} from "../../utils/queries";
 import {toast} from "react-toastify";
+import Spinner from "../Common/spinner"
 
 const LoginDataTable = ({
                           startDateHandler,
@@ -108,7 +109,7 @@ const LoginDataTable = ({
   if (loginsPerCountry.isLoading
     || loginsPerCountry.isFetching
     || minDate == undefined) {
-    return null
+    return(<Spinner />)
   }
 
   return (

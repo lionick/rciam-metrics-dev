@@ -6,6 +6,7 @@ import CommunitiesDataTable from "../../components/Communities/communitiesDataTa
 import CommunitiesMap from "../../components/Communities/communitiesMap";
 import Header from "../../components/Common/header";
 import Footer from "../../components/Common/footer";
+import Spinner from "../../components/Common/spinner"
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import {tenenvKey} from '../../utils/queryKeys'
@@ -29,7 +30,9 @@ const Communities = () => {
   && tenenv.isSuccess
   && !tenenv.isFetching])
 
-  if (tenenvId == undefined || tenenvId == 0 || tenenvId == "") return
+  if (tenenvId == undefined || tenenvId == 0 || tenenvId == "") {
+    return (<Spinner />)
+  }
 
   return (
     <Container>
