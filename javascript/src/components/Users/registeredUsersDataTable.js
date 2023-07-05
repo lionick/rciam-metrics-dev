@@ -102,9 +102,12 @@ const RegisteredUsersDataTable = ({
   };
 
   if (registeredUsersPerCountryGroup.isLoading
-    || registeredUsersPerCountryGroup.isFetching
-    || minDate == undefined) {
-        return (<Spinner />)
+      || registeredUsersPerCountryGroup.isFetching) {
+    return (<Spinner/>)
+  }
+
+  if (minDate == undefined) {
+    return null
   }
 
 

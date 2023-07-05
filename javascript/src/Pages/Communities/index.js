@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import {useQuery} from 'react-query';
 import Container from "react-bootstrap/Container";
 import CommunitiesChart from "../../components/Communities/communitiesChart";
@@ -30,8 +30,15 @@ const Communities = () => {
   && tenenv.isSuccess
   && !tenenv.isFetching])
 
-  if (tenenvId == undefined || tenenvId == 0 || tenenvId == "") {
+  if(tenenv.isLoading
+     || tenenv.isFetching) {
     return (<Spinner />)
+  }
+
+  if (tenenvId == undefined
+      || tenenvId == 0
+      || tenenvId == "") {
+    return null
   }
 
   return (

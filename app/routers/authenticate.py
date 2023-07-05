@@ -148,7 +148,7 @@ async def logout(
     rciam = oauth_ob.create_client('rciam')
     metadata = await rciam.load_server_metadata()
     # todo: Fix this after we complete the multitenacy
-    redirect_uri = server_config['protocol'] + "://" + server_config['client'] + "/" + g.tenant + "/" + g.environment
+    redirect_uri = server_config['protocol'] + "://" + server_config['client']
     logout_endpoint = metadata['end_session_endpoint'] + "?post_logout_redirect_uri=" + urllib.parse.unquote(
         redirect_uri) + "&id_token_hint=" + request.cookies.get("idtoken")
 

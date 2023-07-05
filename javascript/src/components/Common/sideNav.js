@@ -28,19 +28,19 @@ const SideNav = ({
           <Sidebar.Nav>
             {/* Home */}
             <Link className="sidebar-menu-nav-link"
-                  to={"/" + tenant + "/" + environment}>
+                  to={"/"}>
               <Sidebar.Nav.Icon><FontAwesomeIcon icon={faHome}/></Sidebar.Nav.Icon>
               <Sidebar.Nav.Title>Home</Sidebar.Nav.Title>
             </Link>
             {/* Identity Providers */}
             <Link className="sidebar-menu-nav-link"
-                  to={"/" + tenant + "/" + environment + "/identity-providers"}>
+                  to={"/identity-providers"}>
               <Sidebar.Nav.Icon><FontAwesomeIcon icon={faWarehouse}/></Sidebar.Nav.Icon>
               <Sidebar.Nav.Title>Identity Providers</Sidebar.Nav.Title>
             </Link>
             {/* Services */}
             <Link className="sidebar-menu-nav-link"
-                  to={"/" + tenant + "/" + environment + "/services"}>
+                  to={"/services"}>
               <Sidebar.Nav.Icon><FontAwesomeIcon icon={faDoorOpen}/></Sidebar.Nav.Icon>
               <Sidebar.Nav.Title>Services</Sidebar.Nav.Title>
             </Link>
@@ -49,7 +49,7 @@ const SideNav = ({
               && !!permissions?.actions?.registered_users?.['view'] ?
                 // Users
                 (<Link className="sidebar-menu-nav-link"
-                       to={"/" + tenant + "/" + environment + "/users"}>
+                       to={"/users"}>
                   <Sidebar.Nav.Icon><FontAwesomeIcon icon={faUser}/></Sidebar.Nav.Icon>
                   <Sidebar.Nav.Title>Users</Sidebar.Nav.Title>
                 </Link>) : null
@@ -59,7 +59,7 @@ const SideNav = ({
               && !!permissions?.actions?.communities?.['view'] ?
                 // Communities
                 (<Link className="sidebar-menu-nav-link"
-                       to={"/" + tenant + "/" + environment + "/communities"}>
+                       to={"/communities"}>
                   <Sidebar.Nav.Icon><FontAwesomeIcon icon={faUsers}/></Sidebar.Nav.Icon>
                   <Sidebar.Nav.Title>Communities</Sidebar.Nav.Title>
                 </Link>) : null

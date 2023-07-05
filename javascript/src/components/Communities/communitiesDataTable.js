@@ -95,9 +95,12 @@ const CommunitiesDataTable = ({tenenvId}) => {
   };
 
   if (communitiesGroupBy.isLoading
-    || communitiesGroupBy.isFetching
-    || minDate == undefined) {
-        return (<Spinner />)
+      || communitiesGroupBy.isFetching) {
+    return (<Spinner/>)
+  }
+
+  if (minDate == undefined) {
+    return null
   }
 
   return <Row className="box">

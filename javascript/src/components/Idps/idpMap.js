@@ -33,9 +33,12 @@ const IdpMap = ({
   )
 
   if (loginsPerCountry.isLoading
-    || loginsPerCountry.isFetching
-    || loginsPerCountry.length === 0) {
+    || loginsPerCountry.isFetching) {
         return (<Spinner />)
+  }
+
+  if(loginsPerCountry.length === 0) {
+    return null
   }
 
   return (

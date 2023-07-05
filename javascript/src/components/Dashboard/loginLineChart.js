@@ -73,9 +73,12 @@ const LoginLineChart = ({
     //     try to reload
     if (loginsGroupByDay.isLoading
       || loginsGroupByDay.isFetching
-      || lineData?.length <= 2
     ) {
       return (<Spinner />)
+    }
+
+    if(lineData?.length <= 2) {
+      return null
     }
 
   return (

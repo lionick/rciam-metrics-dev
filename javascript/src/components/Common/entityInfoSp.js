@@ -5,9 +5,9 @@ import Spinner from "./spinner";
 import React from "react";
 
 const EntityInfoSp = ({
-                         tenenvId,
-                         spId
-                       }) => {
+                        tenenvId,
+                        spId
+                      }) => {
   const spEntities =
     useQuery([spsKey, {
         params: {
@@ -20,9 +20,12 @@ const EntityInfoSp = ({
       })
 
   if (spEntities.isLoading
-    || spEntities.isFetching
-    || spEntities?.data?.length == 0) {
-        return (<Spinner />)
+      || spEntities.isFetching) {
+    return (<Spinner/>)
+  }
+
+  if (spEntities?.data?.length == 0) {
+    return null
   }
 
   return (

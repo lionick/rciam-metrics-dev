@@ -82,7 +82,7 @@ const IdpsDataTable = ({
       && loginsPerIpd.isFetched
       && loginsPerIpd.isSuccess
       && loginsPerIpd?.data?.map(idp => ({
-        "Identity Provider Name": (cookies.userinfo == undefined && !!permissions?.actions?.identity_providers?.['view']) ? idp.name : createAnchorElement(idp.name, `/${tenant}/${environment}/identity-providers/${idp.id}`),
+        "Identity Provider Name": (cookies.userinfo == undefined && !!permissions?.actions?.identity_providers?.['view']) ? idp.name : createAnchorElement(idp.name, `/identity-providers/${idp.id}`),
         "Identity Provider Identifier": idp.entityid,
         "Number of Logins": idp.count
       }))
@@ -105,9 +105,12 @@ const IdpsDataTable = ({
   }
 
   if (loginsPerIpd.isLoading
-    || loginsPerIpd.isFetching
-    || idpsLogins.length === 0) {
+      || loginsPerIpd.isFetching) {
     return (<Spinner/>)
+  }
+
+  if (idpsLogins.length === 0) {
+    return null
   }
 
   return (

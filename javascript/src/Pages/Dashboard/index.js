@@ -43,8 +43,8 @@ const Dashboard = () => {
   let navigate = useNavigate();
   const goToSpecificProvider = (id, provider) => {
     const path = provider === "sp" ?
-      `/${tenant}/${environment}/services/${id}` :
-      `/${tenant}/${environment}/identity-providers/${id}`
+      `/services/${id}` :
+      `/identity-providers/${id}`
     navigate(path);
   }
 

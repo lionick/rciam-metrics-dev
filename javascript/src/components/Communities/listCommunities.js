@@ -10,9 +10,12 @@ const ListCommunities = ({communities}) => {
 
 
   if (communities.isLoading
-    || communities.isFetching
-    || communities?.data == undefined) {
-        return (<Spinner />)
+      || communities.isFetching) {
+    return (<Spinner/>)
+  }
+
+  if (communities?.data == undefined) {
+    return null
   }
 
   const communitiesList = communities?.data.map((element) => {

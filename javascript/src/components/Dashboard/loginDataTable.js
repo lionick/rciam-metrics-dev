@@ -107,9 +107,12 @@ const LoginDataTable = ({
   };
 
   if (loginsPerCountry.isLoading
-    || loginsPerCountry.isFetching
-    || minDate == undefined) {
-    return(<Spinner />)
+      || loginsPerCountry.isFetching) {
+    return (<Spinner/>)
+  }
+
+  if (minDate == undefined) {
+    return null
   }
 
   return (

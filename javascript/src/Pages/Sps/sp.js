@@ -18,14 +18,17 @@ import 'react-tabs/style/react-tabs.css';
 import {useQuery} from "react-query";
 import {tenenvKey} from "../../utils/queryKeys";
 import {getTenenv} from "../../utils/queries";
-
+import Spinner from "../../components/Common/spinner"
 
 const Sp = () => {
-  const {tenant, environment, id} = useParams();
+  const {id} = useParams();
   const [tenenvId, setTenenvId] = useState(0);
   const [uniqueLogins, setUniqueLogins] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+
+  const tenant = window.tenant
+  const environment = window.environment
 
   const tenenv = useQuery(
     [tenenvKey, {tenantId: tenant, environment: environment}],
@@ -48,13 +51,21 @@ const Sp = () => {
   let navigate = useNavigate();
   const goToSpecificProvider = (id, provider) => {
     const path = provider === "sp" ?
-      `/${tenant}/${environment}/services/${id}` :
-      `/${tenant}/${environment}/identity-providers/${id}`
+      `/services/${id}` :
+      `/identity-providers/${id}`
     navigate(path);
   }
 
+  if (tenenv.isLoading
+    || tenenv.isFetching) {
+    return (<Spinner/>)
+  }
 
-  if (tenenvId == undefined || tenenvId == 0 || tenenvId == "") return;
+  if (tenenvId == undefined
+    || tenenvId == 0
+    || tenenvId == "") {
+    return null
+  }
 
 
   return (

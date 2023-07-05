@@ -22,9 +22,12 @@ const EntityInfoIdp = ({
       })
 
   if (idpEntities.isLoading
-    || idpEntities.isFetching
-    || idpEntities?.data?.length == 0) {
-        return (<Spinner />)
+      || idpEntities.isFetching) {
+    return (<Spinner/>)
+  }
+
+  if (idpEntities?.data?.length == 0) {
+    return null
   }
 
   return (

@@ -40,11 +40,14 @@ const RegisteredUsersMap = ({
     }
   }, [startDate, endDate, tenenvId])
 
-  if (registeredUsersByCountry.isIdle
-      || registeredUsersByCountry.isLoading
+  if (registeredUsersByCountry.isLoading
       || registeredUsersByCountry.isFetching
       || registeredUsersByCountry.isRefetching) {
     return (<Spinner/>)
+  }
+
+  if(registeredUsersByCountry.isIdle) {
+    return null
   }
 
   return (

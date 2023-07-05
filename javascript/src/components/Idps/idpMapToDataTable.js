@@ -81,9 +81,12 @@ const IdpMapToDataTable = ({
   && loginsPerCountry.isSuccess])
 
   if (loginsPerCountry.isLoading
-    || loginsPerCountry.isFetching
-    || loginsPerCountryData.length === 0) {
-        return (<Spinner />)
+      || loginsPerCountry.isFetching) {
+    return (<Spinner/>)
+  }
+
+  if (loginsPerCountryData.length === 0) {
+    return null
   }
 
   return (
