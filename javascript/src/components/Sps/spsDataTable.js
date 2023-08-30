@@ -94,9 +94,7 @@ const SpsDataTable = ({
       $("#" + dataTableId).DataTable().destroy()
       setSpsLogins(perSp)
     }
-  }, [!loginsPerSp.isLoading
-  && !loginsPerSp.isFetching
-  && loginsPerSp.isSuccess])
+  }, [loginsPerSp.isSuccess])
 
   const handleStartDateChange = (date) => {
    
@@ -118,10 +116,6 @@ const SpsDataTable = ({
   if (loginsPerSp.isLoading
       || loginsPerSp.isFetching) {
     return (<Spinner/>)
-  }
-
-  if (spsLogins.length === 0) {
-    return null
   }
 
   return (

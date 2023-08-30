@@ -93,9 +93,7 @@ const IdpsDataTable = ({
       $("#" + dataTableId).DataTable().destroy()
       setIdpsLogins(perIdp)
     }
-  }, [!loginsPerIpd.isLoading
-  && !loginsPerIpd.isFetching
-  && loginsPerIpd.isSuccess])
+  }, [loginsPerIpd.isSuccess])
 
   const handleStartDateChange = (date) => {
    
@@ -125,10 +123,6 @@ const IdpsDataTable = ({
   if (loginsPerIpd.isLoading
       || loginsPerIpd.isFetching) {
     return (<Spinner/>)
-  }
-
-  if (idpsLogins.length === 0) {
-    return null
   }
 
   return (

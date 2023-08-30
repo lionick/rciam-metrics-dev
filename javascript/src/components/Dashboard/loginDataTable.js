@@ -93,10 +93,9 @@ const LoginDataTable = ({
       }
       $("#table-login").DataTable().destroy()
       setLoginsPerCountryPerPeriod(loginsPerCountryPerPeriodArray)
+
     }
-  }, [!loginsPerCountry.isLoading
-  && !loginsPerCountry.isFetching
-  && loginsPerCountry.isSuccess])
+  }, [loginsPerCountry.isSuccess])
 
   const handleStartDateChange = (date) => {
    
@@ -124,15 +123,6 @@ const LoginDataTable = ({
     endDateHandler(endDate)
   };
 
-  if (loginsPerCountry.isLoading
-      || loginsPerCountry.isFetching) {
-    return (<Spinner/>)
-  }
-
-  if (minDate == undefined) {
-    return null
-  }
-
   return (
     <Row className="box">
       <Col md={12}>
@@ -153,14 +143,10 @@ const LoginDataTable = ({
                   options={dropdownOptions}
                   onChange={handleChange}/>
       </Col>
-      <Col lg={12}>
-        {
-          loginsPerCountryPerPeriod.length !== 0 ?
+      <Col lg={12}> 
             <Datatable dataTableId="table-login"
                        items={loginsPerCountryPerPeriod}
-                       columnSep="Number of Logins per Country"/>
-            : null
-        }
+                       columnSep="Number of Logins per Country"/> 
       </Col>
     </Row>
   )
