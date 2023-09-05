@@ -18,6 +18,17 @@ router = APIRouter(
     dependencies=[Depends(AuthNZCheck("logins", True))]
 )
 
+@router.get("/min_date_logins")
+async def read_min_date_logins(
+        *,
+        request: Request,
+        session: Session = Depends(get_session),
+        tenenv_id: int
+):
+    min_date = session.exec("""SELECT min(date) as min_date 
+                            FROM statistics_country_hashed 
+                            WHERE tenenv_id={0}""".format(tenenv_id)).one()
+    return min_date
 
 @router.get("/logins_per_idp")
 async def read_logins_per_idp(

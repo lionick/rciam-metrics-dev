@@ -12,10 +12,9 @@ import 'react-dropdown/style.css';
 import "react-datepicker/dist/react-datepicker.css";
 import {dropdownOptions} from "../../../src/utils/helpers/enums"
 import {useQuery, useQueryClient} from "react-query";
-import {loginsPerCountryKey} from "../../utils/queryKeys";
-import {getLoginsPerCountry} from "../../utils/queries";
+import {loginsPerCountryKey, minDateLoginsKey} from "../../utils/queryKeys";
+import {getLoginsPerCountry, getMinDateLogins} from "../../utils/queries";
 import {toast} from "react-toastify";
-import Spinner from "../Common/spinner"
 import {format} from "date-fns";
 import {convertDateByGroup, formatStartDate, formatEndDate} from "../Common/utils";
 
@@ -25,16 +24,24 @@ const LoginDataTable = ({
                           tenenvId,
                           uniqueLogins
                         }) => {
+  const oneYearAgo = new Date();
+  oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+  formatStartDate(oneYearAgo)
+
+  const today = new Date();
+  today.setDate(today.getDate() - 1);
+  formatEndDate(today)
+
+  const dropdownRef = useRef(null);
   const [loginsPerCountryPerPeriod, setLoginsPerCountryPerPeriod] = useState([]);
   const [minDate, setMinDate] = useState(null);
   // By default we fetch by month
   const [groupBy, setGroupBy] = useState("month");
-  const [endDate, setEndDate] = useState(null);
-  const [startDate, setStartDate] = useState(null);
-  const controller = new AbortController
-
+  const [endDate, setEndDate] = useState(today);
+  const [startDate, setStartDate] = useState(oneYearAgo);
+  const [dropdownOptionsState, setDropdownOptions] = useState(dropdownOptions);
   const queryClient = useQueryClient();
-
+  const controller = new AbortController
 
   let params = {
     params: {
@@ -56,6 +63,15 @@ const LoginDataTable = ({
     }
   )
 
+  const minDateLogins = useQuery(
+    [minDateLoginsKey, params],
+    getMinDateLogins,
+    {
+      enabled: false,
+      refetchOnWindowFocus: false
+    }
+  )
+
   useEffect(() => {
     params = {
       params: {
@@ -70,6 +86,7 @@ const LoginDataTable = ({
 
     try {
       const response = queryClient.refetchQueries([loginsPerCountryKey, params])
+      queryClient.refetchQueries([minDateLoginsKey, {params:{tenenv_id: tenenvId}}])
     } catch (error) {
       // todo: Here we can handle any authentication or authorization errors
       console.log(error)
@@ -83,6 +100,9 @@ const LoginDataTable = ({
 
   // Construct the data required for the datatable
   useEffect(() => {
+    if(groupBy == "") {
+      return;
+    }
     const loginsPerCountryPerPeriodArray = !loginsPerCountry.isLoading
       && !loginsPerCountry.isFetching
       && loginsPerCountry.isSuccess
@@ -96,28 +116,53 @@ const LoginDataTable = ({
       // We only keep the first date because the backend returns the dataset sorted and we only care about the
       // min of the min dates.
       if (minDate == undefined || minDate == "") {
-        setMinDate(!!loginsPerCountry?.data?.[0]?.min_date ? new Date(loginsPerCountry?.data?.[0]?.min_date) : null)
+        setMinDate(!!minDateLogins?.data?.min_date ? new Date(minDateLogins?.data?.min_date) : null)
       }
       $("#table-login").DataTable().destroy()
       setLoginsPerCountryPerPeriod(loginsPerCountryPerPeriodArray)
 
     }
-  }, [loginsPerCountry.isSuccess])
+  }, [loginsPerCountry.isSuccess && minDateLogins.isSuccess, groupBy])
+
+  const handleAddOption = () => {
+    // Create a new option dynamically
+    const newOption =  {value: '', label: 'Filter'};
+
+    // Check if the new option already exists in the options array
+    if (!dropdownOptionsState.some(option => option.value === newOption.value)) {
+      // If it doesn't exist, add it to the options array
+      setDropdownOptions([newOption, ...dropdownOptionsState]);
+    } 
+  };
 
   const handleStartDateChange = (date) => {
-
-    date = formatStartDate(date);
-    if (date != null) {
-      setStartDate(date);
+    if(groupBy!=''){
+      handleAddOption()
     }
+    date = formatStartDate(date);
+    if(date != null) {
+      if(endDate!=date){
+        setGroupBy("")
+      }
+      setStartDate(date);
+      dropdownRef.current.state.selected.label = 'Filter';
+    }
+    
   };
 
   const handleEndDateChange = (date) => {
-
-    date = formatEndDate(date);
-    if (date != null) {
-      setEndDate(date);
+    if(groupBy!=''){
+      handleAddOption()
     }
+    date = formatEndDate(date);
+    if(date != null) {
+      if(endDate!=date){
+        setGroupBy("")  
+      }
+      setEndDate(date);
+      dropdownRef.current.state.selected.label = 'Filter';
+    }
+    
   };
 
   const handleChange = (event) => {
@@ -147,8 +192,9 @@ const LoginDataTable = ({
                         dateFormat="dd/MM/yyyy"
                         onChange={handleEndDateChange}/>
         <Dropdown placeholder='Filter'
-                  options={dropdownOptions}
-                  onChange={handleChange}/>
+                  options={dropdownOptionsState}
+                  onChange={handleChange}
+                  ref={dropdownRef}/>
       </Col>
       <Col lg={12}>
         <Datatable dataTableId="table-login"

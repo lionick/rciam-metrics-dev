@@ -54,7 +54,7 @@ async def get_ams_stats(*,
     data = await request.json()
     logger.debug(data)
     messages = data.get("messages", [])  # Retrieve the list of messages
-    if not messages: # if only one message exists
+    if not messages:  # if only one message exists
         try:
             data_dict = process_message(data.get("message").get("data"))
             process_data(data_dict, session)
@@ -102,6 +102,7 @@ def process_data(data, session):
             countryData = ipDatabaseHandler.getCountryFromIp(data["ipAddress"])
         except Exception:
             print("Unknown ip Address")
+
         data["countryCode"] = countryData[0]
         data["countryName"] = countryData[1]
         del data["ipAddress"]

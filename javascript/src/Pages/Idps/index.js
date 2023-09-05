@@ -11,13 +11,20 @@ import {useQuery} from "react-query";
 import {tenenvKey} from "../../utils/queryKeys";
 import {getTenenv} from "../../utils/queries";
 import {useNavigate} from "react-router-dom";
+import {formatStartDate, formatEndDate} from "../../components/Common/utils";
 
 const Idps = () => {
+  const oneYearAgo = new Date();
+  oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+  formatStartDate(oneYearAgo)
 
+  const today = new Date();
+  today.setDate(today.getDate() - 1);
+  formatEndDate(today)
   const [uniqueLogins, setUniqueLogins] = useState(false);
   const [tenenvId, setTenenvId] = useState(0);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [endDate, setEndDate] = useState(today);
+  const [startDate, setStartDate] = useState(oneYearAgo);
 
   const tenant = window.tenant
   const environment = window.environment

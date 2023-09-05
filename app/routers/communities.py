@@ -14,7 +14,7 @@ MembersReadWithCommunityInfo.update_forward_refs(
 
 router = APIRouter(
     tags=["communities"],
-    dependencies=[Depends(AuthNZCheck("communities"))]
+   
 )
 
 @router.get("/members/", response_model=List[MembersReadWithCommunityInfo])
@@ -30,7 +30,19 @@ async def read_members(
     members = session.exec(select(Members).offset(offset)).all()
     return members
 
-
+@router.get("/min_date_communities")
+async def read_min_date_communities(
+        *,
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        tenenv_id: int,
+):
+    min_date = session.exec("""
+             SELECT min(created) as min_date 
+             FROM community
+             WHERE tenenv_id={0}
+          """.format(tenenv_id)).one()
+    return min_date
 @router.get("/members_bystatus/")
 async def read_members_bystatus(
         *,

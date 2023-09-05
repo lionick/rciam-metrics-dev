@@ -135,5 +135,13 @@ class GlobalsMiddleware(BaseHTTPMiddleware):  # noqa
     def __init__(self, app: ASGIApp) -> None:
         super().__init__(app, globals_middleware_dispatch)
 
+    async def dispatch(self, request, call_next):
+        try:
+            return await call_next(request)
+        except RuntimeError as exc:
+            if str(exc) == 'No response returned.' and await request.is_disconnected():
+                return Response(status_code=204)
+            raise
+
 
 g = Globals()

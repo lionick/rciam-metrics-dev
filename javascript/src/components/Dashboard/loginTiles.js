@@ -63,22 +63,25 @@ const LoginTiles = (parameters) => {
     { enabled: false, refetchOnWindowFocus: false }
   );
 
+  const { refetch: getYesterdayLoginsCount } = useQuery(
+    generateQueryKey({ 
+      'interval': 'days',
+      'count_interval': '1',
+      'tenenv_id': parameters['tenenvId'],
+      'unique_logins': parameters['uniqueLogins'],
+      'idpId': parameters['idpId'] !== undefined ? parameters['idpId'] : null,
+      'spId': parameters['spId'] !== undefined ? parameters['spId'] : null
+    }),
+    getLoginsCountBy,
+    { enabled: false, refetchOnWindowFocus: false }
+  );
+
+
   useEffect(() => {
     const handleRefetch = async () => {
 
       const results = await Promise.all([
-        getAllLoginsCount()
-          .then((response) =>
-          ({
-            response, params:
-            {
-              'tenenv_id': parameters['tenenvId'],
-              'unique_logins': parameters['uniqueLogins'],
-              'idpId': parameters['idpId'] !== undefined ? parameters['idpId'] : null,
-              'spId': parameters['spId'] !== undefined ? parameters['spId'] : null
-            }
-          })
-          ),
+        
         getLastYearLoginsCount()
           .then((response) =>
           ({
@@ -121,6 +124,20 @@ const LoginTiles = (parameters) => {
             }
           })
           ),
+          getYesterdayLoginsCount()
+          .then((response) =>
+          ({
+            response, params:
+            {
+              'interval': 'days',
+              'count_interval': '1',
+              'tenenv_id': parameters['tenenvId'],
+              'unique_logins': parameters['uniqueLogins'],
+              'idpId': parameters['idpId'] !== undefined ? parameters['idpId'] : null,
+              'spId': parameters['spId'] !== undefined ? parameters['spId'] : null
+            }
+          })
+          )
       ])
 
       // Log the data to the console
@@ -151,14 +168,7 @@ const LoginTiles = (parameters) => {
 
     <Row>
       <Col md={12} className="tiles-container">
-        <Col lg={3} xs={6}>
-          <div className="small-box bg-aqua">
-            <div className="inner">
-              <h3>{tiles["overall"]}</h3>
-              <p>Total Logins</p>
-            </div>
-          </div>
-        </Col>
+        
         <Col lg={3} xs={6}>
           <div className="small-box bg-green">
             <div className="inner">
@@ -180,6 +190,14 @@ const LoginTiles = (parameters) => {
             <div className="inner">
               <h3>{tiles["days_7"]}</h3>
               <p>Last 7 days Logins</p>
+            </div>
+          </div>
+        </Col>
+        <Col lg={3} xs={6}>
+          <div className="small-box bg-aqua">
+            <div className="inner">
+              <h3>{tiles["days_1"]}</h3>
+              <p>Last 1 day Logins</p>
             </div>
           </div>
         </Col>

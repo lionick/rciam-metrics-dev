@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import "jquery/dist/jquery.min.js";
 import $ from "jquery";
 import Datatable from "../../components/datatable";
@@ -13,16 +13,25 @@ import 'react-dropdown/style.css';
 import "react-datepicker/dist/react-datepicker.css";
 import {dropdownOptions} from "../../utils/helpers/enums";
 import {useQuery, useQueryClient} from "react-query";
-import {communitiesGroupByKey} from "../../utils/queryKeys";
-import {getCommunitiesGroupBy} from "../../utils/queries";
+import {communitiesGroupByKey, minDateCommunitiesKey} from "../../utils/queryKeys";
+import {getCommunitiesGroupBy, getMinDateCommunities} from "../../utils/queries";
 import Spinner from "../Common/spinner";
 import {format} from "date-fns";
 
 const CommunitiesDataTable = ({tenenvId}) => {
+  const oneYearAgo = new Date();
+  oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+  formatStartDate(oneYearAgo)
+
+  const today = new Date();
+  today.setDate(today.getDate() - 1);
+  formatEndDate(today)
+  const dropdownRef = useRef(null);
   const [communitiesPerPeriod, setCommunitiesPerPeriod] = useState([]);
   const [minDate, setMinDate] = useState(null);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [endDate, setEndDate] = useState(today);
+  const [startDate, setStartDate] = useState(oneYearAgo);
+  const [dropdownOptionsState, setDropdownOptions] = useState(dropdownOptions);
   const [groupBy, setGroupBy] = useState("month")
   const controller = new AbortController
 
@@ -31,8 +40,8 @@ const CommunitiesDataTable = ({tenenvId}) => {
 
   let params = {
     params: {
-      'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
-      'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+      'startDate': !startDate ? oneYearAgo : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+      'endDate': !endDate ? today : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
       'tenenv_id': tenenvId
     },
     signal: controller.signal
@@ -42,15 +51,25 @@ const CommunitiesDataTable = ({tenenvId}) => {
     [communitiesGroupByKey, {groupBy: groupBy, params: params}],
     getCommunitiesGroupBy,
     {
-      enabled: false
+      enabled: false,
+      refetchOnWindowFocus: false
+    }
+  )
+
+  const minDateCommunities = useQuery(
+    [minDateCommunitiesKey, params],
+    getMinDateCommunities,
+    {
+      enabled: false,
+      refetchOnWindowFocus: false
     }
   )
 
   useEffect(() => {
     params = {
       params: {
-        'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
-        'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+        'startDate': !startDate ? oneYearAgo : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+        'endDate': !endDate ? today : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
         'tenenv_id': tenenvId
       },
       signal: controller.signal
@@ -58,6 +77,7 @@ const CommunitiesDataTable = ({tenenvId}) => {
 
     try {
       const response = queryClient.refetchQueries([communitiesGroupByKey, {groupBy: groupBy, params: params}])
+      queryClient.refetchQueries([minDateCommunitiesKey, {params:{tenenv_id: tenenvId}}])
     } catch (error) {
       // todo: Here we can handle any authentication or authorization errors
       console.log(error)
@@ -71,6 +91,9 @@ const CommunitiesDataTable = ({tenenvId}) => {
 
   // Construct the data required for the datatable
   useEffect(() => {
+    if(groupBy == "") {
+      return;
+    }
     const communitiesGroupByPerPeriodArray = !communitiesGroupBy.isLoading
       && !communitiesGroupBy.isFetching
       && communitiesGroupBy.isSuccess
@@ -85,28 +108,53 @@ const CommunitiesDataTable = ({tenenvId}) => {
       // We only keep the first date because the backend returns the dataset sorted and we only care about the
       // min of the min dates.
       if (minDate == undefined || minDate == "") {
-        setMinDate(!!communitiesGroupBy?.data?.[0]?.min_date ? new Date(communitiesGroupBy?.data?.[0]?.min_date) : null)
+        console.log(minDateCommunities?.data?.min_date)
+        setMinDate(!!minDateCommunities?.data?.min_date ? new Date(minDateCommunities?.data?.min_date) : null)
       }
       $("#table-community").DataTable().destroy()
       setCommunitiesPerPeriod(communitiesGroupByPerPeriodArray)
     }
-  }, [!communitiesGroupBy.isLoading
-  && !communitiesGroupBy.isFetching
-  && communitiesGroupBy.isSuccess])
+  }, [communitiesGroupBy.isSuccess && minDateCommunities.isSuccess, groupBy])
+
+  const handleAddOption = () => {
+    // Create a new option dynamically
+    const newOption =  {value: '', label: 'Filter'};
+
+    // Check if the new option already exists in the options array
+    if (!dropdownOptionsState.some(option => option.value === newOption.value)) {
+      // If it doesn't exist, add it to the options array
+      setDropdownOptions([newOption, ...dropdownOptionsState]);
+    } 
+  };
 
   const handleStartDateChange = (date) => {
-
-    date = formatStartDate(date);
-    if (date != null) {
-      setStartDate(date);
+    if(groupBy!=''){
+      handleAddOption()
     }
+    date = formatStartDate(date);
+    if(date != null) {
+      if(endDate!=date){
+        setGroupBy("")
+      }
+      setStartDate(date);
+      dropdownRef.current.state.selected.label = 'Filter';
+    }
+    
   };
 
   const handleEndDateChange = (date) => {
-    date = formatEndDate(date);
-    if (date != null) {
-      setEndDate(date);
+    if(groupBy!=''){
+      handleAddOption()
     }
+    date = formatEndDate(date);
+    if(date != null) {
+      if(endDate!=date){
+        setGroupBy("")  
+      }
+      setEndDate(date);
+      dropdownRef.current.state.selected.label = 'Filter';
+    }
+    
   };
 
   const handleChange = (event) => {
@@ -117,19 +165,12 @@ const CommunitiesDataTable = ({tenenvId}) => {
     setGroupBy(event.value)
   };
 
-  if (communitiesGroupBy.isLoading
-    || communitiesGroupBy.isFetching) {
-    return (<Spinner/>)
-  }
 
-  if (minDate == undefined) {
-    return null
-  }
 
   return <Row className="box">
     <Col md={12}>
       <div className="box-header with-border">
-        <h3 className="box-title">Number of logins</h3>
+        <h3 className="box-title">Number of communities</h3>
       </div>
     </Col>
     <Col lg={12} className="range_inputs">
@@ -146,14 +187,15 @@ const CommunitiesDataTable = ({tenenvId}) => {
     />
       <Dropdown placeholder='Filter'
                 options={dropdownOptions}
-                onChange={handleChange}/>
+                onChange={handleChange}
+                ref={dropdownRef}/>
     </Col>
     <Col lg={12}>
       {
-        communitiesPerPeriod.length !== 0 ?
+        
           <Datatable dataTableId="table-community"
                      items={communitiesPerPeriod}
-                     columnSep="Names"/> : null
+                     columnSep="Names"/>
       }
     </Col>
   </Row>

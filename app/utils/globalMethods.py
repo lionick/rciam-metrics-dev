@@ -142,14 +142,13 @@ def permissionsCalculation(authorize_file, user_info=None):
             for view, config_actions in role_actions.items():
                 for item in config_actions.split(","):
                     actions[view][item] = True
-
     return {
         'roles': roles,
         'actions': actions
     }
 
 
-def hasAction(user_actions, category, action):
+def hasAction(user_actions, category, action):  
     if (user_actions[category][action] is True):
         return True
     return False

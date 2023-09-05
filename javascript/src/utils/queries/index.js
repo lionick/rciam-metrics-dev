@@ -55,6 +55,42 @@ export const getLoginsPerCountry = async ({queryKey}) => {
   }
 }
 
+export const getMinDateLogins = async ({queryKey}) => {
+  const [_, params] = queryKey
+  try {
+    const response = await apiClient.get("min_date_logins", params)
+    return response.data
+  } catch (error) {
+    console.log('error', error)
+    handleError(error)
+    return error.response
+  }
+}
+
+export const getMinDateCommunities = async ({queryKey}) => {
+  const [_, params] = queryKey
+  try {
+    const response = await apiClient.get("min_date_communities", params)
+    return response.data
+  } catch (error) {
+    console.log('error', error)
+    handleError(error)
+    return error.response
+  }
+}
+
+export const getMinDateRegisteredUsers = async ({queryKey}) => {
+  const [_, params] = queryKey
+  try {
+    const response = await apiClient.get("min_date_registered_users", params)
+    return response.data
+  } catch (error) {
+    console.log('error', error)
+    handleError(error)
+    return error.response
+  }
+}
+
 export const getLoginsGroupByDay = async ({queryKey}) => {
   const [_, params] = queryKey
   try {

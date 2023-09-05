@@ -10,8 +10,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'react-dropdown/style.css';
 import "react-datepicker/dist/react-datepicker.css";
 import {useQuery, useQueryClient} from "react-query";
-import {loginsPerIdpKey} from "../../utils/queryKeys";
-import {getLoginsPerIdp} from "../../utils/queries";
+import {loginsPerIdpKey, minDateLoginsKey} from "../../utils/queryKeys";
+import {getLoginsPerIdp, getMinDateLogins} from "../../utils/queries";
 import {useCookies} from "react-cookie";
 import {createAnchorElement, formatStartDate, formatEndDate} from "../Common/utils";
 import {toast} from "react-toastify";
@@ -54,7 +54,17 @@ const IdpsDataTable = ({
     [loginsPerIdpKey, params],
     getLoginsPerIdp,
     {
-      enabled: false
+      enabled: false,
+      refetchOnWindowFocus: false
+    }
+  )
+
+  const minDateLogins = useQuery(
+    [minDateLoginsKey, params],
+    getMinDateLogins,
+    {
+      enabled: false,
+      refetchOnWindowFocus: false
     }
   )
 
@@ -72,6 +82,7 @@ const IdpsDataTable = ({
 
     try {
       const response = queryClient.refetchQueries([loginsPerIdpKey, params])
+      queryClient.refetchQueries([minDateLoginsKey, {params:{tenenv_id: tenenvId}}])
     } catch (error) {
       // todo: Here we can handle any authentication or authorization errors
       console.log(error)
@@ -97,10 +108,13 @@ const IdpsDataTable = ({
 
     if (!!loginsPerIpd?.data && !!perIdp) {
       // This is essential: We must destroy the datatable in order to be refreshed with the new data
+      if (minDate == undefined || minDate == "") {
+        setMinDate(!!minDateLogins?.data?.min_date ? new Date(minDateLogins?.data?.min_date) : null)
+      }
       $("#" + dataTableId).DataTable().destroy()
       setIdpsLogins(perIdp)
     }
-  }, [loginsPerIpd.isSuccess])
+  }, [loginsPerIpd.isSuccess && minDateLogins.isSuccess])
 
   const handleStartDateChange = (date) => {
 

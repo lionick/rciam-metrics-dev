@@ -10,10 +10,21 @@ from app.utils.globalMethods import AuthNZCheck
 
 router = APIRouter(
     tags=["users"],
-    dependencies=[Depends(AuthNZCheck("registered_users"))],
+    # dependencies=[Depends(AuthNZCheck("registered_users"))],
     # responses={404: {"description": "Not found"}},
 )
 
+@router.get("/min_date_registered_users")
+async def read_min_date_registered_users(
+        *,
+        session: Session = Depends(get_session),
+        tenenv_id: int
+):
+    min_date = session.exec("""
+      SELECT min(created) as min_date 
+                            FROM users
+    """).one()
+    return min_date
 
 @router.get("/registered_users_country")
 async def read_users_country(

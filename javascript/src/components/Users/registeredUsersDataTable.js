@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import "jquery/dist/jquery.min.js";
 import $ from "jquery";
 import Datatable from "../datatable";
@@ -12,8 +12,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'react-dropdown/style.css';
 import "react-datepicker/dist/react-datepicker.css";
 import {useQuery, useQueryClient} from "react-query";
-import {loginsPerIdpKey, registeredUsersPerCountryGroupByKey} from "../../utils/queryKeys";
-import {getRegisteredUsersPerCountryGroupBy} from "../../utils/queries";
+import {loginsPerIdpKey, minDateRegisteredUsersKey, registeredUsersPerCountryGroupByKey} from "../../utils/queryKeys";
+import {getMinDateRegisteredUsers, getRegisteredUsersPerCountryGroupBy} from "../../utils/queries";
 import {useCookies} from "react-cookie";
 import Spinner from "../Common/spinner";
 import {format} from "date-fns";
@@ -26,8 +26,10 @@ const RegisteredUsersDataTable = ({
                                     startDate,
                                     endDate
                                   }) => {
+  const dropdownRef = useRef(null);
   const [cookies, setCookie] = useCookies();
   const [usersPerCountryPerPeriod, setUsersPerCountryPerPeriod] = useState([]);
+  const [dropdownOptionsState, setDropdownOptions] = useState(dropdownOptions);
   const [minDate, setMinDate] = useState("");
   const [groupBy, setGroupBy] = useState("month")
   const queryClient = useQueryClient();
@@ -46,16 +48,31 @@ const RegisteredUsersDataTable = ({
     [registeredUsersPerCountryGroupByKey, {groupBy: groupBy, params: params}],
     getRegisteredUsersPerCountryGroupBy,
     {
-      enabled: false
+      /*enabled: false, this caused problems of fetching data*/ 
+      refetchOnWindowFocus: false
     }
   )
 
+  const minDateRegisteredUsers = useQuery(
+    [minDateRegisteredUsersKey, params],
+    getMinDateRegisteredUsers,
+    {
+      enabled: false,
+      refetchOnWindowFocus: false
+    }
+  )
+
+
   useEffect(() => {
+    if (groupBy == '') {
+      return;
+    }
     params = {
       params: {
         'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
         'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
-        'tenenv_id': tenenvId
+        'tenenv_id': tenenvId,
+        'groupBy': groupBy
       },
       signal: controller.signal
     }
@@ -65,6 +82,8 @@ const RegisteredUsersDataTable = ({
         groupBy: groupBy,
         params: params
       }])
+      queryClient.refetchQueries([minDateRegisteredUsersKey, {params:{tenenv_id: tenenvId}}])
+      console.log(params)
     } catch (error) {
       // todo: Here we can handle any authentication or authorization errors
       console.log(error)
@@ -78,11 +97,8 @@ const RegisteredUsersDataTable = ({
 
   // Construct the data required for the datatable
   useEffect(() => {
-    const perPeriod = !registeredUsersPerCountryGroup.isLoading
-      && !registeredUsersPerCountryGroup.isFetching
-      && registeredUsersPerCountryGroup.isFetched
-      && registeredUsersPerCountryGroup.isSuccess
-      && registeredUsersPerCountryGroup?.data?.map(user => ({
+    console.log(registeredUsersPerCountryGroup)
+    const perPeriod = registeredUsersPerCountryGroup?.data?.map(user => ({
         "Date": !!user?.range_date ? convertDateByGroup(new Date(user?.range_date), groupBy): null,
         "Number of Registered Users": user?.count,
         "Registered Users per country": user?.countries
@@ -91,31 +107,54 @@ const RegisteredUsersDataTable = ({
     if (!!registeredUsersPerCountryGroup?.data && !!perPeriod) {
       // This is essential: We must destroy the datatable in order to be refreshed with the new data
       if (minDate == undefined || minDate == "") {
-        setMinDate(!!registeredUsersPerCountryGroup?.data?.[0]?.min_date ? new Date(registeredUsersPerCountryGroup?.data?.[0]?.min_date) : null)
+        setMinDate(!!minDateRegisteredUsers?.data?.min_date ? new Date(minDateRegisteredUsers?.data?.min_date) : null)
       }
       $("#table-users").DataTable().destroy()
       setUsersPerCountryPerPeriod(perPeriod)
     }
-  }, [!registeredUsersPerCountryGroup.isLoading
-  && !registeredUsersPerCountryGroup.isFetching
-  && registeredUsersPerCountryGroup.isSuccess])
+  }, [registeredUsersPerCountryGroup.isSuccess && minDateRegisteredUsers.isSuccess, groupBy])
+
+
+  const handleAddOption = () => {
+    // Create a new option dynamically
+    const newOption =  {value: '', label: 'Filter'};
+
+    // Check if the new option already exists in the options array
+    if (!dropdownOptionsState.some(option => option.value === newOption.value)) {
+      // If it doesn't exist, add it to the options array
+      setDropdownOptions([newOption, ...dropdownOptionsState]);
+    } 
+  };
 
   const handleStartDateChange = (date) => {
-   
+    if(groupBy!=''){
+      handleAddOption()
+    }
     date = formatStartDate(date);
     if(date != null) {
+      if(endDate!=date){
+        setGroupBy("")
+      }
       setStartDate(date);
+      dropdownRef.current.state.selected.label = 'Filter';
     }
+    
   };
 
   const handleEndDateChange = (date) => {
-   
+    if(groupBy!=''){
+      handleAddOption()
+    }
     date = formatEndDate(date);
     if(date != null) {
+      if(endDate!=date){
+        setGroupBy("")  
+      }
       setEndDate(date);
+      dropdownRef.current.state.selected.label = 'Filter';
     }
+    
   };
-
 
   const handleChange = (event) => {
     if (!startDate || !endDate) {
@@ -124,16 +163,6 @@ const RegisteredUsersDataTable = ({
     }
     setGroupBy(event.value)
   };
-
-  if (registeredUsersPerCountryGroup.isLoading
-      || registeredUsersPerCountryGroup.isFetching) {
-    return (<Spinner/>)
-  }
-
-  if (minDate == undefined) {
-    return null
-  }
-
 
   return (
     <Row className="box">
@@ -152,16 +181,15 @@ const RegisteredUsersDataTable = ({
                         dateFormat="dd/MM/yyyy"
                         onChange={handleEndDateChange}/>
         <Dropdown placeholder='Filter'
-                  options={dropdownOptions}
-                  onChange={handleChange}/>
+                   options={dropdownOptionsState}
+                   onChange={handleChange}
+                   ref={dropdownRef}/>
       </Col>
       <Col lg={12}>
-        {
-          usersPerCountryPerPeriod.length !== 0 ?
+        {      
             <Datatable dataTableId="table-users"
                        items={usersPerCountryPerPeriod}
-                       columnSep="Registered Users per country"/>
-            : null
+                       columnSep="Registered Users per country"/>        
         }
       </Col>
     </Row>

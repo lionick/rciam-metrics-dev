@@ -31,7 +31,8 @@ const RegisteredUsersMap = ({
     [registeredUsersByCountryKey, params],
     getRegisteredUsersByCountry,
     {
-      enabled: false
+      enabled: false,
+      refetchOnWindowFocus: false
     }
   )
 

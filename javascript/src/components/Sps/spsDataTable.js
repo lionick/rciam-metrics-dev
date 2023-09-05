@@ -10,8 +10,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'react-dropdown/style.css';
 import "react-datepicker/dist/react-datepicker.css";
 import {useQuery, useQueryClient} from "react-query";
-import {loginsPerSpKey} from "../../utils/queryKeys";
-import {getLoginsPerSP} from "../../utils/queries";
+import {loginsPerSpKey, minDateLoginsKey} from "../../utils/queryKeys";
+import {getLoginsPerSP, getMinDateLogins} from "../../utils/queries";
 import {useCookies} from "react-cookie";
 import {createAnchorElement, formatStartDate, formatEndDate} from "../Common/utils";
 import Spinner from "../Common/spinner";
@@ -57,6 +57,15 @@ const SpsDataTable = ({
     }
   )
 
+  const minDateLogins = useQuery(
+    [minDateLoginsKey, params],
+    getMinDateLogins,
+    {
+      enabled: false,
+      refetchOnWindowFocus: false
+    }
+  )
+
   useEffect(() => {
     params = {
       params: {
@@ -71,6 +80,7 @@ const SpsDataTable = ({
 
     try {
       const response = queryClient.refetchQueries([loginsPerSpKey, params])
+      queryClient.refetchQueries([minDateLoginsKey, {params:{tenenv_id: tenenvId}}])
     } catch (error) {
       // todo: Here we can handle any authentication or authorization errors
       console.log(error)
@@ -88,20 +98,20 @@ const SpsDataTable = ({
       && !loginsPerSp.isFetching
       && loginsPerSp.isSuccess
       && loginsPerSp?.data?.map(sp => ({
-        "Service Provider Name": (cookies.userinfo == undefined && !!permissions?.actions?.service_providers?.['view']) ? sp.name : createAnchorElement(sp.name, `/metrics/identity-providers/${sp.id}`),
+        "Service Provider Name": (cookies.userinfo == undefined && !!permissions?.actions?.service_providers?.['view']) ? sp.name : createAnchorElement(sp.name, `/metrics/services/${sp.id}`),
         "Service Provider Identifier": sp.identifier,
         "Number of Logins": sp.count
       }))
 
     if (!!loginsPerSp?.data && !!perSp) {
       if (minDate == undefined || minDate == "") {
-        setMinDate(!!loginsPerSp?.data?.[0]?.min_date ? new Date(loginsPerSp?.data?.[0]?.min_date) : null)
+        setMinDate(!!minDateLogins?.data?.min_date ? new Date(minDateLogins?.data?.min_date) : null)
       }
       // This is essential: We must destroy the datatable in order to be refreshed with the new data
       $("#" + dataTableId).DataTable().destroy()
       setSpsLogins(perSp)
     }
-  }, [loginsPerSp.isSuccess])
+  }, [loginsPerSp.isSuccess && minDateLogins.isSuccess])
 
   const handleStartDateChange = (date) => {
 

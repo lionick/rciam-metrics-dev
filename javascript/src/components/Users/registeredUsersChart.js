@@ -39,7 +39,8 @@ const RegisteredUsersChart = ({
     [registeredUsersGroupByKey, {groupBy: selected, params: params}],
     getRegisteredUsersGroupBy,
     {
-      enabled: false
+      /*enabled: false, this caused problems of fetching data*/ 
+      refetchOnWindowFocus: false
     }
   )
 

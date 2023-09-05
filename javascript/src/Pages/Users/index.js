@@ -11,11 +11,19 @@ import Row from 'react-bootstrap/Row';
 import {useQuery} from "react-query";
 import {tenenvKey} from "../../utils/queryKeys";
 import {getTenenv} from "../../utils/queries";
+import {formatStartDate, formatEndDate} from "../../components/Common/utils";
 
 const Users = () => {
+  const oneYearAgo = new Date();
+  oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+  formatStartDate(oneYearAgo)
+
+  const today = new Date();
+  today.setDate(today.getDate() - 1);
+  formatEndDate(today)
   const [tenenvId, setTenenvId] = useState(0);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState(oneYearAgo);
+  const [endDate, setEndDate] = useState(today);
 
   const tenant = window.tenant
   const environment = window.environment

@@ -3,7 +3,7 @@ from ..database import get_session
 from app.utils.ipDatabase import geoip2Database
 from sqlalchemy.exc import NoResultFound
 from .utilsIngester import utilsIngester
-
+import hashlib
 
 class LoginDataIngester:
     logger = log.get_logger("LoginDataIngester")
@@ -88,17 +88,48 @@ class LoginDataIngester:
         return spId
 
     @classmethod
+    def getCountryFromCountryCode(cls, countryData, session):
+        try:
+            countryId = session.exec(
+                """
+                SELECT id FROM country_codes
+                WHERE countrycode = '{0}'
+                """.format(
+                    countryData[0]
+                )
+            ).one()
+        except NoResultFound:
+            cls.logger.info("""Country with name {0}
+                               will be created""".format(countryData[1]))
+            countryId = session.exec(
+              """
+              INSERT INTO country_codes (countrycode, country)
+              SELECT '{0}', '{1}'
+              WHERE NOT EXISTS (
+                  SELECT 1 FROM country_codes
+                  WHERE countrycode = '{0}'
+              )
+              RETURNING id;
+              """.format(countryData[0], countryData[1])
+            ).one()
+        return countryId
+
+    @classmethod
     def getCountryFromIP(cls, ipAddress, session):
         # handler for ip databases
         ipDatabaseHandler = geoip2Database()
         # get country code/ name
-        countryData = ipDatabaseHandler.getCountryFromIp(ipAddress)
-        if (countryData[0] is None):
-            countryData[0] = 'UN'
-            countryData[1] = 'Unknown'
+        try:
+            countryData = ipDatabaseHandler.getCountryFromIp(ipAddress)
+            if (countryData[0] is None):
+                countryData[0] = 'UN'
+                countryData[1] = 'Unknown'
+                cls.logger.warning("""
+                    ip {0} not found at database""".format(ipAddress))
+        except (Exception):
+            countryData = ['UN', 'Unknown']
             cls.logger.warning("""
-                ip {0} not found at database""".format(ipAddress))
-
+                  ip {0} not found at database""".format(ipAddress))
         # Save country if not exists
         try:
             countryId = session.exec(
@@ -152,7 +183,8 @@ class LoginDataIngester:
         for login in loginsNotMapped:
             if (not login[0]['failedLogin']
                 and utilsIngester.validateTenenv(login[0]['tenenvId'], session)
-                and utilsIngester.validateHashedUser(login[0]['voPersonId'],
+                and 'voPersonId' in login[0]
+                and utilsIngester.validateHashedUser(hashlib.md5(login[0]['voPersonId'].encode()).hexdigest(),
                                                   login[0]['tenenvId'],
                                                   session)):
 
@@ -170,8 +202,10 @@ class LoginDataIngester:
                                           login[0]['spName'],
                                           login[0]['tenenvId'],
                                           session)
-                countryId = LoginDataIngester.getCountryFromIP(login[0]['ipAddress'],
-                                                               session)
+                
+                if ('countryCode' in login[0] and 'countryName' in login[0]):
+                    # find countryId
+                    countryId = LoginDataIngester.getCountryFromCountryCode([login[0]['countryCode'], login[0]['countryName']], session)
                 # store information at statistics_country_hashed
                 session.exec(
                     """
@@ -180,11 +214,13 @@ class LoginDataIngester:
                     ON CONFLICT (date, hasheduserid, sourceidpid, serviceid, countryid, tenenv_id)
                     DO UPDATE SET count = statistics_country_hashed.count + 1
                     """.format(
-                        login[0]["date"], login[0]['voPersonId'], idpId[0], spId[0], countryId[0], 1, login[0]['tenenvId']
+                        login[0]["date"], hashlib.md5(login[0]['voPersonId'].encode()).hexdigest(), idpId[0], spId[0], countryId[0], 1, login[0]['tenenvId']
                     )
                 )
                 session.commit()
                 loginMappedItems += 1
+            else:
+                cls.logger.warning("The record {0} was not imported due to validation errors".format(repr(login[0])))
 
         cls.logger.info("""
             {0} new logins ingested""".format(loginMappedItems))
