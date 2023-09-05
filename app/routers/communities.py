@@ -14,7 +14,7 @@ MembersReadWithCommunityInfo.update_forward_refs(
 
 router = APIRouter(
     tags=["communities"],
-   
+    dependencies=[Depends(AuthNZCheck("communities"))]
 )
 
 @router.get("/members/", response_model=List[MembersReadWithCommunityInfo])

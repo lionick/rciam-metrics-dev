@@ -143,7 +143,3 @@ javascript/.bash_history
 .DS_Store
 yarn-error.log
 
-app/ip_databases/GeoLite2-Country.mmdb
-env_old/*
-app/logs
-config.*

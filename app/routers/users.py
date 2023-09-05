@@ -10,7 +10,7 @@ from app.utils.globalMethods import AuthNZCheck
 
 router = APIRouter(
     tags=["users"],
-    # dependencies=[Depends(AuthNZCheck("registered_users"))],
+    dependencies=[Depends(AuthNZCheck("registered_users"))],
     # responses={404: {"description": "Not found"}},
 )
 
