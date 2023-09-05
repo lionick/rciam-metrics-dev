@@ -148,7 +148,7 @@ def permissionsCalculation(authorize_file, user_info=None):
     }
 
 
-def hasAction(user_actions, category, action):  
+def hasAction(user_actions, category, action):
     if (user_actions[category][action] is True):
         return True
     return False
