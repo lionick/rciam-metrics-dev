@@ -29,6 +29,7 @@ const Dashboard = () => {
     [tenenvKey, {tenantId: tenant, environment: environment}],
     getTenenv, {
       retry: 0,
+      refetchOnWindowFocus: false
     })
 
   useEffect(() => {

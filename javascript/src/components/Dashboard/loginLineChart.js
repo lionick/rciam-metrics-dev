@@ -30,7 +30,8 @@ const LoginLineChart = ({
     [loginsGroupByDayKey, params],
     getLoginsGroupByDay,
     {
-      enabled: false
+      enabled: false,
+      refetchOnWindowFocus: false
     }
   )
 

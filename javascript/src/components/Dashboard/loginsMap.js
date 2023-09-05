@@ -28,7 +28,11 @@ const LoginsMap = ({
 
   const loginsPerCountry = useQuery(
     [loginsPerCountryKey, params],
-    getLoginsPerCountry
+    getLoginsPerCountry,
+    {
+      enabled: false,
+      refetchOnWindowFocus: false
+    }
   )
 
   if (loginsPerCountry.isLoading

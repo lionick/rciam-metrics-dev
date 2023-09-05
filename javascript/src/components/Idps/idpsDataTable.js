@@ -114,7 +114,7 @@ const IdpsDataTable = ({
       $("#" + dataTableId).DataTable().destroy()
       setIdpsLogins(perIdp)
     }
-  }, [loginsPerIpd.isSuccess && minDateLogins.isSuccess])
+  }, [uniqueLogins, loginsPerIpd.isSuccess && minDateLogins.isSuccess])
 
   const handleStartDateChange = (date) => {
 

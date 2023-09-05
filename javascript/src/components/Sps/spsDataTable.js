@@ -111,7 +111,7 @@ const SpsDataTable = ({
       $("#" + dataTableId).DataTable().destroy()
       setSpsLogins(perSp)
     }
-  }, [loginsPerSp.isSuccess && minDateLogins.isSuccess])
+  }, [uniqueLogins, loginsPerSp.isSuccess && minDateLogins.isSuccess])
 
   const handleStartDateChange = (date) => {
 

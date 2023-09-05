@@ -122,7 +122,7 @@ const LoginDataTable = ({
       setLoginsPerCountryPerPeriod(loginsPerCountryPerPeriodArray)
 
     }
-  }, [loginsPerCountry.isSuccess && minDateLogins.isSuccess, groupBy])
+  }, [uniqueLogins, loginsPerCountry.isSuccess && minDateLogins.isSuccess, groupBy])
 
   const handleAddOption = () => {
     // Create a new option dynamically
