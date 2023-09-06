@@ -30,7 +30,7 @@ const LoginsMap = ({
     [loginsPerCountryKey, params],
     getLoginsPerCountry,
     {
-      enabled: false,
+      // enabled: false, this caused problems rendering map
       refetchOnWindowFocus: false
     }
   )
