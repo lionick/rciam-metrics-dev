@@ -10,10 +10,10 @@ docker-compose pull
 
 ### Install python dependencies
 docker-compose run --rm --no-deps web pip install --upgrade pip
-docker-compose run --rm --no-deps web pip install -r requirements.txt
+docker-compose run --rm --no-deps web pip3 install --no-cache-dir -r requirements.txt
 
 ### Install nodejs dependencies
-docker-compose run --rm --no-deps api npm install
+docker-compose run --rm --no-deps api npm install --prefer-online
 
 ### Run Database deployment
 [//]: # (docker-compose run --rm web alembic revision --autogenerate -m 'Initial Migration')
